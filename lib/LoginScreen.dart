@@ -117,9 +117,10 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
 
-     // Navigate to OTP screen
+      // Navigate to OTP screen
     }
   }
+  final mobilenumber = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-
                   Padding(
                     padding: const EdgeInsets.only(bottom: 0,top: 80),
                     child: Center(child: Image.asset("assets/images/logo_white.png",fit: BoxFit.fill,height: MediaQuery.of(context).size.height * 0.12,width: MediaQuery.of(context).size.width * 0.60)),
@@ -144,52 +144,149 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     //height: 400,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 80.0,bottom: 0),
-                          child: Center(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 80.0,bottom: 0),
+                            child: Center(
+                              child: GradientText(
+                                'HELLO',
+                                style: const TextStyle(
+                                  fontSize: 30.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                colors: const [
+                                  Color(0xff493fba),
+                                  Color(0xff456bd8),
+                                  Color(0xff40a2fd),
+                                ],
+                              ),
+                            ),
+
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(top:10.0),
+                            child: Text(
+                              "Please enter the details to Login",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top:10.0),
+                            child: Container(
+                                margin: const EdgeInsets.only(left: 30, right: 30),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey, width: 1.3),
+                                  // border: Border.all(
+                                  //   width: 1,
+                                  // ),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child:  Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                                  child: TextField(
+                                    keyboardType: TextInputType.phone,
+                                    controller: mobilenumber,
+                                    decoration: const InputDecoration(
+                                      hintText: "Enter mobile number",
+                                      border: InputBorder.none,
+
+                                    ),
+                                  ),
+                                )
+                              //IntrinsicHeight
+
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                            const EdgeInsets.fromLTRB(80.0, 25.0, 80.0, 0),
+                            child: MaterialButton(
+                                minWidth: double.infinity,
+                                height: 56,
+                                elevation: 0,
+                                splashColor: const Color(0xFFFF9F24),
+                                child: const Text(
+                                  'GET OTP',
+                                  style: TextStyle(
+                                      color: const Color(0xFFFFFFFF),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      fontFamily: "Lorin"),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0)),
+                                color: const Color(0xFFFF9F24),
+                                onPressed: () {
+                                  getDataFromAPI();
+                                  //   Navigator.push(context, PageTransition(type: PageTransitionType.scale, child: OtpScreen()));
+                                }),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(top:10.0),
+                            child: Text(
+                              "An OTP will be sent to this number",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ]
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children:   [
+                      Center(
+                        child: Text(
+                          "New to Adslay?",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0,bottom: 50),
+                        child: Center(
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 15.0,right: 15,top: 5,bottom: 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
                             child: GradientText(
-                              'HELLO',
+                              'SIGN UP',
                               style: const TextStyle(
-                                fontSize: 30.0,
+                                fontSize: 18.0,
                                 fontWeight: FontWeight.w500,
                               ),
-                              colors: const [
+                              colors:[
                                 Color(0xff493fba),
                                 Color(0xff456bd8),
                                 Color(0xff40a2fd),
                               ],
                             ),
                           ),
-
                         ),
-                        const Text(
-                          "Please enter the details to Login",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey,
-                            fontSize: 15,
-                          ),
-                        ),
-
-
-
-
-
-
-
-                        const Text(
-                          "An OTP will be sent to this number",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey,
-                            fontSize: 15,
-                          ),
-                        )
-                      ]
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
