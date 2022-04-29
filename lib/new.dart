@@ -179,58 +179,58 @@
 //     _tabListalumni = [
 //       TabList(
 //           title: "Most Popular",
-//           image: "assets/icons/Star.svg",
+//           image: "assets/images/Star.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Training",
-//           image: "assets/icons/training.svg",
+//           image: "assets/images/training.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Counseling",
-//           image: "assets/icons/counseling.svg",
+//           image: "assets/images/counseling.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Webinar",
-//           image: "assets/icons/counseling.svg",
+//           image: "assets/images/counseling.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Discussion",
-//           image: "assets/icons/discussion.svg",
+//           image: "assets/images/discussion.svg",
 //           isSelect: false),
 //
 //       // TabList(
 //       //     title: "Play Quiz",
-//       //     image: "assets/icons/discussion.svg",
+//       //     image: "assets/images/discussion.svg",
 //       //     isSelect: false),
 //     ];
 //     tabListStudent = [
 //       TabList(
 //           title: "Most Popular",
-//           image: "assets/icons/Star.svg",
+//           image: "assets/images/Star.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Alumni",
-//           image: "assets/icons/alumni.svg",
+//           image: "assets/images/alumni.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Training",
-//           image: "assets/icons/training.svg",
+//           image: "assets/images/training.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Counseling",
-//           image: "assets/icons/counseling.svg",
+//           image: "assets/images/counseling.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Webinar",
-//           image: "assets/icons/counseling.svg",
+//           image: "assets/images/counseling.svg",
 //           isSelect: false),
 //       TabList(
 //           title: "Discussion",
-//           image: "assets/icons/discussion.svg",
+//           image: "assets/images/discussion.svg",
 //           isSelect: false),
 //       // TabList(
 //       //     title: "Play Quiz",
-//       //     image: "assets/icons/discussion.svg",
+//       //     image: "assets/images/discussion.svg",
 //       //     isSelect: false),
 //     ];
 //     getLocation();
@@ -297,7 +297,7 @@
 //                 },
 //                 child: Column(
 //                   children: [
-//                     SvgPicture.asset('assets/icons/sideprofile.svg'),
+//                     SvgPicture.asset('assets/images/sideprofile.svg'),
 //                     SizedBox(
 //                       height: 5,
 //                     ),
@@ -323,7 +323,7 @@
 //                 },
 //                 child: Column(
 //                   children: [
-//                     SvgPicture.asset('assets/icons/Application.svg'),
+//                     SvgPicture.asset('assets/images/Application.svg'),
 //                     SizedBox(
 //                       height: 5,
 //                     ),
@@ -348,7 +348,7 @@
 //                 },
 //                 child: Column(
 //                   children: [
-//                     SvgPicture.asset('assets/icons/sidecounseling.svg'),
+//                     SvgPicture.asset('assets/images/sidecounseling.svg'),
 //                     SizedBox(
 //                       height: 5,
 //                     ),
@@ -378,8 +378,8 @@
 //                 },
 //                 child: Column(
 //                   children: [
-//                     SvgPicture.asset('assets/icons/sidediss.svg'),
-//                     //SvgPicture.asset('assets/icons/alumni.svg'),
+//                     SvgPicture.asset('assets/images/sidediss.svg'),
+//                     //SvgPicture.asset('assets/images/alumni.svg'),
 //                     SizedBox(
 //                       height: 5,
 //                     ),
@@ -413,7 +413,7 @@
 //                 },
 //                 child: Column(
 //                   children: [
-//                     SvgPicture.asset('assets/icons/sidetraining.svg'),
+//                     SvgPicture.asset('assets/images/sidetraining.svg'),
 //                     SizedBox(
 //                       height: 5,
 //                     ),
@@ -438,7 +438,7 @@
 //                 },
 //                 child: Column(
 //                   children: [
-//                     SvgPicture.asset('assets/icons/sideevents.svg'),
+//                     SvgPicture.asset('assets/images/sideevents.svg'),
 //                     SizedBox(
 //                       height: 5,
 //                     ),
@@ -464,7 +464,7 @@
 //                 },
 //                 child: Column(
 //                   children: [
-//                     SvgPicture.asset('assets/icons/sideshare.svg'),
+//                     SvgPicture.asset('assets/images/sideshare.svg'),
 //                     SizedBox(
 //                       height: 5,
 //                     ),
@@ -495,7 +495,7 @@
 //         children: [
 //           GestureDetector(
 //             child: SvgPicture.asset(
-//               'assets/icons/menu.svg',
+//               'assets/images/menu.svg',
 //               height: 24,
 //               width: 24,
 //             ),
@@ -505,7 +505,7 @@
 //           ),
 //           GestureDetector(
 //             child: SvgPicture.asset(
-//               'assets/icons/notification.svg',
+//               'assets/images/notification.svg',
 //               height: 40,
 //               width: 40,
 //             ),
@@ -582,7 +582,7 @@
 //               SizedBox(
 //                 width: 10,
 //               ),
-//               SvgPicture.asset('assets/icons/Search.svg')
+//               SvgPicture.asset('assets/images/Search.svg')
 //             ],
 //           ),
 //         ),
