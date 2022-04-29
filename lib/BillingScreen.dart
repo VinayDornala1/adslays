@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'Constant/ConstantsColors.dart';
+
 
 class BillingScreen extends StatefulWidget {
   const BillingScreen({Key? key}) : super(key: key);
@@ -105,69 +107,37 @@ class _BillingScreenState extends State<BillingScreen> {
                                 Navigator.pop(context);
                               },
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 10),
+                                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                                 child: Image.asset(
                                   "assets/images/userprofile.png",
-                                  width: 45,
-                                  height: 65,
+                                  width: 70,
+                                  height: 70,
                                 ),
                               ),
                             ),
-                            Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 0, right: 30, left: 10),
-                                child: Image.asset(
-                                  "assets/images/home-logo.png", width: 130,)
-                            ),
-                            const Spacer(),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    22), // if you need this
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    color: Colors.transparent,
-                                    width: 44,
-                                    height: 44,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children:  [
+                                const Text(
+                                  "Yashwanth Puvvada",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                                Text(
+                                    "Unique ID: 11720",
+                                  style: TextStyle(
+                                    //fontWeight: FontWeight.w700,
+                                    fontFamily: 'Mont-SemiBold',
+                                    fontSize: 14,
+                                    color: ConstantColors.appTheme,
+                                  ),
 
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(5, 8, 5, 0),
-                                    child: Image.asset(
-                                      "assets/images/cart.png",
-                                      width: 35,
-                                      height: 35,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    22), // if you need this
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    color: Colors.transparent,
-                                    width: 44,
-                                    height: 44,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10, 12, 5, 0),
-                                    child: Image.asset(
-                                      "assets/images/search.png",
-                                      width: 23,
-                                      height: 23,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+
                           ],
                         ),
                       ]),
