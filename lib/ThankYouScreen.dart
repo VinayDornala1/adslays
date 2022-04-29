@@ -437,38 +437,37 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                         Container(
                                           margin:
                                           EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 5.0),
-                                          child: FlatButton(
-                                            onPressed: (){
-                                              //
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (BuildContext context) =>
-                                                          HomeScreen()),
-                                                      (Route<dynamic> route) => false);
+                                          child: MaterialButton(
+                                            onPressed: () {
+                                              Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan()));
                                             },
-                                            minWidth: double.infinity,
-                                            height: 50,
-                                            child: Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                              children: const [
-                                                
-                                                SizedBox(width: 5),
-                                                Text(
-                                                  'BACK TO HOME',
-                                                  style: TextStyle(
-                                                      fontSize: 18.0,
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.w600),
-                                                ),
-                                              ],
-                                            ),
-                                            color: ConstantColors.appTheme,
                                             textColor: Colors.white,
-
+                                            padding: const EdgeInsets.all(0.0),
+                                            child: Container(
+                                              width: 180,
+                                              height: 45,
+                                              decoration:  const BoxDecoration(
+                                                  gradient:  LinearGradient(
+                                                    colors: [
+                                                      Color(0xff3962cb),
+                                                      Color(0xff3962cb),
+                                                    ],
+                                                  )
+                                              ),
+                                              //padding: const EdgeInsets.all(10.0),
+                                              child: const Center(
+                                                child: Text(
+                                                  "BOOK NOW",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Color(0xFFFFFFFF),
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w400,
+                                                      fontFamily: "Lorin"
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
 
