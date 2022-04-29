@@ -88,14 +88,31 @@ flutter:
     # list giving the asset and other descriptors for the font. For
     # example:
   fonts:
-    - family: Mont
+    - family: Mont-SemiBold
       fonts:
         - asset: assets/fonts/Mont-SemiBold.otf
+
+    - family: Mont-Regular
+      fonts:
         - asset: assets/fonts/Mont-Regular.otf
+
+    - family: Mont-Light
+      fonts:
         - asset: assets/fonts/Mont-Light.otf
+
+    - family: Mont-Heavy
+      fonts:
         - asset: assets/fonts/Mont-Heavy.otf
+
+    - family: Mont-Book
+      fonts:
         - asset: assets/fonts/Mont-Book.otf
+
+    - family: Mont-Bold
+      fonts:
         - asset: assets/fonts/Mont-Bold.otf
+
+
 
   #   - family: Trajan Pro
   #     fonts:
