@@ -90,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   SizedBox(height: 100,),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 0),
-                    child: Center(child: Image.asset("assets/images/logo_white.png",fit: BoxFit.fill,height: MediaQuery.of(context).size.height * 0.18,width: MediaQuery.of(context).size.width * 0.80)),
+                    child: Center(child: Image.asset("assets/images/logo.jpg",fit: BoxFit.fill,height: MediaQuery.of(context).size.height * 0.18,width: MediaQuery.of(context).size.width * 0.80)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 0,top: 35),

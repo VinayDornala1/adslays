@@ -63,11 +63,11 @@ class _StoresScreenState extends State<StoresScreen> {
 
                             ),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 8, 5, 0),
+                              padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
                               child: Image.asset(
                                 "assets/images/cart.png",
-                                width: 35,
-                                height: 35,
+                                width: 30,
+                                height: 30,
                               ),
                             ),
                           ],

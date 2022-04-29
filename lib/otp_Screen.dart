@@ -9,6 +9,7 @@ import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
+
 import 'API.dart';
 import 'StoreDetails.dart';
 import 'StoresScreen.dart';
@@ -87,20 +88,16 @@ class _OTPScreenState extends State<OTPScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 30.0,bottom: 0),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 30.0,bottom: 0),
                                 child: Center(
-                                  child: GradientText(
+                                  child: Text(
                                     'Verification Code',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 30.0,
                                       fontWeight: FontWeight.w500,
                                     ),
-                                    colors: const [
-                                      Colors.redAccent,
-                                      Colors.deepOrangeAccent,
-                                      Colors.orangeAccent,
-                                    ],
+
                                   ),
                                 ),
 
@@ -111,8 +108,8 @@ class _OTPScreenState extends State<OTPScreen> {
                                   "Enter the verification code we have \n just sent you",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black,
                                     fontSize: 15,
                                   ),
                                 ),
@@ -151,7 +148,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                   child: MaterialButton(
                                     onPressed: () {
 
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>StoreDetails()));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresScreen()));
                                     },
                                     textColor: Colors.white,
                                     padding: const EdgeInsets.all(0.0),
@@ -160,8 +157,8 @@ class _OTPScreenState extends State<OTPScreen> {
                                       decoration:  const BoxDecoration(
                                           gradient:  LinearGradient(
                                             colors: [
-                                              Colors.orange,
-                                              Colors.deepOrangeAccent,
+                                              Color(0xff3962cb),
+                                              Color(0xff3962cb),
                                             ],
                                           )
                                       ),
@@ -198,7 +195,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                   "" + widget.countryCode + " " + widget.mobileNumber,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w400,
-                                    color: Colors.blue,
+                                    color: Color(0xff3962cb),
                                     fontSize: 15,
                                   ),
                                 ),

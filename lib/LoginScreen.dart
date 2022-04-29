@@ -149,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Center(
                               child:
                               Image.asset(
-                                "assets/images/logo_white.png",
+                                "assets/images/logo.jpg",
                                 fit: BoxFit.fill,
                               )
                           )
@@ -161,31 +161,26 @@ class _LoginScreenState extends State<LoginScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 30.0,bottom: 0),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 30.0,bottom: 0),
                                 child: Center(
-                                  child: GradientText(
+                                  child: Text(
                                     'HELLO',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 30.0,
                                       fontWeight: FontWeight.w500,
                                     ),
-                                    colors: const [
-                                      Color(0xff493fba),
-                                      Color(0xff456bd8),
-                                      Color(0xff40a2fd),
-                                    ],
                                   ),
                                 ),
 
                               ),
                               const Padding(
-                                padding: EdgeInsets.only(top:10.0,bottom: 10),
+                                padding: EdgeInsets.only(top:5.0,bottom: 10),
                                 child: Text(
                                   "Please enter the details to Login",
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.black,
                                     fontSize: 15,
                                   ),
                                 ),
@@ -218,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
+                                padding: const EdgeInsets.fromLTRB(0, 25, 0, 10),
                                 child: Center(
                                   child: MaterialButton(
                                     onPressed: () {
@@ -232,8 +227,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       decoration:  const BoxDecoration(
                                           gradient:  LinearGradient(
                                             colors: [
-                                              Colors.orange,
-                                              Colors.deepOrangeAccent,
+                                              Color(0xff3962cb),
+                                              Color(0xff3962cb),
                                             ],
                                           )
                                       ),
@@ -244,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         style: TextStyle(
                                             color: Color(0xFFFFFFFF),
                                             fontSize: 18,
-                                            fontWeight: FontWeight.w400,
+                                            fontWeight: FontWeight.w500,
                                             fontFamily: "Lorin"
                                         ),
                                       ),
@@ -258,9 +253,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Text(
                                   "An OTP will be sent to this number",
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.grey,
-                                    fontSize: 15,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w300,
                                   ),
                                 ),
                               ),
@@ -295,13 +289,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                             Navigator.push(context, MaterialPageRoute(builder: (context)=> SignUpScreen()));
                                     },
                                     child: Container(
-                                      padding: const EdgeInsets.only(left: 15.0,right: 15,top: 5,bottom: 5),
+                                      padding: const EdgeInsets.only(left: 15.0,right: 15,top: 8,bottom: 8),
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.white),
                                         borderRadius: BorderRadius.circular(30),
                                       ),
                                       child: GradientText(
-                                        'SIGN UP',
+                                        ' SIGN UP ',
                                         style: const TextStyle(
                                           fontSize: 18.0,
                                           fontWeight: FontWeight.w500,
