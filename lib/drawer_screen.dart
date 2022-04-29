@@ -28,7 +28,7 @@
 //                     padding: const EdgeInsets.all(16.0),
 //                     child: Column(
 //                       children: [
-//                         //SvgPicture.asset('assets/icons/sideprofile.svg'),
+//                         //SvgPicture.asset('assets/images/sideprofile.svg'),
 //                         Text(
 //                           'Profile',
 //                           style: TextStyle(
@@ -48,7 +48,7 @@
 //                     padding: const EdgeInsets.all(16.0),
 //                     child: Column(
 //                       children: [
-//                         //SvgPicture.asset('assets/icons/Application.svg'),
+//                         //SvgPicture.asset('assets/images/Application.svg'),
 //                         Text(
 //                           'Application',
 //                           style: TextStyle(
@@ -68,7 +68,7 @@
 //                     padding: const EdgeInsets.all(16.0),
 //                     child: Column(
 //                       children: [
-//                         //SvgPicture.asset('assets/icons/sidecounseling.svg'),
+//                         //SvgPicture.asset('assets/images/sidecounseling.svg'),
 //                         Text(
 //                           'Counselling ',
 //                           style: TextStyle(
@@ -88,7 +88,7 @@
 //                     padding: const EdgeInsets.all(16.0),
 //                     child: Column(
 //                       children: [
-//                         //SvgPicture.asset('assets/icons/sidediss.svg'),
+//                         //SvgPicture.asset('assets/images/sidediss.svg'),
 //                         Text(
 //                           'Discussions',
 //                           style: TextStyle(
@@ -108,7 +108,7 @@
 //                     padding: const EdgeInsets.all(16.0),
 //                     child: Column(
 //                       children: [
-//                         //SvgPicture.asset('assets/icons/sidetraining.svg'),
+//                         //SvgPicture.asset('assets/images/sidetraining.svg'),
 //                         Text(
 //                           'Training',
 //                           style: TextStyle(
@@ -128,7 +128,7 @@
 //                     padding: const EdgeInsets.all(16.0),
 //                     child: Column(
 //                       children: [
-//                         //SvgPicture.asset('assets/icons/sideevents.svg'),
+//                         //SvgPicture.asset('assets/images/sideevents.svg'),
 //                         Text(
 //                           'Events',
 //                           style: TextStyle(
@@ -148,7 +148,7 @@
 //                     padding: const EdgeInsets.all(16.0),
 //                     child: Column(
 //                       children: [
-//                         //SvgPicture.asset('assets/icons/sideshare.svg'),
+//                         //SvgPicture.asset('assets/images/sideshare.svg'),
 //                         Text(
 //                           'Share App',
 //                           style: TextStyle(
@@ -177,7 +177,7 @@
 //
 //                 },
 //                 child: Image.asset(
-//                   'assets/icons/notification.png',
+//                   'assets/images/notification.png',
 //                   height: 40,
 //                   width: 40,
 //                 ),
@@ -242,7 +242,7 @@
 //                       SizedBox(
 //                         width: 10,
 //                       ),
-//                       //SvgPicture.asset('assets/icons/Search.svg')
+//                       //SvgPicture.asset('assets/images/Search.svg')
 //                     ],
 //                   ),
 //                 ),
@@ -349,7 +349,7 @@
 //                               backgroundColor:
 //                                   Color(0xFFF2F2F2).withOpacity(1.0),
 //                               child: SvgPicture.asset(
-//                                 "assets/icons/Star.svg",
+//                                 "assets/images/Star.svg",
 //                                 color: Color(0xFFAAAAAA).withOpacity(1.0),
 //                                 height: 13.79,
 //                                 width: 17.79,
@@ -378,7 +378,7 @@
 //                               backgroundColor:
 //                                   Color(0xFFF2F2F2).withOpacity(1.0),
 //                               child: SvgPicture.asset(
-//                                 "assets/icons/training.svg",
+//                                 "assets/images/training.svg",
 //                                 color: Color(0xFFAAAAAA),
 //                                 height: 13.79,
 //                                 width: 17.79,
@@ -406,7 +406,7 @@
 //                               backgroundColor:
 //                                   Color(0xFFF2F2F2).withOpacity(1.0),
 //                               child: SvgPicture.asset(
-//                                 "assets/icons/counseling.svg",
+//                                 "assets/images/counseling.svg",
 //                                 height: 13.79,
 //                                 width: 17.79,
 //                               ),
@@ -457,7 +457,7 @@
 //                               backgroundColor:
 //                                   Color(0xFFF2F2F2).withOpacity(1.0),
 //                               child: SvgPicture.asset(
-//                                 "assets/icons/discussion.svg",
+//                                 "assets/images/discussion.svg",
 //                                 height: 13.79,
 //                                 width: 17.79,
 //                               ),
@@ -484,7 +484,7 @@
 //                               backgroundColor:
 //                                   Color(0xFFF2F2F2).withOpacity(1.0),
 //                               child: SvgPicture.asset(
-//                                 "assets/icons/discussion.svg",
+//                                 "assets/images/discussion.svg",
 //                                 height: 13.79,
 //                                 width: 17.79,
 //                               ),

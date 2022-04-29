@@ -105,7 +105,6 @@ class _StoreDetailsState extends State<StoreDetails> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-
                               width: MediaQuery.of(context).size.width,
                               height: 220,//MediaQuery.of(context).size.width * 0.50,
                               alignment: Alignment.center,

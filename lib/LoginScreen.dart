@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 import 'API.dart';
+import 'bottom_bar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -218,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: MaterialButton(
                                     onPressed: () {
 
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SignUpScreen()));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>BottomNavigationMenu()));
                                     },
                                     textColor: Colors.white,
                                     padding: const EdgeInsets.all(0.0),

@@ -2,7 +2,8 @@
 class APIConstant
 {
 
-  static String base_url='http://app.stormoverseas.com/API/';
+  static String base_url='http://adslay.arjunweb.in/API/';
 
+  static String home=base_url+'HomeAPI/HomeScreenAPI';
 
 }
