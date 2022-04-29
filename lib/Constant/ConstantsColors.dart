@@ -9,5 +9,6 @@ class ConstantColors {
   static Color lightOrange = const Color(0xfff9c532);
   static Color buttonBgLiteBlue = const Color(0xff11abdd);
   static Color lightGrey = const Color(0xffecedef);
+  static Color darkYellow = const Color(0xffffc948);
 
 }

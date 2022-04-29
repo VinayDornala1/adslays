@@ -95,6 +95,28 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                   ),
                 ],
               ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  "Payment Confirmation",
+                style: TextStyle(
+                  fontFamily: "Mont-SemiBold",
+                  fontSize: 20,
+                ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 0, 20),
+                child: SizedBox(
+                  width: 100,
+                  child: Divider(
+                    thickness: 1.5,
+                    height:1.5,
+                    color: ConstantColors.appTheme,
+                  ),
+                ),
+              ),
+
               Expanded(
                   child: SingleChildScrollView(
                     child: SizedBox(
@@ -106,7 +128,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height * 0.40,
                           ),
-                         
+
                           SingleChildScrollView(
                             child: Stack(
                               children: <Widget>[
@@ -119,11 +141,11 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                       
+
                                         Image.asset(
                                           'assets/images/success.png',
-                                          height: 90,
-                                          width: 90,
+                                          height: 100,
+                                          width: 100,
                                         ),
                                         const SizedBox(
                                           height: 5,
@@ -131,9 +153,10 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                         const Text(
                                           'BOOKING CONFIRMED',
                                           style: TextStyle(
-                                              fontSize: 25.0,
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.bold),
+                                            fontSize: 25.0,
+                                            color: Colors.green,
+                                            fontFamily: "Mont-SemiBold",
+                                          ),
                                         ),
                                         const SizedBox(
                                           height: 5,
@@ -141,7 +164,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                         const Text(
                                           'THANK YOU FOR BOOKING SERVICE',
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w600,
+                                              fontFamily: "Mont-Light",
                                               fontSize: 19,
                                               color: Colors.black),
                                         ),
@@ -150,21 +173,22 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                         ),
                                         const Padding(
                                           padding:
-                                          EdgeInsets.fromLTRB(15, 10, 15, 8),
+                                          EdgeInsets.fromLTRB(15, 0, 15, 8),
                                           child: Text(
-                                            'We have recieved your booking for Car Cleaning Service.',
+                                            'Thank for choosing us. You would receive you invoice on your registered mail id',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                fontWeight: FontWeight.w400,
+                                                fontFamily: "Mont-Light",
                                                 fontSize: 15,
                                                 color: Colors.black),
                                           ),
                                         ),
+
                                         Padding(
                                           padding:
                                           const EdgeInsets.fromLTRB(15, 15, 15, 15),
                                           child: SizedBox(
-                                            height: 220,
+                                            height: 200,
                                             child: Stack(children: <Widget>[
                                               Container(
                                                 decoration: BoxDecoration(
@@ -173,7 +197,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                     ),
                                                     border: Border.all(
                                                         color: ConstantColors.appTheme,
-                                                        width: 1.4)),
+                                                        width: 0.7)),
                                                 child: Column(
                                                   children: [
                                                     const Spacer(),
@@ -200,12 +224,11 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                   child: Text(
                                                                     'DATE',
                                                                     style: TextStyle(
-                                                                        fontSize: 14,
-                                                                        color:
-                                                                        ConstantColors.appTheme,
-                                                                        fontWeight:
-                                                                        FontWeight
-                                                                            .w700),
+                                                                      fontSize: 14,
+                                                                      color:
+                                                                      ConstantColors.appTheme,
+                                                                      fontFamily: "Mont-Regular",
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 const Padding(
@@ -220,9 +243,8 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                         color:
                                                                         Colors
                                                                             .black,
-                                                                        fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
+                                                                      fontFamily: "Mont-Regular",
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ],
@@ -245,9 +267,8 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                     fontSize: 14,
                                                                     color:
                                                                     ConstantColors.appTheme,
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w700),
+                                                                  fontFamily: "Mont-Regular",
+                                                                ),
                                                               ),
                                                             ),
                                                             const Padding(
@@ -259,9 +280,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                 style: TextStyle(
                                                                     fontSize: 14,
                                                                     color: Colors.black,
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
+                                                                  fontFamily: "Mont-Regular",),
                                                               ),
                                                             ),
                                                           ],
@@ -293,9 +312,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                       fontSize: 14,
                                                                       color:
                                                                       ConstantColors.appTheme,
-                                                                      fontWeight:
-                                                                      FontWeight
-                                                                          .w700),
+                                                                    fontFamily: "Mont-Regular",),
                                                                 ),
                                                               ),
                                                               const Padding(
@@ -304,14 +321,12 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                     .fromLTRB(
                                                                     10, 0, 10, 8),
                                                                 child: Text(
-                                                                  'types',
+                                                                  'Desi District - Riverside Dr, Irving, TX ',
                                                                   style: TextStyle(
                                                                       fontSize: 14,
                                                                       color:
                                                                       Colors.black,
-                                                                      fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
+                                                                    fontFamily: "Mont-Regular",),
                                                                 ),
                                                               ),
                                                             ],
@@ -346,9 +361,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                         fontSize: 14,
                                                                         color:
                                                                         ConstantColors.appTheme,
-                                                                        fontWeight:
-                                                                        FontWeight
-                                                                            .w700),
+                                                                      fontFamily: "Mont-Regular",),
                                                                   ),
                                                                 ),
                                                                 const Padding(
@@ -362,9 +375,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                         fontSize: 14,
                                                                         color: Colors
                                                                             .black,
-                                                                        fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
+                                                                      fontFamily: "Mont-Regular",),
                                                                   ),
                                                                 ),
                                                               ],
@@ -387,9 +398,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                     fontSize: 14,
                                                                     color:
                                                                     ConstantColors.appTheme,
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w700),
+                                                                  fontFamily: "Mont-Regular",),
                                                               ),
                                                             ),
                                                             const Padding(
@@ -401,9 +410,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                 style: TextStyle(
                                                                     fontSize: 14,
                                                                     color: Colors.black,
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
+                                                                  fontFamily: "Mont-Regular",),
                                                               ),
                                                             ),
                                                           ],
@@ -419,18 +426,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                           ),
                                         ),
 
-                                        const Padding(
-                                          padding:
-                                          EdgeInsets.fromLTRB(10, 0, 10, 8),
-                                          child: Text(
-                                            'Thank for choosing us. You would receive you invoice on your registered mail id',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 15,
-                                                color: Colors.black),
-                                          ),
-                                        ),
+                                        
                                         const SizedBox(
                                           height: 10,
                                         ),
@@ -444,7 +440,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                             textColor: Colors.white,
                                             padding: const EdgeInsets.all(0.0),
                                             child: Container(
-                                              width: 180,
+                                              width: 250,
                                               height: 45,
                                               decoration:  const BoxDecoration(
                                                   gradient:  LinearGradient(
@@ -457,7 +453,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                               //padding: const EdgeInsets.all(10.0),
                                               child: const Center(
                                                 child: Text(
-                                                  "BOOK NOW",
+                                                    "BACK TO HOME",
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                       color: Color(0xFFFFFFFF),
