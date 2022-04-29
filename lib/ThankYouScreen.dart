@@ -125,32 +125,32 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                           height: 90,
                                           width: 90,
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 5,
                                         ),
-                                        Text(
+                                        const Text(
                                           'BOOKING CONFIRMED',
                                           style: TextStyle(
                                               fontSize: 25.0,
                                               color: Colors.green,
                                               fontWeight: FontWeight.bold),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 5,
                                         ),
-                                        Text(
+                                        const Text(
                                           'THANK YOU FOR BOOKING SERVICE',
                                           style: TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 19,
                                               color: Colors.black),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10,
                                         ),
-                                        Padding(
+                                        const Padding(
                                           padding:
-                                          const EdgeInsets.fromLTRB(15, 10, 15, 8),
+                                          EdgeInsets.fromLTRB(15, 10, 15, 8),
                                           child: Text(
                                             'We have recieved your booking for Car Cleaning Service.',
                                             textAlign: TextAlign.center,
@@ -160,8 +160,6 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                 color: Colors.black),
                                           ),
                                         ),
-
-                                        ///....
                                         Padding(
                                           padding:
                                           const EdgeInsets.fromLTRB(15, 15, 15, 15),
@@ -170,7 +168,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                             child: Stack(children: <Widget>[
                                               Container(
                                                 decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.all(
+                                                    borderRadius: const BorderRadius.all(
                                                         Radius.circular(5.0) //
                                                     ),
                                                     border: Border.all(
@@ -178,7 +176,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                         width: 1.4)),
                                                 child: Column(
                                                   children: [
-                                                    Spacer(),
+                                                    const Spacer(),
                                                     Row(
                                                       children: [
                                                         SizedBox(
@@ -210,9 +208,9 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                             .w700),
                                                                   ),
                                                                 ),
-                                                                Padding(
+                                                                const Padding(
                                                                   padding:
-                                                                  const EdgeInsets
+                                                                  EdgeInsets
                                                                       .fromLTRB(
                                                                       10, 0, 10, 8),
                                                                   child: Text(
@@ -252,8 +250,8 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                         .w700),
                                                               ),
                                                             ),
-                                                            Padding(
-                                                              padding: const EdgeInsets
+                                                            const Padding(
+                                                              padding: EdgeInsets
                                                                   .fromLTRB(
                                                                   10, 0, 10, 8),
                                                               child: Text(
@@ -300,9 +298,9 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                           .w700),
                                                                 ),
                                                               ),
-                                                              Padding(
+                                                              const Padding(
                                                                 padding:
-                                                                const EdgeInsets
+                                                                EdgeInsets
                                                                     .fromLTRB(
                                                                     10, 0, 10, 8),
                                                                 child: Text(
@@ -353,9 +351,9 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                             .w700),
                                                                   ),
                                                                 ),
-                                                                Padding(
+                                                                const Padding(
                                                                   padding:
-                                                                  const EdgeInsets
+                                                                  EdgeInsets
                                                                       .fromLTRB(
                                                                       10, 0, 10, 8),
                                                                   child: Text(
@@ -394,8 +392,8 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                         .w700),
                                                               ),
                                                             ),
-                                                            Padding(
-                                                              padding: const EdgeInsets
+                                                            const Padding(
+                                                              padding: EdgeInsets
                                                                   .fromLTRB(
                                                                   10, 0, 10, 8),
                                                               child: Text(
@@ -421,9 +419,9 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                           ),
                                         ),
 
-                                        Padding(
+                                        const Padding(
                                           padding:
-                                          const EdgeInsets.fromLTRB(10, 0, 10, 8),
+                                          EdgeInsets.fromLTRB(10, 0, 10, 8),
                                           child: Text(
                                             'Thank for choosing us. You would receive you invoice on your registered mail id',
                                             textAlign: TextAlign.center,
@@ -433,7 +431,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                 color: Colors.black),
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10,
                                         ),
                                         Container(
@@ -456,7 +454,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                               CrossAxisAlignment.center,
                                               mainAxisAlignment:
                                               MainAxisAlignment.center,
-                                              children: [
+                                              children: const [
                                                 
                                                 SizedBox(width: 5),
                                                 Text(
@@ -474,7 +472,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                           ),
                                         ),
 
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 15,
                                         ),
                                       ],
