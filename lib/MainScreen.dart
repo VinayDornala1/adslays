@@ -14,7 +14,9 @@ import 'package:shimmer/shimmer.dart';
 import 'dart:io' show Platform;
 import 'dart:ui';
 
+import 'HowItWorks.dart';
 import 'StoreDetails.dart';
+import 'StoresList.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -33,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
   double screenWidth=0.0;
   List<dynamic> MobileBannersList=[];
   List<dynamic> CategoriesList=[];
-  List<dynamic> StoresList=[];
+  List<dynamic> StoresListDict=[];
   String mobileNumber='';
   String email='';
   int _current = 0;
@@ -66,7 +68,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       MobileBannersList = jsonDecode(response.body)['ThemeBannersList'];
       CategoriesList = jsonDecode(response.body)['CategoriesList'];
-      StoresList = jsonDecode(response.body)['StoresList'];
+      StoresListDict = jsonDecode(response.body)['StoresList'];
 
     });
 
@@ -138,23 +140,23 @@ class _MainScreenState extends State<MainScreen> {
                     children: [
                       _imageSlider(),
                       const Padding(
-                        padding: EdgeInsets.fromLTRB(5, 8, 5, 8),
+                        padding: EdgeInsets.fromLTRB(10, 8, 5, 8),
                         child: Text(
                           "Ad Space Categories",
                           style: TextStyle(
-                              fontSize: 20.0,
-                              fontFamily: "Mont-Bold",
+                              fontSize: 18.0,
+                              fontFamily: "Mont-SemiBold",
                               fontWeight: FontWeight.w600),
                         ),
                       ),
                       _adSpaceCategories(),
                       const Padding(
-                        padding: EdgeInsets.fromLTRB(5, 8, 5, 8),
+                        padding: EdgeInsets.fromLTRB(10, 8, 5, 0),
                         child: Text(
                           "Featured Ad Spaces",
                           style: TextStyle(
-                              fontSize: 20.0,
-                              fontFamily: "Mont-Bold",
+                              fontSize: 18.0,
+                              fontFamily: "Mont-SemiBold",
                               fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -180,7 +182,9 @@ class _MainScreenState extends State<MainScreen> {
           padding: const EdgeInsets.only(top: 15, bottom: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
             children: [
+
               GestureDetector(
                 onTap: () {
                   Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
@@ -193,7 +197,7 @@ class _MainScreenState extends State<MainScreen> {
                 },
                 child: Column(
                   children: [
-                    Image.asset("assets/images/menu-stores.png",width: 30,height: 30,),
+                    Image.asset("assets/images/menu-stores.png",width: 40,height: 40,),
                     const SizedBox(
                       height: 5,
                     ),
@@ -202,7 +206,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -215,13 +219,13 @@ class _MainScreenState extends State<MainScreen> {
                       false);
                   _scaffoldKey.currentState?.openEndDrawer();
                   _boolProvider.setBottomChange(3);
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) =>HowItWorks()));
 
                 },
                 child: Column(
                   children: [
-                    Image.asset("assets/images/menu-how-works.png",width: 30,height: 30,),
+                    Image.asset("assets/images/menu-how-works.png",width: 40,height: 40,),
                     const SizedBox(
                       height: 5,
                     ),
@@ -230,7 +234,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -249,7 +253,7 @@ class _MainScreenState extends State<MainScreen> {
                 },
                 child: Column(
                   children: [
-                    Image.asset("assets/images/menu-notifications.png",width: 30,height: 30,),
+                    Image.asset("assets/images/menu-notifications.png",width: 40,height: 40,),
                     const SizedBox(
                       height: 5,
                     ),
@@ -258,7 +262,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -277,7 +281,7 @@ class _MainScreenState extends State<MainScreen> {
                 },
                 child: Column(
                   children: [
-                    Image.asset("assets/images/menu-your-bookings.png",width: 30,height: 30,),
+                    Image.asset("assets/images/menu-your-bookings.png",width: 40,height: 40,),
                     const SizedBox(
                       height: 5,
                     ),
@@ -286,7 +290,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -305,7 +309,7 @@ class _MainScreenState extends State<MainScreen> {
                 },
                 child: Column(
                   children: [
-                    Image.asset("assets/images/menu-about-us.png",width: 30,height: 30,),
+                    Image.asset("assets/images/menu-about-us.png",width: 40,height: 40,),
                     const SizedBox(
                       height: 5,
                     ),
@@ -314,7 +318,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -333,7 +337,7 @@ class _MainScreenState extends State<MainScreen> {
                 },
                 child: Column(
                   children: [
-                    Image.asset("assets/images/menu-share-app.png",width: 30,height: 30,),
+                    Image.asset("assets/images/menu-share-app.png",width: 40,height: 40,),
                     const SizedBox(
                       height: 5,
                     ),
@@ -342,7 +346,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -361,7 +365,7 @@ class _MainScreenState extends State<MainScreen> {
                 },
                 child: Column(
                   children: [
-                    Image.asset("assets/images/menu-logout.png",width: 30,height: 30,),
+                    Image.asset("assets/images/menu-logout.png",width: 40,height: 40,),
                     const SizedBox(
                       height: 5,
                     ),
@@ -370,7 +374,7 @@ class _MainScreenState extends State<MainScreen> {
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),
                     )
@@ -387,7 +391,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _appBar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 10, 24, 0),
+      padding: const EdgeInsets.fromLTRB(0, 15, 10, 0),
       child:
       Row(
         children: [
@@ -399,8 +403,8 @@ class _MainScreenState extends State<MainScreen> {
               padding: const EdgeInsets.only(top: 10),
               child: Image.asset(
                 "assets/images/menu.png",
-                width: 45,
-                height: 65,
+                width: 43,
+                height: 60,
               ),
             ),
           ),
@@ -412,48 +416,50 @@ class _MainScreenState extends State<MainScreen> {
           ),
           const Spacer(),
           Card(
+            elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
-                  22), // if you need this
+                  21.5), // if you need this
             ),
             child: Stack(
               children: [
                 Container(
                   color: Colors.transparent,
-                  width: 44,
-                  height: 44,
+                  width: 43,
+                  height: 43,
 
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(5, 8, 5, 0),
+                  padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
                   child: Image.asset(
                     "assets/images/cart.png",
-                    width: 35,
-                    height: 35,
+                    width: 28,
+                    height: 28,
                   ),
                 ),
               ],
             ),
           ),
           Card(
+            elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
-                  22), // if you need this
+                  21.5), // if you need this
             ),
             child: Stack(
               children: [
                 Container(
                   color: Colors.transparent,
-                  width: 44,
-                  height: 44,
+                  width: 43,
+                  height: 43,
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
-                      10, 12, 5, 0),
+                      10, 10, 5, 0),
                   child: Image.asset(
                     "assets/images/search.png",
-                    width: 23,
-                    height: 23,
+                    width: 25,
+                    height: 25,
                   ),
                 ),
               ],
@@ -467,7 +473,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _imageSlider() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       child:
       Container(
         child: Stack(
@@ -477,7 +483,7 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 SizedBox(
                   //X:1125,Pro: 1170,Pro Max: 1284
-                    height: 160,
+                    height: 180,
                     width: double.infinity,
                     child: isLoading
                         ?Shimmer.fromColors(
@@ -496,13 +502,15 @@ class _MainScreenState extends State<MainScreen> {
                           ),
                         ),
                       ),
-                    ): CarouselSlider(
+                    )
+                        : CarouselSlider(
                       items: [
                         for(int i=0;i<MobileBannersList.length;i++)
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
                               onTap: (){
+                                print("Tapped on banner");
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -510,7 +518,7 @@ class _MainScreenState extends State<MainScreen> {
                                     image:NetworkImage(MobileBannersList[i]['BannerUrl'].toString()),
                                     fit: BoxFit.fill,
                                   ),
-                                  borderRadius: BorderRadius.circular(20.0),
+                                  borderRadius: BorderRadius.circular(5.0),
                                 ),
                                 //  height: 180,
                                 width: double.infinity,
@@ -535,6 +543,7 @@ class _MainScreenState extends State<MainScreen> {
                             });
                           }),
                     )),
+
                 isLoading
                     ?Shimmer.fromColors(
                   baseColor: Colors.grey,
@@ -552,7 +561,8 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                     ),
                   ),
-                ):Row(
+                )
+                    :Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: MobileBannersList.asMap().entries.map((entry) {
                     return _current == entry.key
@@ -579,8 +589,6 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ],
             ),
-
-
           ],
         ),
       ),
@@ -593,9 +601,9 @@ class _MainScreenState extends State<MainScreen> {
       itemCount: CategoriesList.length,
       shrinkWrap: true,
       primary: false,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 1.2,
+        childAspectRatio: 1.25,
       ),
       itemBuilder: (context, index) {
         return Row(
@@ -604,49 +612,56 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: GestureDetector(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresList()));
                 },
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
                   child: Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children:
                       [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Card(
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Stack(
-                                      children: [
-                                        Container(
-                                            width: MediaQuery.of(context).size.width,
-                                            alignment: Alignment.center,
-                                            child: CachedNetworkImage(
-                                              imageUrl: ""+CategoriesList[index]['ImageUrl'],
-                                              placeholder: (context, url) => const Center(
-                                                  child: CircularProgressIndicator()),
-                                              errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                              fit: BoxFit.fill,
-                                              width: double.infinity,
-                                              height: 150,
-                                            )
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          height: 150,
-                                          alignment: Alignment.center,
-                                          child:  Image.asset(
-                                            "assets/images/black-transparent.png",
-                                            fit: BoxFit.fitWidth,
-                                            width: MediaQuery.of(context).size.width,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
 
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:
+                            [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Card(
+                                    elevation: 2,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0),
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        SizedBox(
+                                          height: 140,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(5),
+                                            child: Image(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(CategoriesList[index]['ImageUrl'],
+                                              ),
+                                            ),
                                           ),
+                                        ),
+                                        SizedBox(
+                                          height: 140,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(5),
+                                            child: Image.asset(
+                                              "assets/images/black-transparent.png",
+                                              fit: BoxFit.fill,
+
+                                              ),
+                                            ),
                                         ),
                                         Positioned(
                                           bottom: 0,
@@ -658,7 +673,7 @@ class _MainScreenState extends State<MainScreen> {
                                               maxLines: 1,
                                               style: const TextStyle(
                                                   fontSize: 14.0,
-
+                                                  fontFamily: "Mont-Regular",
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.normal),
                                             ),
@@ -675,14 +690,108 @@ class _MainScreenState extends State<MainScreen> {
                                               width: 22,),
                                           ),
                                         ),
-
                                       ],
-                                    ),
-                                  ],
-                                ),
-                              )),
+                                    )),
+                              ),
+                            ],
+                          ),
                         ),
 
+                        // ClipRRect(
+                        //   borderRadius: BorderRadius.circular(5.0),
+                        //   child: Card(
+                        //       child: Column(
+                        //         crossAxisAlignment: CrossAxisAlignment.start,
+                        //         children: [
+                        //           Stack(
+                        //             children: [
+                        //               Container(
+                        //                   decoration: BoxDecoration(
+                        //                     borderRadius: BorderRadius.circular(5.0),
+                        //                   ),
+                        //                   width: MediaQuery.of(context).size.width,
+                        //                   alignment: Alignment.center,
+                        //                   child: Card(
+                        //                       shape: const RoundedRectangleBorder(
+                        //                         borderRadius: BorderRadius.all(
+                        //                           Radius.circular(5.0),
+                        //                         ),
+                        //                       ),
+                        //                       child: Column(
+                        //                         crossAxisAlignment: CrossAxisAlignment.start,
+                        //                         children: [
+                        //                           Container(
+                        //                             height: 140,
+                        //                             width: MediaQuery.of(context).size.width,
+                        //                             child: ClipRRect(
+                        //                               borderRadius: BorderRadius.circular(5),
+                        //                               child: Image(
+                        //                                 fit: BoxFit.fill,
+                        //                                 image: NetworkImage(CategoriesList[index]['ImageUrl'],
+                        //                                 ),
+                        //                               ),
+                        //                             ),
+                        //                           ),
+                        //                         ],
+                        //                       )),
+                        //                   // CachedNetworkImage(
+                        //                   //   imageUrl: ""+CategoriesList[index]['ImageUrl'],
+                        //                   //   placeholder: (context, url) => const Center(
+                        //                   //       child: CircularProgressIndicator()),
+                        //                   //   errorWidget: (context, url, error) =>
+                        //                   //   const Icon(Icons.error),
+                        //                   //   fit: BoxFit.fill,
+                        //                   //   width: double.infinity,
+                        //                   //   height: 150,
+                        //                   // )
+                        //               ),
+                        //               Container(
+                        //                 decoration: BoxDecoration(
+                        //                   borderRadius: BorderRadius.circular(5.0),
+                        //                 ),
+                        //                 width: MediaQuery.of(context).size.width,
+                        //                 height: 150,
+                        //                 alignment: Alignment.center,
+                        //                 child:  Image.asset(
+                        //                   "assets/images/black-transparent.png",
+                        //                   fit: BoxFit.fitWidth,
+                        //                   width: MediaQuery.of(context).size.width,
+                        //
+                        //                 ),
+                        //               ),
+                        //               Positioned(
+                        //                 bottom: 0,
+                        //                 child: Padding(
+                        //                   padding: const EdgeInsets.only(left: 5.0,right:35,bottom: 8),
+                        //                   child: Text(
+                        //                     ''+CategoriesList[index]['CategoryName'],
+                        //                     overflow: TextOverflow.ellipsis,
+                        //                     maxLines: 1,
+                        //                     style: const TextStyle(
+                        //                         fontSize: 14.0,
+                        //                         fontFamily: "Mont-Regular",
+                        //                         color: Colors.white,
+                        //                         fontWeight: FontWeight.normal),
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //               Positioned(
+                        //                 bottom: 0,
+                        //                 right: 0,
+                        //                 child: Padding(
+                        //                   padding: const EdgeInsets.only(right: 8.0,bottom: 8),
+                        //                   child: Image.asset(
+                        //                     "assets/images/right-arrow.png",
+                        //                     height: 22,
+                        //                     width: 22,),
+                        //                 ),
+                        //               ),
+                        //
+                        //             ],
+                        //           ),
+                        //         ],
+                        //       )),
+                        // ),
 
                       ],
                     ),
@@ -694,31 +803,6 @@ class _MainScreenState extends State<MainScreen> {
         );
       },
     );
-    // return ListView.builder(
-    //   scrollDirection: Axis.vertical,
-    //   shrinkWrap: true,
-    //   physics: BouncingScrollPhysics(),
-    //   itemCount: CategoriesList.length,
-    //   itemBuilder: (context, index) {
-    //     return  GridView.count(
-    //       crossAxisCount: 2,
-    //       childAspectRatio: 0.90, //MediaQuery.of(context).size.height / 900,
-    //       physics: const ScrollPhysics(),
-    //       shrinkWrap: true,
-    //       children: List.generate(10, (index) {
-    //         return InkWell(
-    //           onTap: (){
-    //             Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails()));
-    //           },
-    //           child:
-    //         );
-    //       },
-    //       ),
-    //     )
-    //     ;
-    //   },
-    // );
-
   }
 
   Widget _featuredAdSpace(){
@@ -736,17 +820,17 @@ class _MainScreenState extends State<MainScreen> {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
                   child: Card(
+                    elevation: 2,
                     shadowColor: Color(0xFF000000).withOpacity(0.08),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14.0)),
-                    elevation: 20,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           height: 137.0,
                           width: 320,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(14.0),
                                 topLeft: Radius.circular(14.0)),
@@ -778,7 +862,7 @@ class _MainScreenState extends State<MainScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              new Text(
+                              Text(
                                 '',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -787,7 +871,7 @@ class _MainScreenState extends State<MainScreen> {
                                   Color(0xFF141E28).withOpacity(1.0),
                                   fontSize: 14,
                                   letterSpacing: 0,
-                                  fontFamily: "Lorin",
+                                  fontFamily: "Mont-Regular",
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -803,7 +887,7 @@ class _MainScreenState extends State<MainScreen> {
                                         '',
                                         style: TextStyle(
                                             fontSize: 12,
-                                            fontFamily: "Lorin",
+                                            fontFamily: "Mont-Regular",
                                             color: Color(0xFF141E28)
                                                 .withOpacity(.45),
                                             fontWeight: FontWeight.w400),
@@ -815,7 +899,7 @@ class _MainScreenState extends State<MainScreen> {
                                         '',
                                         style: TextStyle(
                                             fontSize: 10,
-                                            fontFamily: "Lorin",
+                                            fontFamily: "Mont-Regular",
                                             color: Color(0xFF0063AD)
                                                 .withOpacity(1.0),
                                             fontWeight: FontWeight.w400),
@@ -836,11 +920,11 @@ class _MainScreenState extends State<MainScreen> {
                 );
               })),
     )
-        : Container(
-      height: 150.0,
+        : SizedBox(
+      height: 180.0,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: StoresList.length,
+          itemCount: StoresListDict.length,
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
@@ -855,59 +939,68 @@ class _MainScreenState extends State<MainScreen> {
 
               },
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                padding: index == 0
+                    ? const EdgeInsets.fromLTRB(10, 5, 0, 5)
+                    : const EdgeInsets.fromLTRB(2, 5, 0, 5),
                 child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:
-                    [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Card(
-                            child: Container(
-                              width: 180,
-                              height: 100,
+                  child: SizedBox(
+                    width: 170,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children:
+                      [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: Card(
+                            elevation: 2,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 100,
-
-                                      alignment: Alignment.center,
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-                                        child: CachedNetworkImage(
-                                          imageUrl: StoresList[index]['ImageUrl'],
-                                          placeholder: (context, url) => const Center(
-                                              child: CircularProgressIndicator()),
-                                          errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                          fit: BoxFit.contain,
-                                          width: double.infinity,
+                                    height: 120,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(5),
+                                      child: Image(
+                                        fit: BoxFit.fill,
+                                        image: NetworkImage(StoresListDict[index]['ImageUrl'],
                                         ),
-                                      )
+                                      ),
+                                    ),
                                   ),
                                 ],
-                              ),
-                            )),
-                      ),
-                      Text(
-                        ''+StoresList[index]['StoreName']+' - '+StoresList[index]['City'],
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.normal),
-                      ),Text(
-                      ''+StoresList[index]['State']+' - '+StoresList[index]['Country'],
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.normal),
-                    ),
+                              )),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                          child: Text(
+                            ''+StoresListDict[index]['StoreName']+' - '+StoresListDict[index]['City'],
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 14.0,
+                                fontFamily: "Mont-Regular",
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                          child: Text(
+                            ''+StoresListDict[index]['State']+' - '+StoresListDict[index]['Country'],
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 14.0,
+                                fontFamily: "Mont-Regular",
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ),
 
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),              );

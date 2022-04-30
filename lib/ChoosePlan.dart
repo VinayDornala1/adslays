@@ -47,46 +47,50 @@ class _ChoosePlanState extends State<ChoosePlan> {
                         ),
                         const Spacer(),
                         Card(
+                          elevation: 2,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(22),
-                              // if you need this
+                            borderRadius: BorderRadius.circular(
+                                21.5), // if you need this
                           ),
                           child: Stack(
                             children: [
                               Container(
                                 color: Colors.transparent,
-                                width: 44,
-                                height: 44,
+                                width: 43,
+                                height: 43,
 
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
+                                padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
                                 child: Image.asset(
                                   "assets/images/cart.png",
-                                  width: 30,
-                                  height: 30,
+                                  width: 28,
+                                  height: 28,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         Card(
+                          elevation: 2,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(22), // if you need this
+                            borderRadius: BorderRadius.circular(
+                                21.5), // if you need this
                           ),
                           child: Stack(
                             children: [
                               Container(
                                 color: Colors.transparent,
-                                width: 44,
-                                height: 44,
+                                width: 43,
+                                height: 43,
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 12, 5, 0),
+                                padding: const EdgeInsets.fromLTRB(
+                                    10, 10, 5, 0),
                                 child: Image.asset(
                                   "assets/images/search.png",
-                                  width: 23,
-                                  height: 23,
+                                  width: 25,
+                                  height: 25,
                                 ),
                               ),
                             ],

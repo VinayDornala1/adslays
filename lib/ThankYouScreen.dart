@@ -1,8 +1,10 @@
+import 'package:adslay/bottom_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'ChoosePlan.dart';
 import 'Constant/ConstantsColors.dart';
 import 'HomeScreen.dart';
+import 'MainScreen.dart';
 
 class ThankYouScreen extends StatefulWidget {
   const ThankYouScreen({Key? key}) : super(key: key);
@@ -47,45 +49,50 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                       ),
                       const Spacer(),
                       Card(
+                        elevation: 2,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22), // if you need this
+                          borderRadius: BorderRadius.circular(
+                              21.5), // if you need this
                         ),
                         child: Stack(
                           children: [
                             Container(
                               color: Colors.transparent,
-                              width: 44,
-                              height: 44,
+                              width: 43,
+                              height: 43,
 
                             ),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 8, 5, 0),
+                              padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
                               child: Image.asset(
                                 "assets/images/cart.png",
-                                width: 35,
-                                height: 35,
+                                width: 28,
+                                height: 28,
                               ),
                             ),
                           ],
                         ),
                       ),
                       Card(
+                        elevation: 2,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22), // if you need this
+                          borderRadius: BorderRadius.circular(
+                              21.5), // if you need this
                         ),
                         child: Stack(
                           children: [
                             Container(
                               color: Colors.transparent,
-                              width: 44,
-                              height: 44,
+                              width: 43,
+                              height: 43,
                             ),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 12, 5, 0),
+                              padding: const EdgeInsets.fromLTRB(
+                                  10, 10, 5, 0),
                               child: Image.asset(
                                 "assets/images/search.png",
-                                width: 23,
-                                height: 23,
+                                width: 25,
+                                height: 25,
                               ),
                             ),
                           ],
@@ -435,7 +442,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                           EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 5.0),
                                           child: MaterialButton(
                                             onPressed: () {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan()));
+                                              Navigator.push(context, MaterialPageRoute(builder: (context)=> BottomNavigationMenu()));
                                             },
                                             textColor: Colors.white,
                                             padding: const EdgeInsets.all(0.0),

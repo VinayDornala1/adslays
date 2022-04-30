@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:adslay/MainScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -148,7 +149,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                   child: MaterialButton(
                                     onPressed: () {
 
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresScreen()));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()));
                                     },
                                     textColor: Colors.white,
                                     padding: const EdgeInsets.all(0.0),
