@@ -42,6 +42,9 @@ class _ChoosePlanState extends State<ChoosePlan> {
   String type = '';
   String fileFormat = '';
 
+  String valueChoose = 'Please choose';
+  late String selectedScreenSize;
+  List screenSizeListItems = [];
 
   List<dynamic> screenSizeList=[];
   List<dynamic> noOfTimesList=[];
@@ -60,7 +63,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
       print(e);
     }
 
-    String url1 = APIConstant.getStoreDetails;
+    String url1 = APIConstant.getPackageDetails;
     print('Category base StoresList url: '+url1);
     Map<String, dynamic> body = {
       'Mobile': '9160747554',
@@ -81,10 +84,10 @@ class _ChoosePlanState extends State<ChoosePlan> {
 
       if (msg == "Success" || msg == "success")
       {
-        storeId = jsonDecode(response.body)['StoreId'];
         title = jsonDecode(response.body)['Title'];
         city = jsonDecode(response.body)['City'];
         state = jsonDecode(response.body)['State'];
+        country = jsonDecode(response.body)['Country'];
         zipCode = jsonDecode(response.body)['ZipCode'];
         imageUrl = jsonDecode(response.body)['ImageUrl'];
         screenSize = jsonDecode(response.body)['ScreenSize'];
@@ -98,6 +101,14 @@ class _ChoosePlanState extends State<ChoosePlan> {
         screenSizeList = jsonDecode(response.body)['ScreenSizeList'];
         noOfTimesList = jsonDecode(response.body)['NoofTimesList'];
         storePackagesList = jsonDecode(response.body)['StorePackagesList'];
+
+        if (screenSizeList == null) {
+        } else {
+          for (int i = 0; i < screenSizeList.length; i++) {
+            screenSizeListItems.add(screenSizeList[i]['ScreenSize']);
+          }
+          //print("Screen sizes list :"+screenSizeListItems.toString());
+        }
 
       }else{
         print("Unable to get API response.");
@@ -301,7 +312,63 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                             Flexible(
                                               child: Padding(
                                                 padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                                                child: TextField(
+                                                child:
+                                                // screenSizeList ==null
+                                                //     ?const SizedBox(width: 0,height: 0,)
+                                                //     :Padding(
+                                                //   padding: const EdgeInsets.fromLTRB(19.0, 5, 19, 0),
+                                                //   child: Container(
+                                                //     padding: EdgeInsets.only(left: 16, right: 16),
+                                                //     decoration: BoxDecoration(
+                                                //         border: Border.all(
+                                                //             color: const Color(0xFFF2F2F2), width: 1),
+                                                //         borderRadius: BorderRadius.circular(13),
+                                                //         color: const Color(0xffffffff)),
+                                                //     child: DropdownButton(
+                                                //       icon: const Icon(
+                                                //         Icons.arrow_drop_down_circle_outlined,
+                                                //         size: 15,
+                                                //       ),
+                                                //       dropdownColor: Colors.white,
+                                                //       isExpanded: true,
+                                                //       underline: const SizedBox(),
+                                                //       hint: const Text(
+                                                //         'Select Screen Size',
+                                                //         style: TextStyle(
+                                                //             fontFamily: "Lorin",
+                                                //             fontWeight: FontWeight.w100,
+                                                //             fontSize: 14.0,
+                                                //             color: Colors.grey),
+                                                //       ),
+                                                //       value: valueChoose,
+                                                //       onChanged: (newValue) {
+                                                //         setState(() {
+                                                //           valueChoose = newValue.toString();
+                                                //           for(int i=0;i<screenSizeList.length;i++){
+                                                //             if(screenSizeList[i]['ScreenSize']==valueChoose){
+                                                //               selectedScreenSize = screenSizeList[i]['ScreenSize'];
+                                                //             }
+                                                //           }
+                                                //         });
+                                                //       },
+                                                //       items: screenSizeListItems.map((valueItem) {
+                                                //         return DropdownMenuItem(
+                                                //           value: valueItem,
+                                                //           child: Text(
+                                                //             valueItem,
+                                                //             style: const TextStyle(
+                                                //                 fontFamily: "Lorin",
+                                                //                 fontWeight: FontWeight.w700,
+                                                //                 fontSize: 14.0,
+                                                //                 color: Color(0xFF141E28)),
+                                                //           ),
+                                                //         );
+                                                //       }).toList(),
+                                                //     ),
+                                                //   ),
+                                                // ),
+
+                                                TextField(
                                                   decoration: InputDecoration(
                                                       enabledBorder: UnderlineInputBorder(
                                                         borderSide: BorderSide(color: Colors.grey),

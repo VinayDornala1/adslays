@@ -10,4 +10,6 @@ class APIConstant
 
   static String getStoreDetails = base_url + 'StoresAPI/StoreDetails';
 
+  static String getPackageDetails = base_url + 'StoresAPI/StorePackagesDetailsAPI';
+
 }
