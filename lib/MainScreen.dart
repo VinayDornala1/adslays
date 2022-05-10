@@ -64,7 +64,7 @@ class _MainScreenState extends State<MainScreen> {
       body: body,
       encoding: encoding,
     );
-    print('Home Screen api calling :' + response.body.toString());
+    print('Home Screen api calling body:' + response.body.toString());
     setState(() {
       MobileBannersList = jsonDecode(response.body)['ThemeBannersList'];
       CategoriesList = jsonDecode(response.body)['CategoriesList'];
@@ -612,7 +612,7 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: GestureDetector(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresList()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresList(categoryId: CategoriesList[index]["CategoryId"].toString(),storeCategory: CategoriesList[index]["CategoryName"])));
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),

@@ -1,18 +1,106 @@
+import 'dart:convert';
+
 import 'package:adslay/ChoosePlan.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'API.dart';
 import 'UploadFiles.dart';
 
 
 class StoreDetails extends StatefulWidget {
-  const StoreDetails({Key? key}) : super(key: key);
+
+  var storeId;
+
+  StoreDetails({this.storeId});
 
   @override
   State<StoreDetails> createState() => _StoreDetailsState();
 }
 
 class _StoreDetailsState extends State<StoreDetails> {
+
+  String email = '';
+  String mobileNumber = '';
+  bool isLoading = true;
+  String deviceOS = '';
+  double screenWidth = 0.0;
+
+  late int storeId;
+  late String city;
+  late String state;
+  late String country;
+  late String zipCode;
+  late String imageUrl;
+  late String screenSize;
+  late int durationInDays;
+  late double actualPrice;
+  late double offerPrice;
+  late String footTraffic;
+
+  Future<void> getData() async {
+
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        mobileNumber = prefs.getString('mobilenumber')!;
+        email = prefs.getString('email')!;
+      });
+    }catch(e){
+      print(e);
+    }
+
+    String url1 = APIConstant.getStoreDetails;
+    print('Category base StoresList url: '+url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+      'StoreId': widget.storeId.toString(),
+    };
+    print('Category base StoresList body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Category base StoresList response :' + response.body.toString());
+    setState(() {
+      String msg = jsonDecode(response.body)['msg'];
+
+      if (msg == "Success" || msg == "success")
+      {
+        storeId = jsonDecode(response.body)['StoreId'];
+        city = jsonDecode(response.body)['City'];
+        state = jsonDecode(response.body)['State'];
+        zipCode = jsonDecode(response.body)['ZipCode'];
+        imageUrl = jsonDecode(response.body)['ImageUrl'];
+        screenSize = jsonDecode(response.body)['ScreenSize'];
+        durationInDays = jsonDecode(response.body)['DurationinDays'];
+        actualPrice = jsonDecode(response.body)['ActualPrice'];
+        offerPrice = jsonDecode(response.body)['OfferPrice'];
+        footTraffic = jsonDecode(response.body)['FootTraffic'];
+
+      }else{
+        print("Unable to get API response.");
+      }
+
+
+    });
+
+    setState(() {
+      isLoading = false;
+    });
+
+
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -318,7 +406,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: const [
                                   Text(
-                                    "Foor Traffic",
+                                    "Foot Traffic",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
                                       fontSize: 15,
@@ -401,7 +489,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                     padding: const EdgeInsets.only(top: 10),
                     child: MaterialButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> UploadFiles()));
                       },
                       textColor: Colors.white,
                       padding: const EdgeInsets.all(0.0),
@@ -470,148 +558,148 @@ class _StoreDetailsState extends State<StoreDetails> {
                   ),
                 ),
                 const SizedBox(height: 10,),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Spacer(),
-                    Container(
-                      height: 36,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 0.5,
-                          color: Colors.grey,
-                        ),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(18.0),),
-                      ),
-                      child: Center(
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children:
-                            [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child:
-                                        Image.asset("assets/images/facebook.png",fit: BoxFit.cover,)),
-                                  ),
-                                  const Text(
-                                    "SHARE",
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                            ]
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10,),
-                    Container(
-                      height: 36,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 0.5,
-                          color: Colors.grey,
-                        ),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(18.0),),
-                      ),
-                      child: Center(
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children:
-                            [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child:
-                                        Image.asset("assets/images/twitter.png",fit: BoxFit.cover,)),
-                                  ),
-                                  const Text(
-                                    "TWEET",
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                            ]
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10,),
-                    Container(
-                      height: 36,
-                      width: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 0.5,
-                          color: Colors.grey,
-                        ),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(18.0),),
-                      ),
-                      child: Center(
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children:
-                            [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child:
-                                        Image.asset("assets/images/pinterest.png",fit: BoxFit.cover,)),
-                                  ),
-                                  const Text(
-                                    "PIN IT ",
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                            ]
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     const Spacer(),
+                //     Container(
+                //       height: 36,
+                //       width: 100,
+                //       decoration: BoxDecoration(
+                //         border: Border.all(
+                //           width: 0.5,
+                //           color: Colors.grey,
+                //         ),
+                //         borderRadius:
+                //         const BorderRadius.all(Radius.circular(18.0),),
+                //       ),
+                //       child: Center(
+                //         child: Row(
+                //             crossAxisAlignment: CrossAxisAlignment.center,
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             children:
+                //             [
+                //               Row(
+                //                 crossAxisAlignment: CrossAxisAlignment.center,
+                //                 mainAxisAlignment: MainAxisAlignment.center,
+                //                 children: [
+                //                   Padding(
+                //                     padding: const EdgeInsets.all(8.0),
+                //                     child: SizedBox(
+                //                         height: 20,
+                //                         width: 20,
+                //                         child:
+                //                         Image.asset("assets/images/facebook.png",fit: BoxFit.cover,)),
+                //                   ),
+                //                   const Text(
+                //                     "SHARE",
+                //                     style: TextStyle(
+                //                       fontSize: 13.0,
+                //                       fontWeight: FontWeight.bold,
+                //                       color: Colors.black,
+                //                     ),
+                //                   ),
+                //                 ],
+                //               ),
+                //
+                //             ]
+                //         ),
+                //       ),
+                //     ),
+                //     const SizedBox(width: 10,),
+                //     Container(
+                //       height: 36,
+                //       width: 100,
+                //       decoration: BoxDecoration(
+                //         border: Border.all(
+                //           width: 0.5,
+                //           color: Colors.grey,
+                //         ),
+                //         borderRadius:
+                //         const BorderRadius.all(Radius.circular(18.0),),
+                //       ),
+                //       child: Center(
+                //         child: Row(
+                //             crossAxisAlignment: CrossAxisAlignment.center,
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             children:
+                //             [
+                //               Row(
+                //                 crossAxisAlignment: CrossAxisAlignment.center,
+                //                 mainAxisAlignment: MainAxisAlignment.center,
+                //                 children: [
+                //                   Padding(
+                //                     padding: const EdgeInsets.all(8.0),
+                //                     child: SizedBox(
+                //                         height: 20,
+                //                         width: 20,
+                //                         child:
+                //                         Image.asset("assets/images/twitter.png",fit: BoxFit.cover,)),
+                //                   ),
+                //                   const Text(
+                //                     "TWEET",
+                //                     style: TextStyle(
+                //                       fontSize: 13.0,
+                //                       fontWeight: FontWeight.bold,
+                //                       color: Colors.black,
+                //                     ),
+                //                   ),
+                //                 ],
+                //               ),
+                //
+                //             ]
+                //         ),
+                //       ),
+                //     ),
+                //     const SizedBox(width: 10,),
+                //     Container(
+                //       height: 36,
+                //       width: 100,
+                //       decoration: BoxDecoration(
+                //         border: Border.all(
+                //           width: 0.5,
+                //           color: Colors.grey,
+                //         ),
+                //         borderRadius:
+                //         const BorderRadius.all(Radius.circular(18.0),),
+                //       ),
+                //       child: Center(
+                //         child: Row(
+                //             crossAxisAlignment: CrossAxisAlignment.center,
+                //             mainAxisAlignment: MainAxisAlignment.center,
+                //             children:
+                //             [
+                //               Row(
+                //                 crossAxisAlignment: CrossAxisAlignment.center,
+                //                 mainAxisAlignment: MainAxisAlignment.center,
+                //                 children: [
+                //                   Padding(
+                //                     padding: const EdgeInsets.all(8.0),
+                //                     child: SizedBox(
+                //                         height: 20,
+                //                         width: 20,
+                //                         child:
+                //                         Image.asset("assets/images/pinterest.png",fit: BoxFit.cover,)),
+                //                   ),
+                //                   const Text(
+                //                     "PIN IT ",
+                //                     style: TextStyle(
+                //                       fontSize: 13.0,
+                //                       fontWeight: FontWeight.bold,
+                //                       color: Colors.black,
+                //                     ),
+                //                   ),
+                //                 ],
+                //               ),
+                //
+                //             ]
+                //         ),
+                //       ),
+                //     ),
+                //     const Spacer(),
+                //   ],
+                // ),
                 const SizedBox(height: 40,),
               ]),
         ),

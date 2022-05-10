@@ -1,16 +1,131 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'API.dart';
+import 'StoreDetails.dart';
 import 'UploadFiles.dart';
 
 
 class ChoosePlan extends StatefulWidget {
-  const ChoosePlan({Key? key}) : super(key: key);
+
+  var storeId;
+
+  ChoosePlan({this.storeId});
 
   @override
   State<ChoosePlan> createState() => _ChoosePlanState();
 }
 
 class _ChoosePlanState extends State<ChoosePlan> {
+
+
+  String email = '';
+  String mobileNumber = '';
+  bool isLoading = true;
+  String deviceOS = '';
+
+  int storeId = 0;
+  String title = '';
+  String city = '';
+  String state = '';
+  String country = '';
+  String zipCode = '';
+  String imageUrl = '';
+  String screenSize = '';
+  int durationInDays = 0;
+  double actualPrice = 0.0;
+  double offerPrice = 0.0;
+  String footTraffic = '';
+  String type = '';
+  String fileFormat = '';
+
+
+  List<dynamic> screenSizeList=[];
+  List<dynamic> noOfTimesList=[];
+  List<dynamic> storePackagesList=[];
+
+
+  Future<void> getData() async {
+
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        mobileNumber = prefs.getString('mobilenumber')!;
+        email = prefs.getString('email')!;
+      });
+    }catch(e){
+      print(e);
+    }
+
+    String url1 = APIConstant.getStoreDetails;
+    print('Category base StoresList url: '+url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+      'StoreId': widget.storeId.toString(),
+    };
+    print('Category base StoresList body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Category base StoresList response :' + response.body.toString());
+    setState(() {
+      String msg = jsonDecode(response.body)['msg'];
+
+      if (msg == "Success" || msg == "success")
+      {
+        storeId = jsonDecode(response.body)['StoreId'];
+        title = jsonDecode(response.body)['Title'];
+        city = jsonDecode(response.body)['City'];
+        state = jsonDecode(response.body)['State'];
+        zipCode = jsonDecode(response.body)['ZipCode'];
+        imageUrl = jsonDecode(response.body)['ImageUrl'];
+        screenSize = jsonDecode(response.body)['ScreenSize'];
+        durationInDays = jsonDecode(response.body)['DurationinDays'];
+        actualPrice = jsonDecode(response.body)['ActualPrice'];
+        offerPrice = jsonDecode(response.body)['OfferPrice'];
+        footTraffic = jsonDecode(response.body)['FootTraffic'];
+        type = jsonDecode(response.body)['Type'];
+        fileFormat = jsonDecode(response.body)['FileFormat'];
+
+        screenSizeList = jsonDecode(response.body)['ScreenSizeList'];
+        noOfTimesList = jsonDecode(response.body)['NoofTimesList'];
+        storePackagesList = jsonDecode(response.body)['StorePackagesList'];
+
+      }else{
+        print("Unable to get API response.");
+      }
+
+    });
+
+    setState(() {
+      isLoading = false;
+    });
+
+
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getData();
+  }
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,12 +263,12 @@ class _ChoosePlanState extends State<ChoosePlan> {
                     ],
                   ),
                 ),
-                const Padding(
+                 Padding(
                   padding: EdgeInsets.fromLTRB(15, 0, 5, 8),
                   child: Text(
-                    "Desi District - Riverside Dr, Irving, TX",
+                    "$title - $city,$state,$country",
                     maxLines: 2,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600),
                   ),
@@ -435,7 +550,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
                   child: Center(
                     child: MaterialButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> UploadFiles()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails(storeId: widget.storeId)));
                       },
                       textColor: Colors.white,
                       padding: const EdgeInsets.all(0.0),
