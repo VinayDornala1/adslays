@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:adslay/otp_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
+
+import 'API.dart';
 
 
 class SignUpScreen extends StatefulWidget {
@@ -17,9 +24,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final mobileNumberController = TextEditingController();
   final emailController = TextEditingController();
 
+  late ProgressDialog pr;
 
   @override
   Widget build(BuildContext context) {
+    pr = ProgressDialog(context);
+    pr.style(
+        message: 'Loading',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: Container(
+            padding: EdgeInsets.all(10.0), child: CircularProgressIndicator()),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 10.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600)
+    );
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).requestFocus(FocusNode());
@@ -203,7 +225,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 const EdgeInsets.fromLTRB(80.0, 25.0, 80.0, 0),
                                 child:
                                 MaterialButton(
-                                  onPressed: () { },
+                                  onPressed: () {
+                                    if(fullNameController.text==''){
+                                      Fluttertoast.showToast(
+                                          msg: "Please enter full name",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                    }else if(mobileNumberController.text==''){
+                                      Fluttertoast.showToast(
+                                          msg: "Please enter mobile number",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                    }else if(emailController.text==''){
+                                      Fluttertoast.showToast(
+                                          msg: "Please enter email-id",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0
+                                      );
+                                    } else{
+                                        getDataFromAPI();
+                                    }
+
+
+                                  },
                                   textColor: Colors.white,
                                   padding: const EdgeInsets.all(0.0),
                                   child: Container(
@@ -257,7 +315,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 child: Center(
                                   child: GestureDetector(
                                     onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> OTPScreen(mobileNumber: '9999999999',countryCode: '+91',)));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> OTPScreen(mobileNumber: '9999999999',)));
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.only(left: 15.0,right: 15,top: 8,bottom: 8),
@@ -294,4 +352,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
+
+  void getDataFromAPI() async {
+    await pr.show();
+    String url1 = APIConstant.signup;
+    print(url1);
+    Map<String, dynamic> body = {
+      'FirstName': ''+fullNameController.text.toString(),
+      'LastName': '',
+      'MobileNo': ''+mobileNumberController.text.toString(),
+      'Email': ''+emailController.text.toString(),
+    };
+    print('Signup api calling :' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    Map data1 = jsonDecode(response.body);
+    print('signup api calling response :' + data1.toString());
+    String msg = data1['msg'];
+    await pr.hide();
+    if(msg=='Success'){
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>OTPScreen(mobileNumber:mobileNumberController.text.toString())));
+
+    }else{
+      Fluttertoast.showToast(
+          msg: "Something went wrong, Please try again.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+  }
+
 }

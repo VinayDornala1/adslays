@@ -19,9 +19,9 @@ import 'StoresScreen.dart';
 class OTPScreen extends StatefulWidget {
 
   var mobileNumber;
-  var countryCode;
+  // var countryCode;
 
-  OTPScreen({Key? key, this.mobileNumber,this.countryCode}) : super(key: key);
+  OTPScreen({Key? key, this.mobileNumber}) : super(key: key);
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();
@@ -30,7 +30,7 @@ class OTPScreen extends StatefulWidget {
 class _OTPScreenState extends State<OTPScreen> {
 
 
-  final TextEditingController _pinPutController = TextEditingController();
+  final TextEditingController pinPutController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
 
   final BoxDecoration pinPutDecoration = BoxDecoration(
@@ -50,9 +50,24 @@ class _OTPScreenState extends State<OTPScreen> {
   String smsGatewayUrl = '';
   String isOtp = '';
   late String deviceOS;
+  final otp11 = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    pr = ProgressDialog(context);
+    pr.style(
+        message: 'Loading',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: Container(
+            padding: EdgeInsets.all(10.0), child: CircularProgressIndicator()),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 10.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600)
+    );
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).requestFocus(FocusNode());
@@ -128,13 +143,13 @@ class _OTPScreenState extends State<OTPScreen> {
                                       border: Border.all(color: Colors.grey, width: 1.3),
                                       borderRadius: BorderRadius.circular(30),
                                     ),
-                                    child:  const Padding(
+                                    child:  Padding(
                                       padding: EdgeInsets.symmetric(horizontal: 12.0),
                                       child: TextField(
                                         keyboardType: TextInputType.phone,
-                                        //controller: mobilenumber,
-                                        decoration: InputDecoration(
-                                          hintText: "Enter mobile number",
+                                        controller: otp11,
+                                        decoration: const InputDecoration(
+                                          hintText: "Enter OTP",
                                           border: InputBorder.none,
                                         ),
                                       ),
@@ -148,8 +163,21 @@ class _OTPScreenState extends State<OTPScreen> {
                                 child: Center(
                                   child: MaterialButton(
                                     onPressed: () {
-
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()));
+                                      if(otp11.text==''){
+                                        Fluttertoast.showToast(
+                                            msg: "Enter OTP",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Colors.red,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0
+                                        );
+                                      }
+                                      else if(otp11.text=='123456'){
+                                        // Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()));
+                                        verifyOTP();
+                                      }
                                     },
                                     textColor: Colors.white,
                                     padding: const EdgeInsets.all(0.0),
@@ -193,7 +221,7 @@ class _OTPScreenState extends State<OTPScreen> {
                               Padding(
                                 padding: EdgeInsets.only(top: 4.0),
                                 child: Text(
-                                  "" + widget.countryCode + " " + widget.mobileNumber,
+                                    " " + widget.mobileNumber,
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xff3962cb),
@@ -290,67 +318,48 @@ class _OTPScreenState extends State<OTPScreen> {
 
   late ProgressDialog pr;
 
-  void verifyOTP(String pin) async {
+  void verifyOTP() async {
     // if(widget.dropdownvalue == '+91'){
     //   if(genotp==pin){
-    //     await pr.show();
-    //     String url = APIConstant.base_url + "StudentsAPI/MobileAvailability?MobileNo="+widget.dropdownvalue+widget.mobilenumber;
-    //     url = url.replaceAll('+', '');
-    //     print(''+url);
-    //     Response response=await get(Uri.parse(url));
-    //     Map data = jsonDecode(response.body);
-    //     print(data);
-    //     print(url);
-    //     bool msg = data['data'];
-    //     print(msg);
-    //     await pr.hide();
-    //     if (msg) {
-    //     } else {
-    //       var username = data['Name'];
-    //       var email = data['Email'];
-    //       var userid = data['StudentUniqueid'];
-    //       var mobileNo = data['MobileNo'];
-    //       var studetImageUrl = data['StudetImageUrl'];
-    //       var studentId = data['StudentId'];
-    //       var alumniId = data['AlumniId'];
-    //       var alumniName = data['AlumniName'];
-    //       var alumniDesignation = data['Designation'];
-    //       var loginAs = data['Loginas'];
-    //
-    //       SharedPreferences prefs = await SharedPreferences.getInstance();
-    //       prefs.setString('userid', userid);
-    //       prefs.setString('username', username);
-    //       prefs.setString('email', email);
-    //       prefs.setString('mobilenumber', mobileNo);
-    //       prefs.setString('studetImageUrl', studetImageUrl);
-    //       prefs.setInt('studentId', studentId);
-    //       prefs.setInt('alumniId', alumniId);
-    //       prefs.setString('alumniName', alumniName);
-    //       prefs.setString('alumniDesignation', alumniDesignation);
-    //       prefs.setString('loginAs', loginAs);
-    //
-    //       print(userid.toString());
-    //       print(studentId.toString());
-    //       // Navigator.push(
-    //       //     context,
-    //       //     MaterialPageRoute(
-    //       //         builder: (context) => Onboarding(sname:username)));
-    //     }
-    //   }
-    //   else{
-    //     Fluttertoast.showToast(
-    //         msg: "Invalid OTP",
-    //         toastLength: Toast.LENGTH_SHORT,
-    //         gravity: ToastGravity.CENTER,
-    //         timeInSecForIosWeb: 1,
-    //         backgroundColor: Colors.red,
-    //         textColor: Colors.white,
-    //         fontSize: 16.0
-    //     );
-    //   }
-    // }else{
-    //   //verifyOtpsads(pin);
-    // }
+        await pr.show();
+
+
+        String url1 = APIConstant.login;
+        print(url1);
+        Map<String, dynamic> body = {
+          'MobileNo': ''+widget.mobileNumber.toString(),
+        };
+        print('Login check api calling :' + body.toString());
+        final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+        final encoding = Encoding.getByName('utf-8');
+        final response = await post(
+          Uri.parse(url1),
+          headers: headers,
+          body: body,
+          encoding: encoding,
+        );
+
+        Map data = jsonDecode(response.body);
+        print(data);
+        String msg = data['msg'];
+        print(msg);
+        await pr.hide();
+        if (msg=='No Records Found') {
+
+        } else {
+          var CustomerId = data['objCustomers']['CustomerId'];
+          var FirstName = data['objCustomers']['FirstName'];
+          var Email = data['objCustomers']['Email'];
+          var MobileNo = data['objCustomers']['MobileNo'];
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setInt('userid', CustomerId);
+          prefs.setString('username', FirstName);
+          prefs.setString('email', Email);
+          prefs.setString('mobilenumber', MobileNo);
+          print(CustomerId.toString());
+          print(FirstName.toString());
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()));
+        }
   }
 
 }

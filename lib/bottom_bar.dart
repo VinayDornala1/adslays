@@ -16,6 +16,9 @@ import 'StoresList.dart';
 
 class BottomNavigationMenu extends StatefulWidget {
   static int indexbottom=0;
+
+
+
   @override
   _BottomNavigationMenuState createState() => _BottomNavigationMenuState();
 }

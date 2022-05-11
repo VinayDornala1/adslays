@@ -27,7 +27,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
   bool isLoading = true;
   String deviceOS = '';
 
-  int storeId = 0;
+  // int storeId = 0;
   String title = '';
   String city = '';
   String state = '';
@@ -41,10 +41,9 @@ class _ChoosePlanState extends State<ChoosePlan> {
   String footTraffic = '';
   String type = '';
   String fileFormat = '';
+  String? selectedCountryName;
+  String? selectedCountryNameTimes;
 
-  String valueChoose = 'Please choose';
-  late String selectedScreenSize;
-  List screenSizeListItems = [];
 
   List<dynamic> screenSizeList=[];
   List<dynamic> noOfTimesList=[];
@@ -63,7 +62,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
       print(e);
     }
 
-    String url1 = APIConstant.getPackageDetails;
+    String url1 = APIConstant.getStoreDetails;
     print('Category base StoresList url: '+url1);
     Map<String, dynamic> body = {
       'Mobile': '9160747554',
@@ -84,10 +83,10 @@ class _ChoosePlanState extends State<ChoosePlan> {
 
       if (msg == "Success" || msg == "success")
       {
+        // storeId = jsonDecode(response.body)['StoreId'].toString();
         title = jsonDecode(response.body)['Title'];
         city = jsonDecode(response.body)['City'];
         state = jsonDecode(response.body)['State'];
-        country = jsonDecode(response.body)['Country'];
         zipCode = jsonDecode(response.body)['ZipCode'];
         imageUrl = jsonDecode(response.body)['ImageUrl'];
         screenSize = jsonDecode(response.body)['ScreenSize'];
@@ -99,16 +98,12 @@ class _ChoosePlanState extends State<ChoosePlan> {
         fileFormat = jsonDecode(response.body)['FileFormat'];
 
         screenSizeList = jsonDecode(response.body)['ScreenSizeList'];
+        print('strr:   '+screenSizeList.toString());
+        print('strr:   '+screenSizeList[0]['ScreenSize'].toString());
         noOfTimesList = jsonDecode(response.body)['NoofTimesList'];
-        storePackagesList = jsonDecode(response.body)['StorePackagesList'];
+        // storePackagesList = jsonDecode(response.body)['StorePackagesList'];
 
-        if (screenSizeList == null) {
-        } else {
-          for (int i = 0; i < screenSizeList.length; i++) {
-            screenSizeListItems.add(screenSizeList[i]['ScreenSize']);
-          }
-          //print("Screen sizes list :"+screenSizeListItems.toString());
-        }
+
 
       }else{
         print("Unable to get API response.");
@@ -146,7 +141,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
           top: true,
           right: true,
           bottom: false,
-          child: Column(
+          child: isLoading?SizedBox(width: 0,height: 0,):Column(
               //mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -305,118 +300,170 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         const SizedBox(height: 10),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: const [
-                                            Flexible(
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                                                child:
-                                                // screenSizeList ==null
-                                                //     ?const SizedBox(width: 0,height: 0,)
-                                                //     :Padding(
-                                                //   padding: const EdgeInsets.fromLTRB(19.0, 5, 19, 0),
-                                                //   child: Container(
-                                                //     padding: EdgeInsets.only(left: 16, right: 16),
-                                                //     decoration: BoxDecoration(
-                                                //         border: Border.all(
-                                                //             color: const Color(0xFFF2F2F2), width: 1),
-                                                //         borderRadius: BorderRadius.circular(13),
-                                                //         color: const Color(0xffffffff)),
-                                                //     child: DropdownButton(
-                                                //       icon: const Icon(
-                                                //         Icons.arrow_drop_down_circle_outlined,
-                                                //         size: 15,
-                                                //       ),
-                                                //       dropdownColor: Colors.white,
-                                                //       isExpanded: true,
-                                                //       underline: const SizedBox(),
-                                                //       hint: const Text(
-                                                //         'Select Screen Size',
-                                                //         style: TextStyle(
-                                                //             fontFamily: "Lorin",
-                                                //             fontWeight: FontWeight.w100,
-                                                //             fontSize: 14.0,
-                                                //             color: Colors.grey),
-                                                //       ),
-                                                //       value: valueChoose,
-                                                //       onChanged: (newValue) {
-                                                //         setState(() {
-                                                //           valueChoose = newValue.toString();
-                                                //           for(int i=0;i<screenSizeList.length;i++){
-                                                //             if(screenSizeList[i]['ScreenSize']==valueChoose){
-                                                //               selectedScreenSize = screenSizeList[i]['ScreenSize'];
-                                                //             }
-                                                //           }
-                                                //         });
-                                                //       },
-                                                //       items: screenSizeListItems.map((valueItem) {
-                                                //         return DropdownMenuItem(
-                                                //           value: valueItem,
-                                                //           child: Text(
-                                                //             valueItem,
-                                                //             style: const TextStyle(
-                                                //                 fontFamily: "Lorin",
-                                                //                 fontWeight: FontWeight.w700,
-                                                //                 fontSize: 14.0,
-                                                //                 color: Color(0xFF141E28)),
-                                                //           ),
-                                                //         );
-                                                //       }).toList(),
-                                                //     ),
-                                                //   ),
-                                                // ),
-
-                                                TextField(
-                                                  decoration: InputDecoration(
-                                                      enabledBorder: UnderlineInputBorder(
-                                                        borderSide: BorderSide(color: Colors.grey),
-                                                      ),
-                                                      focusedBorder: UnderlineInputBorder(
-                                                        borderSide: BorderSide(color: Colors.grey),
-                                                      ),
-                                                      filled: true,
-                                                      fillColor: Color(0xFFFFFFFF),
-                                                      hintText: 'Select Screen Size',
-                                                      suffixIcon: Icon(
-                                                        Icons.arrow_drop_down,
-                                                        size: 35,
-                                                      )
-                                                  ),
-                                                ),
+                                        // Row(
+                                        //   mainAxisAlignment: MainAxisAlignment.start,
+                                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                                        //   children: const [
+                                        //     Flexible(
+                                        //       child: Padding(
+                                        //         padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                                        //         child: TextField(
+                                        //           decoration: InputDecoration(
+                                        //               enabledBorder: UnderlineInputBorder(
+                                        //                 borderSide: BorderSide(color: Colors.grey),
+                                        //               ),
+                                        //               focusedBorder: UnderlineInputBorder(
+                                        //                 borderSide: BorderSide(color: Colors.grey),
+                                        //               ),
+                                        //               filled: true,
+                                        //               fillColor: Color(0xFFFFFFFF),
+                                        //               hintText: 'Select Screen Size',
+                                        //               suffixIcon: Icon(
+                                        //                 Icons.arrow_drop_down,
+                                        //                 size: 35,
+                                        //               )
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(17.0, 5, 10, 0),
+                                          child: Container(
+                                            height: 56,
+                                            padding: EdgeInsets.only(left: 16, right: 16,top: 5),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: Color(0xFFF2F2F2), width: 1),
+                                                borderRadius: BorderRadius.circular(13),
+                                                color: Color(0xFFFFFFFFF)),
+                                            child: screenSizeList == null
+                                                ?SizedBox(height: 0,width: double.infinity)
+                                                :DropdownButton(
+                                              icon: Icon(
+                                                Icons.arrow_drop_down_circle_outlined,
+                                                size: 15,
                                               ),
+                                              dropdownColor: Colors.white,
+                                              isExpanded: true,
+                                              underline: SizedBox(),
+                                              hint: Text(
+                                                'Select Screen Size',
+                                                style: TextStyle(
+                                                    fontFamily: "Lorin",
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 14.0,
+                                                    color: Color(0xFF141E28)),
+                                              ),
+                                              value: selectedCountryName != null ? selectedCountryName : null,
+                                              // onChanged: (newValue) {
+                                              //   setState(() {
+                                              //     selectedCountryName = newValue;
+                                              //   });
+                                              // },
+                                              items: screenSizeList.map((item) {
+                                                return new DropdownMenuItem(
+                                                  child: new Text(item['ScreenSize'],style: TextStyle(color: Color(0xFF000000)),),
+                                                  value: item['ScreenSize'].toString(),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  print(''+value!);
+                                                  selectedCountryName=value;
+                                                });
+                                              },
+                                              // items: CountryList.map((valueItem) {
+                                              //   return DropdownMenuItem(
+                                              //     value: valueItem,
+                                              //     child: Text(valueItem),
+                                              //   );
+                                              // }).toList(),
                                             ),
-                                          ],
+                                          ),
                                         ),
                                         const SizedBox(height: 10),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: const [
-                                            Flexible(
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                                                child: TextField(
-                                                  decoration: InputDecoration(
-                                                      enabledBorder: UnderlineInputBorder(
-                                                        borderSide: BorderSide(color: Colors.grey),
-                                                      ),
-                                                      focusedBorder: UnderlineInputBorder(
-                                                        borderSide: BorderSide(color: Colors.grey),
-                                                      ),
-                                                      filled: true,
-                                                      fillColor: Color(0xFFFFFFFF),
-                                                      hintText: 'Select No Of Times',
-                                                      suffixIcon: Icon(
-                                                        Icons.arrow_drop_down,
-                                                        size: 35,
-                                                      )
-                                                  ),
-                                                ),
+                                        // Row(
+                                        //   mainAxisAlignment: MainAxisAlignment.start,
+                                        //   crossAxisAlignment: CrossAxisAlignment.start,
+                                        //   children: const [
+                                        //     Flexible(
+                                        //       child: Padding(
+                                        //         padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                                        //         child: TextField(
+                                        //           decoration: InputDecoration(
+                                        //               enabledBorder: UnderlineInputBorder(
+                                        //                 borderSide: BorderSide(color: Colors.grey),
+                                        //               ),
+                                        //               focusedBorder: UnderlineInputBorder(
+                                        //                 borderSide: BorderSide(color: Colors.grey),
+                                        //               ),
+                                        //               filled: true,
+                                        //               fillColor: Color(0xFFFFFFFF),
+                                        //               hintText: 'Select No Of Times',
+                                        //               suffixIcon: Icon(
+                                        //                 Icons.arrow_drop_down,
+                                        //                 size: 35,
+                                        //               )
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(17.0, 5, 10, 0),
+                                          child: Container(
+                                            height: 56,
+                                            padding: EdgeInsets.only(left: 16, right: 16,top: 5),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: Color(0xFFF2F2F2), width: 1),
+                                                borderRadius: BorderRadius.circular(13),
+                                                color: Color(0xFFFFFFFFF)),
+                                            child: noOfTimesList == null
+                                                ?SizedBox(height: 0,width: double.infinity)
+                                                :DropdownButton(
+                                              icon: Icon(
+                                                Icons.arrow_drop_down_circle_outlined,
+                                                size: 15,
                                               ),
+                                              dropdownColor: Colors.white,
+                                              isExpanded: true,
+                                              underline: SizedBox(),
+                                              hint: Text(
+                                                'Select No of Times',
+                                                style: TextStyle(
+                                                    fontFamily: "Lorin",
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 14.0,
+                                                    color: Color(0xFF141E28)),
+                                              ),
+                                              value: selectedCountryNameTimes != null ? selectedCountryNameTimes : null,
+                                              // onChanged: (newValue) {
+                                              //   setState(() {
+                                              //     selectedCountryName = newValue;
+                                              //   });
+                                              // },
+                                              items: noOfTimesList.map((item) {
+                                                return new DropdownMenuItem(
+                                                  child: new Text(item['NoofTimes'].toString(),style: TextStyle(color: Color(0xFF000000)),),
+                                                  value: item['NoofTimes'].toString(),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  print(''+value!);
+                                                  selectedCountryNameTimes=value.toString();
+                                                });
+                                              },
+                                              // items: CountryList.map((valueItem) {
+                                              //   return DropdownMenuItem(
+                                              //     value: valueItem,
+                                              //     child: Text(valueItem),
+                                              //   );
+                                              // }).toList(),
                                             ),
-                                          ],
+                                          ),
                                         ),
                                         const SizedBox(height: 40),
 

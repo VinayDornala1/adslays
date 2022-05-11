@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adslay/SignUp.dart';
+import 'package:adslay/otp_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
@@ -31,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    getData();
+    // getData();
     Future.delayed(Duration.zero, () {
       // initOneSignal();
     });
@@ -39,75 +40,31 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String>  getData() async {
 
-    var countriesRes = await get(
-        Uri.parse(APIConstant.base_url + 'StudentsAPI/GetCountryCodes'),
-        headers: {"Accept": "application/json"});
-    setState(() {
-      CountryList = jsonDecode(countriesRes.body)['lstCodes'];
-    });
 
-    var response = await get(
-        Uri.parse(APIConstant.base_url + 'StudentsAPI/GetCountryCodes'),
-        headers: {"Accept": "application/json"});
-    setState(() {
-      CountryList = jsonDecode(response.body)['lstCodes'];
-    });
     return "Success";
   }
 
-  // Future<void> initOneSignal() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //
-  //   OneSignal.shared.setSubscriptionObserver((OSSubscriptionStateChanges changes) async {
-  //     var status = await OneSignal.shared.getPermissionSubscriptionState();
-  //     if (status.subscriptionStatus.subscribed) {
-  //       String onesignalUserId = status.subscriptionStatus.userId;
-  //       print('Login Player ID: ' + onesignalUserId);
-  //       // print("SUBSCRIPTION STATE CHANGED: ${changes.jsonRepresentation()}");
-  //     }});
-  //   OneSignal.shared.setPermissionObserver((OSPermissionStateChanges changes) {
-  //     // print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
-  //   });
-  //   OneSignal.shared.setEmailSubscriptionObserver(
-  //           (OSEmailSubscriptionStateChanges changes) {
-  //         // print("EMAIL SUBSCRIPTION STATE CHANGED ${changes.jsonRepresentation()}");
-  //       });
-  //   OneSignal.shared
-  //       .setInFocusDisplayType(OSNotificationDisplayType.notification);
-  //   OneSignal.shared
-  //       .promptUserForPushNotificationPermission(fallbackToSettings: true);
-  //   final app_id = "b6c5895c-94ea-42c2-a015-5b97110b39fe";
-  //   OneSignal.shared.init(app_id, iOSSettings: {
-  //     OSiOSSettings.autoPrompt: false,
-  //     OSiOSSettings.inAppLaunchUrl: true
-  //   });
-  //
-  //   try {
-  //     var deviceState = await OneSignal.shared.getPermissionSubscriptionState();
-  //     var playerId = deviceState.subscriptionStatus.userId;
-  //
-  //     setState(() {
-  //       onesignalPlayerID = playerId;
-  //     });
-  //     print('Player ID: ' + playerId);
-  //     print('-------------' + playerId);
-  //   }catch (error) {
-  //
-  //   }
-  // }
-
   void getDataFromAPI() async {
     await pr.show();
-    String url = APIConstant.base_url + "StudentsAPI/MobileAvailability?MobileNo="+phoneNumber.text;
-    url = url.replaceAll('+', '');
-    print('Login url is: '+url);
-    Response response = await get(Uri.parse(url));
-    Map data = jsonDecode(response.body);
-    print(data);
-    bool msg = data['data'];
+    String url1 = APIConstant.login;
+    print(url1);
+    Map<String, dynamic> body = {
+      'MobileNo': ''+mobilenumber.text.toString(),
+    };
+    print('Most popular api calling :' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    Map data1 = jsonDecode(response.body);
+    print('login api calling response :' + data1.toString());
+    String msg = data1['msg'];
     await pr.hide();
-    print("Login mobile number api response is: " + msg.toString());
-    if (msg) {
+    if(msg=='No Records Found'){
       Fluttertoast.showToast(
           msg: "Records not found please register",
           toastLength: Toast.LENGTH_SHORT,
@@ -117,15 +74,28 @@ class _LoginScreenState extends State<LoginScreen> {
           textColor: Colors.white,
           fontSize: 16.0
       );
-    } else {
-
-      // Navigate to OTP screen
+    }else{
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>OTPScreen(mobileNumber:mobilenumber.text.toString())));
     }
   }
   final mobilenumber = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    pr = ProgressDialog(context);
+    pr.style(
+        message: 'Loading',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: Container(
+            padding: EdgeInsets.all(10.0), child: CircularProgressIndicator()),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: TextStyle(
+            color: Colors.black, fontSize: 10.0, fontWeight: FontWeight.w400),
+        messageTextStyle: TextStyle(
+            color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600)
+    );
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).requestFocus(FocusNode());
@@ -218,8 +188,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Center(
                                   child: MaterialButton(
                                     onPressed: () {
-
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>BottomNavigationMenu()));
+                                      if(mobilenumber.text==''){
+                                            Fluttertoast.showToast(
+                                                msg: "Enter Mobilenumber",
+                                                toastLength: Toast.LENGTH_SHORT,
+                                                gravity: ToastGravity.CENTER,
+                                                timeInSecForIosWeb: 1,
+                                                backgroundColor: Colors.red,
+                                                textColor: Colors.white,
+                                                fontSize: 16.0
+                                            );
+                                      }else{
+                                        getDataFromAPI();
+                                      }
                                     },
                                     textColor: Colors.white,
                                     padding: const EdgeInsets.all(0.0),

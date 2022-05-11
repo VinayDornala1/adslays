@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomeScreen.dart';
 import 'LoginScreen.dart';
+import 'MainScreen.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -38,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> navigationPage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? MobileNo = prefs.getString('MobileNo');
+    String? MobileNo = prefs.getString('mobilenumber');
     prefs.setString('from', 'splash');
 
     try {
@@ -56,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ()=>
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder:
-                        (context) => const HomeScreen()//HomeScreen()
+                        (context) =>  MainScreen()//HomeScreen()
                     )
                 )
         );

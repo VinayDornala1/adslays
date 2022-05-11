@@ -8,7 +8,13 @@ class APIConstant
 
   static String categorybaseStoresList = base_url + 'StoresAPI/StoresList';
 
-  static String getStoreDetails = base_url + 'StoresAPI/StoreDetails';
+  static String getStoreDetails = base_url + 'StoresAPI/StorePackagesDetailsAPI';
+
+
+  static String login = base_url + 'AccountAPI/LogonPhno';
+
+
+  static String signup = base_url + 'AccountAPI/Signup';
 
   static String getPackageDetails = base_url + 'StoresAPI/StorePackagesDetailsAPI';
 
