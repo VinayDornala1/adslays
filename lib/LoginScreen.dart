@@ -167,17 +167,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                       // ),
                                       borderRadius: BorderRadius.circular(30),
                                     ),
-                                    child:  Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                      child: TextField(
-                                        keyboardType: TextInputType.phone,
-                                        controller: mobilenumber,
-                                        decoration: const InputDecoration(
-                                          hintText: "Enter mobile number",
-                                          border: InputBorder.none,
-
+                                    child:  Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(20, 5, 5,5),
+                                          child: Text('+1',style: TextStyle(fontFamily: "montserratbold",fontSize: 18,letterSpacing:3.0)),
                                         ),
-                                      ),
+                                        Expanded(
+                                          child: TextField(
+                                            keyboardType: TextInputType.phone,
+                                            controller: mobilenumber,
+                                            decoration: const InputDecoration(
+                                              hintText: "Enter mobile number",
+                                              border: InputBorder.none,
+
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     )
                                   //IntrinsicHeight
 

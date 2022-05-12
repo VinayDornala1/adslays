@@ -43,11 +43,16 @@ class _ChoosePlanState extends State<ChoosePlan> {
   String fileFormat = '';
   String? selectedCountryName;
   String? selectedCountryNameTimes;
+  bool isdataloaded=true;
+  int _radioValue1=100;
+  final PackageName = TextEditingController();
+  final ActualPrice = TextEditingController();
 
 
   List<dynamic> screenSizeList=[];
   List<dynamic> noOfTimesList=[];
   List<dynamic> storePackagesList=[];
+  List<dynamic> data1=[];
 
 
   Future<void> getData() async {
@@ -130,6 +135,35 @@ class _ChoosePlanState extends State<ChoosePlan> {
 
 
 
+  Future<void> loadingtime() async {
+    setState(() {
+      isdataloaded=true;
+    });
+    String url1 = APIConstant.getStorePackage;
+    print('Category base StoresList url: '+url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+      'StoreId': widget.storeId.toString(),
+      'ScreenSize': selectedCountryName.toString(),
+      'NoofTimes': selectedCountryNameTimes.toString(),
+    };
+    print('Category base StoresList body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    setState(() {
+      data1 = jsonDecode(response.body)['StorePackagesList'];
+      print(""+data1.toString());
+
+      isdataloaded=false;
+    });
+
+  }
 
 
   @override
@@ -454,6 +488,14 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                                 setState(() {
                                                   print(''+value!);
                                                   selectedCountryNameTimes=value.toString();
+
+                                                  if(selectedCountryName==null){
+
+                                                  }else if(selectedCountryNameTimes==null){
+
+                                                  }else{
+                                                    loadingtime();
+                                                  }
                                                 });
                                               },
                                               // items: CountryList.map((valueItem) {
@@ -477,188 +519,196 @@ class _ChoosePlanState extends State<ChoosePlan> {
                     ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(15, 10, 5, 8),
-                  child: Center(
-                    child: Text(
-                      "CHOOSE YOUR PLAN",
-                      maxLines: 2,
-                      style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        child: Card(
-                            shape: const RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Colors.green)// if you need this
+                    if (isdataloaded==true) SizedBox(width: 0,) else
+                      const Padding(
+                        padding:
+                        EdgeInsets.fromLTRB(10, 0, 0, 5),
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(15, 10, 5, 8),
+                          child: Center(
+                            child: Text(
+                              "CHOOSE YOUR PLAN",
+                              maxLines: 2,
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w400),
                             ),
-                            elevation: 2.0,
-                            child: SizedBox(
-                              height: 75,
-                              width: MediaQuery.of(context).size.width * 0.29,
-                              child: Stack(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Center(
-                                          child:
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                            child: Text("1 DAY",style: TextStyle(fontSize: 13),),
-                                          )
-                                      ),
-                                      Center(
-                                          child:
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                            child: Text(
-                                                "\$3.00",
-                                                style: TextStyle(
-                                                  color: Colors.green,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 17,
-                                                )
-                                            ),
-                                          )
-                                      ),
-                                    ],
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(0, 5, 5, 0),
-                                      child: Image.asset(
-                                        "assets/images/tickGreen.png",
-                                        height: 25,
-                                        width: 25,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )),
+                          ),
+                        ),
                       ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        child: Card(
-                            shape: const RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Colors.grey)// if you need this
-                            ),
-                            elevation: 2.0,
-                            child: SizedBox(
-                              height: 75,
-                              width: MediaQuery.of(context).size.width * 0.29,
-                              child: Stack(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Center(
-                                          child:
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                            child: Text("1 WEEK",style: TextStyle(fontSize: 13),),
-                                          )
-                                      ),
-                                      Center(
-                                          child:
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                            child: Text(
-                                                "\$21.00",
-                                                style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 17,
-                                                )
+                    Padding(
+                      padding:
+                      const EdgeInsets.fromLTRB(10, 5, 10, 15),
+                      child: SizedBox(
+                        child: Stack(children: <Widget>[
+                          Container(
+                            child: Column(
+                              children: [
+                                if (isdataloaded==true) SizedBox(width: 0,) else
+                                  Center(
+                                    child: Container(
+                                      height: 60,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        shrinkWrap: true,
+                                        physics: BouncingScrollPhysics(),
+                                        itemCount: data1.length,
+                                        itemBuilder: (context, index1) {
+                                          return GestureDetector(
+                                            onTap: (){
+                                              setState(() {
+                                                _radioValue1 = index1;
+                                                PackageName.text=''+data1[index1]['PackageName'];
+                                                ActualPrice.text=''+data1[index1]['ActualPrice'].toString();
+
+                                              });
+                                            },
+                                            child:ClipRRect(
+                                              borderRadius: BorderRadius.circular(10.0),
+                                              child: Padding(
+                                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                child: Card(
+                                                    shape: RoundedRectangleBorder(
+                                                        side: BorderSide(width: 1, color: _radioValue1==index1?Colors.green:Colors.grey)// if you need this
+                                                    ),
+                                                    elevation: 2.0,
+                                                    child: SizedBox(
+                                                      height: 75,
+                                                      width: MediaQuery.of(context).size.width * 0.29,
+                                                      child: Stack(
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              const Center(
+                                                                  child:
+                                                                  Padding(
+                                                                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                    child: Text("1 WEEK",style: TextStyle(fontSize: 13),),
+                                                                  )
+                                                              ),
+                                                              Center(
+                                                                  child:
+                                                                  Padding(
+                                                                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                    child: Text(
+                                                                        "\$21.00",
+                                                                        style: TextStyle(
+                                                                          color: _radioValue1==index1?Colors.green:Colors.blue,
+                                                                          fontWeight: FontWeight.bold,
+                                                                          fontSize: 17,
+                                                                        )
+                                                                    ),
+                                                                  )
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Align(
+                                                            alignment: Alignment.topRight,
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.fromLTRB(0, 5, 5, 0),
+                                                              child: _radioValue1==index1?Image.asset(
+                                                                "assets/images/tickGreen.png",
+                                                                height: 25,
+                                                                width: 25,
+                                                              ):SizedBox(width: 25, height: 25),
+                                                            ),
+                                                          ),
+
+                                                        ],
+                                                      ),
+                                                    )),
+                                              ),
                                             ),
-                                          )
+
+                                          );
+                                        },
                                       ),
-                                    ],
-                                  ),
-                                  const Align(
-                                    alignment: Alignment.topRight,
-                                    child: Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 5, 5, 0),
-                                      child: SizedBox(width: 25, height: 25),
                                     ),
-                                  )
-                                ],
-                              ),
-                            )),
-                      ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                        child: Card(
-                            shape: const RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Colors.grey)// if you need this
+                                  ),
+
+                              ],
                             ),
-                            elevation: 2.0,
-                            child: SizedBox(
-                              height: 75,
-                              width: MediaQuery.of(context).size.width * 0.29,
-                              child: Stack(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Center(
-                                          child:
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                            child: Text("1 MONTH",style: TextStyle(fontSize: 13),),
-                                          )
-                                      ),
-                                      Center(
-                                          child:
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                            child: Text(
-                                                "\$90.00",
-                                                style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 17,
-                                                )
-                                            ),
-                                          )
-                                      ),
-                                    ],
-                                  ),
-                                  const Align(
-                                    alignment: Alignment.topRight,
-                                    child: Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 5, 5, 0),
-                                      child: SizedBox(width: 25, height: 25),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )),
+                          ),
+                        ]),
                       ),
                     ),
 
+
                   ],
                 ),
+
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     ClipRRect(
+                //       borderRadius: BorderRadius.circular(10.0),
+                //       child: Padding(
+                //         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                //         child: Card(
+                //             shape: const RoundedRectangleBorder(
+                //                 side: BorderSide(width: 1, color: Colors.green)// if you need this
+                //             ),
+                //             elevation: 2.0,
+                //             child: SizedBox(
+                //               height: 75,
+                //               width: MediaQuery.of(context).size.width * 0.29,
+                //               child: Stack(
+                //                 children: [
+                //                   Column(
+                //                     crossAxisAlignment: CrossAxisAlignment.center,
+                //                     mainAxisAlignment: MainAxisAlignment.center,
+                //                     children: const [
+                //                       Center(
+                //                           child:
+                //                           Padding(
+                //                             padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                //                             child: Text("1 DAY",style: TextStyle(fontSize: 13),),
+                //                           )
+                //                       ),
+                //                       Center(
+                //                           child:
+                //                           Padding(
+                //                             padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                //                             child: Text(
+                //                                 "\$3.00",
+                //                                 style: TextStyle(
+                //                                   color: Colors.green,
+                //                                   fontWeight: FontWeight.bold,
+                //                                   fontSize: 17,
+                //                                 )
+                //                             ),
+                //                           )
+                //                       ),
+                //                     ],
+                //                   ),
+                //                   Align(
+                //                     alignment: Alignment.topRight,
+                //                     child: Padding(
+                //                       padding: const EdgeInsets.fromLTRB(0, 5, 5, 0),
+                //                       child: Image.asset(
+                //                         "assets/images/tickGreen.png",
+                //                         height: 25,
+                //                         width: 25,
+                //                       ),
+                //                     ),
+                //                   )
+                //                 ],
+                //               ),
+                //             )),
+                //       ),
+                //     ),
+                //
+                //   ],
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Center(

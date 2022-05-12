@@ -11,6 +11,9 @@ class APIConstant
   static String getStoreDetails = base_url + 'StoresAPI/StorePackagesDetailsAPI';
 
 
+  static String getStorePackage = base_url + 'StoresAPI/StorePackagesAmount';
+
+
   static String login = base_url + 'AccountAPI/LogonPhno';
 
 
