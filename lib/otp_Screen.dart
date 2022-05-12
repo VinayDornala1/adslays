@@ -14,6 +14,7 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'API.dart';
 import 'StoreDetails.dart';
 import 'StoresScreen.dart';
+import 'bottom_bar.dart';
 
 
 class OTPScreen extends StatefulWidget {
@@ -358,7 +359,7 @@ class _OTPScreenState extends State<OTPScreen> {
           prefs.setString('mobilenumber', MobileNo);
           print(CustomerId.toString());
           print(FirstName.toString());
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>MainScreen()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BottomNavigationMenu()));
         }
   }
 

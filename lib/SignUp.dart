@@ -315,7 +315,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 child: Center(
                                   child: GestureDetector(
                                     onTap: (){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=> OTPScreen(mobileNumber: '9999999999',)));
+                                      Navigator.pop(context);
                                     },
                                     child: Container(
                                       padding: const EdgeInsets.only(left: 15.0,right: 15,top: 8,bottom: 8),
