@@ -20,4 +20,7 @@ class APIConstant
 
   static String getCartItems = base_url + 'StoresAPI/GetCustomerCartListAPI';
 
+
+  static String insCartItems = base_url + 'StoresAPI/InsertCustomerCart';
+
 }

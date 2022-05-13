@@ -13,8 +13,20 @@ import 'UploadFiles.dart';
 class StoreDetails extends StatefulWidget {
 
   var storeId;
+  var packagename;
+  var actualPrice;
+  var packageId;
+  var screenSize;
+  var durationinDays;
+  var noofTimes;
 
-  StoreDetails({this.storeId});
+  StoreDetails({this.storeId,this.packagename,this.actualPrice
+  ,this.packageId
+  ,this.screenSize
+  ,this.durationinDays
+  ,this.noofTimes
+
+  });
 
   @override
   State<StoreDetails> createState() => _StoreDetailsState();
@@ -30,6 +42,7 @@ class _StoreDetailsState extends State<StoreDetails> {
 
   late int storeId;
   late String city;
+  late String title;
   late String state;
   late String country;
   late String zipCode;
@@ -39,6 +52,8 @@ class _StoreDetailsState extends State<StoreDetails> {
   late double actualPrice;
   late double offerPrice;
   late String footTraffic;
+  late String type;
+  late String fileFormat;
 
   Future<void> getData() async {
 
@@ -57,6 +72,8 @@ class _StoreDetailsState extends State<StoreDetails> {
     Map<String, dynamic> body = {
       'Mobile': '9160747554',
       'StoreId': widget.storeId.toString(),
+      'PackageId': widget.packageId.toString(),
+
     };
     print('Category base StoresList body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -73,16 +90,19 @@ class _StoreDetailsState extends State<StoreDetails> {
 
       if (msg == "Success" || msg == "success")
       {
-        storeId = jsonDecode(response.body)['StoreId'];
+        title = jsonDecode(response.body)['Title'];
         city = jsonDecode(response.body)['City'];
         state = jsonDecode(response.body)['State'];
+        country = jsonDecode(response.body)['Country'];
         zipCode = jsonDecode(response.body)['ZipCode'];
         imageUrl = jsonDecode(response.body)['ImageUrl'];
-        screenSize = jsonDecode(response.body)['ScreenSize'];
+        screenSize = jsonDecode(response.body)['ScreenSize'].toString();
         durationInDays = jsonDecode(response.body)['DurationinDays'];
         actualPrice = jsonDecode(response.body)['ActualPrice'];
         offerPrice = jsonDecode(response.body)['OfferPrice'];
         footTraffic = jsonDecode(response.body)['FootTraffic'];
+        type = jsonDecode(response.body)['Type'];
+        fileFormat = jsonDecode(response.body)['FileFormat'];
 
       }else{
         print("Unable to get API response.");
@@ -99,6 +119,11 @@ class _StoreDetailsState extends State<StoreDetails> {
   }
 
 
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
 
   @override
@@ -201,10 +226,11 @@ class _StoreDetailsState extends State<StoreDetails> {
                               width: MediaQuery.of(context).size.width,
                               height: 220,//MediaQuery.of(context).size.width * 0.50,
                               alignment: Alignment.center,
-                              child: Image.asset(
-                                "assets/images/desibg.png",
+                              child: Image(
                                 fit: BoxFit.fill,
-                              )
+                                image: NetworkImage(imageUrl,
+                                ),
+                              ),
                           ),
                           // Container(
                           //     width: MediaQuery.of(context).size.width,
@@ -223,26 +249,26 @@ class _StoreDetailsState extends State<StoreDetails> {
                           // ),s
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 50),
-                        child: Center(
-                          child: Image.asset(
-                            "assets/images/desilogo.png",
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: 100,
-                          ),
-                        ),
-                      )
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 50),
+                      //   child: Center(
+                      //     child: Image.asset(
+                      //       "assets/images/desilogo.png",
+                      //       fit: BoxFit.cover,
+                      //       height: 100,
+                      //       width: 100,
+                      //     ),
+                      //   ),
+                      // )
                     ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(15, 0, 5, 8),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 5, 8),
                   child: Text(
-                    "Desi District - Riverside Dr, Irving, TX",
+                    ""+title+','+city+','+state+','+country,
                     maxLines: 2,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600),
                   ),
@@ -284,8 +310,8 @@ class _StoreDetailsState extends State<StoreDetails> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
+                                children:  [
+                                  const Text(
                                     "Type",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
@@ -293,7 +319,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                       color: Color(0xff3962cb),
                                     ),
                                   ),
-                                  Text(
+                                  const Text(
                                     ":",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
@@ -305,10 +331,10 @@ class _StoreDetailsState extends State<StoreDetails> {
                                     child: Padding(
                                       padding: EdgeInsets.fromLTRB(8, 0, 10, 8),
                                       child: Text(
-                                        "Indian Restaurant/Grocery Store Indian Restaurant/Grocery Store",
+                                        ""+type,
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.normal,
                                           fontSize: 15,
                                           color: Colors.black,
@@ -324,8 +350,8 @@ class _StoreDetailsState extends State<StoreDetails> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
+                                children: [
+                                  const Text(
                                     "Ad Screen",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
@@ -333,7 +359,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                       color: Color(0xff3962cb),
                                     ),
                                   ),
-                                  Text(
+                                  const Text(
                                     ":",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
@@ -345,10 +371,10 @@ class _StoreDetailsState extends State<StoreDetails> {
                                     child: Padding(
                                       padding: EdgeInsets.fromLTRB(8, 0, 10, 8),
                                       child: Text(
-                                        "30 Inch Monitor",
+                                        ""+widget.screenSize,
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.normal,
                                           fontSize: 15,
                                           color: Colors.black,
@@ -364,8 +390,8 @@ class _StoreDetailsState extends State<StoreDetails> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
+                                children: [
+                                  const Text(
                                     "File Format",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
@@ -373,7 +399,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                       color: Color(0xff3962cb),
                                     ),
                                   ),
-                                  Text(
+                                  const Text(
                                     ":",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
@@ -385,10 +411,10 @@ class _StoreDetailsState extends State<StoreDetails> {
                                     child: Padding(
                                       padding: EdgeInsets.fromLTRB(8, 0, 10, 8),
                                       child: Text(
-                                        "jpg - PDF",
+                                        ""+fileFormat,
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.normal,
                                           fontSize: 15,
                                           color: Colors.black,
@@ -404,7 +430,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
+                                children: [
                                   Text(
                                     "Foot Traffic",
                                     style: TextStyle(
@@ -425,7 +451,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                     child: Padding(
                                       padding: EdgeInsets.fromLTRB(8, 0, 10, 8),
                                       child: Text(
-                                        "30 People per Hour",
+                                        ""+footTraffic,
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
@@ -444,8 +470,8 @@ class _StoreDetailsState extends State<StoreDetails> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
+                                children: [
+                                  const Text(
                                     "Cost",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
@@ -453,7 +479,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                       color: Color(0xff3962cb),
                                     ),
                                   ),
-                                  Text(
+                                  const Text(
                                     ":",
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
@@ -465,7 +491,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                     child: Padding(
                                       padding: EdgeInsets.fromLTRB(8, 0, 10, 8),
                                       child: Text(
-                                        "60 Dollars a Month",
+                                        "\$"+actualPrice.toString(),
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
