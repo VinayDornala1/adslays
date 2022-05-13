@@ -47,7 +47,7 @@ class _StoresList extends State<StoresList> {
       print(e);
     }
 
-    String url1 = APIConstant.categorybaseStoresList;
+    String url1 = APIConstant.categoryBaseStoresList;
     print('Category base StoresList url: '+url1);
     Map<String, dynamic> body = {
       'Mobile': '9160747554',
@@ -175,7 +175,7 @@ class _StoresList extends State<StoresList> {
               Padding(
                 padding: EdgeInsets.fromLTRB(5, 8, 5, 8),
                 child: Text(
-                  widget.storeCategory,
+                  ''+widget.storeCategory,
                   style: const TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.w600),

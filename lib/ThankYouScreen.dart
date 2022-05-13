@@ -1,10 +1,7 @@
 import 'package:adslay/bottom_bar.dart';
 import 'package:flutter/material.dart';
-
-import 'ChoosePlan.dart';
 import 'Constant/ConstantsColors.dart';
-import 'HomeScreen.dart';
-import 'MainScreen.dart';
+
 
 class ThankYouScreen extends StatefulWidget {
   const ThankYouScreen({Key? key}) : super(key: key);

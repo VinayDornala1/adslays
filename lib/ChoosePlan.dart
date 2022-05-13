@@ -366,13 +366,13 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                           padding: const EdgeInsets.fromLTRB(17.0, 5, 10, 0),
                                           child: Container(
                                             height: 56,
-                                            padding: EdgeInsets.only(left: 16, right: 16,top: 5),
+                                            padding: const EdgeInsets.only(left: 16, right: 16,top: 5),
                                             decoration: BoxDecoration(
                                                 border: Border.all(color: Color(0xFFF2F2F2), width: 1),
                                                 borderRadius: BorderRadius.circular(13),
-                                                color: Color(0xFFFFFFFFF)),
-                                            child: screenSizeList == null
-                                                ?SizedBox(height: 0,width: double.infinity)
+                                                color: const Color(0xFFFFFFFFF)),
+                                            child: (screenSizeList == null)
+                                                ?const SizedBox(height: 0,width: double.infinity)
                                                 :DropdownButton(
                                               icon: Icon(
                                                 Icons.arrow_drop_down_circle_outlined,

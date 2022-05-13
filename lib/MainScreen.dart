@@ -14,6 +14,7 @@ import 'package:shimmer/shimmer.dart';
 import 'dart:io' show Platform;
 import 'dart:ui';
 
+import 'CartScreen.dart';
 import 'HowItWorks.dart';
 import 'StoreDetails.dart';
 import 'StoresList.dart';
@@ -415,29 +416,34 @@ class _MainScreenState extends State<MainScreen> {
                 "assets/images/home-logo.png", width: 130,)
           ),
           const Spacer(),
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                  21.5), // if you need this
-            ),
-            child: Stack(
-              children: [
-                Container(
-                  color: Colors.transparent,
-                  width: 43,
-                  height: 43,
+          GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> const CartScreen()));
+            },
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    21.5), // if you need this
+              ),
+              child: Stack(
+                children: [
+                  Container(
+                    color: Colors.transparent,
+                    width: 43,
+                    height: 43,
 
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
-                  child: Image.asset(
-                    "assets/images/cart.png",
-                    width: 28,
-                    height: 28,
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
+                    child: Image.asset(
+                      "assets/images/cart.png",
+                      width: 28,
+                      height: 28,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Card(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adslay/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ()=>
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder:
-                        (context) =>  MainScreen()//HomeScreen()
+                        (context) =>  BottomNavigationMenu()//HomeScreen()
                     )
                 )
         );

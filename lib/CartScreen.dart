@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:adslay/Constant/ConstantsColors.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'API.dart';
 import 'BillingScreen.dart';
 import 'ChoosePlan.dart';
 
@@ -14,9 +20,53 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
 
-  bool isLoading = false;
-  late List<dynamic> cartList;
+  bool isLoading = true;
+  List<dynamic> cartList = [];
 
+  String email = '';
+  String mobileNumber = '';
+
+  Future<void> getdata() async {
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        mobileNumber = prefs.getString('mobilenumber')!;
+        email = prefs.getString('email')!;
+      });
+    }catch(e){
+      print(e);
+    }
+    String url1 = APIConstant.getCartItems;
+    print("Get cart items url is: "+url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+    };
+    print('Get cart items api body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Cart items response :' + response.body.toString());
+    setState(() {
+      cartList = jsonDecode(response.body)['CartList'];
+    });
+
+    setState(() {
+      isLoading=false;
+    });
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,54 +109,32 @@ class _CartScreenState extends State<CartScreen> {
                                       "assets/images/home-logo.png", width: 130,)
                                 ),
                                 const Spacer(),
-                                Card(
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        21.5), // if you need this
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        color: Colors.transparent,
-                                        width: 43,
-                                        height: 43,
-
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
-                                        child: Image.asset(
-                                          "assets/images/cart.png",
-                                          width: 28,
-                                          height: 28,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Card(
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          21.5), // if you need this
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          color: Colors.transparent,
+                                          width: 43,
+                                          height: 43,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Card(
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        21.5), // if you need this
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        color: Colors.transparent,
-                                        width: 43,
-                                        height: 43,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            10, 10, 5, 0),
-                                        child: Image.asset(
-                                          "assets/images/search.png",
-                                          width: 25,
-                                          height: 25,
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 10, 5, 0),
+                                          child: Image.asset(
+                                            "assets/images/search.png",
+                                            width: 25,
+                                            height: 25,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -120,7 +148,9 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
           ),
-          Positioned(
+          isLoading
+              ?const SizedBox(height: 20,width: 20)
+              :Positioned(
             left: 0,
             right: 0,
             bottom: 0,
@@ -317,7 +347,7 @@ class _CartScreenState extends State<CartScreen> {
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
-      itemCount: 10,//cartList.length,
+      itemCount: cartList.length,
       itemBuilder: (context, index) {
         return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,24 +360,14 @@ class _CartScreenState extends State<CartScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Image.asset(
-                          "assets/images/desibg.png",
+                        //NetworkImage(cartList[index]["ImageUrl"]),
+                        Image.network(
+                          cartList[index]["ImageUrl"],
                           height: 160,
                           width: MediaQuery.of(context).size.width,
                           fit: BoxFit.fitWidth,
                         ),
                       ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Center(
-                        child: Image.asset(
-                          "assets/images/desilogo.png",
-                          fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
-                        ),
-                      ),
                     ),
                     Positioned(
                         top: 10,
@@ -374,12 +394,12 @@ class _CartScreenState extends State<CartScreen> {
               ),
               Row(
                 children:  [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(15, 5, 5, 8),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 5, 5, 8),
                     child: Text(
-                      "\$3.00",
+                      "\$" + cartList[index]["ActualPrice"].toString(),
                       maxLines: 2,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600,
                         color: Colors.blue,
@@ -387,18 +407,18 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                   const Spacer(),
-                  const Padding(
+                  (cartList[index]["ImageUrl"] == "")?const SizedBox(height: 0,width: 0,):Padding(
                     padding: EdgeInsets.fromLTRB(15, 5, 5, 8),
                     child: Text(
-                      "UPLOAD AD!",
+                      "UPLOADED AD!",
                       maxLines: 2,
                       style: TextStyle(
                         fontSize: 16.0,
-                        color: Colors.black,
+                        color: ConstantColors.appTheme,
                       ),
                     ),
                   ),
-                  Padding(
+                  (cartList[index]["ImageUrl"] == "")?const SizedBox(height: 0,width: 0,):Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                     child: Image.asset(
                       "assets/images/link.png",
@@ -428,10 +448,10 @@ class _CartScreenState extends State<CartScreen> {
                             child: Stack(
                               children: [
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Padding(
+                                  children: [
+                                    const Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
                                         "SCREEN SIZE",
@@ -443,9 +463,9 @@ class _CartScreenState extends State<CartScreen> {
                                     Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
-                                        "40 Inch",
+                                        ''+ cartList[index]["ScreenSize"].toString(),
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600),
                                       ),
@@ -465,10 +485,10 @@ class _CartScreenState extends State<CartScreen> {
                             child: Stack(
                               children: [
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Padding(
+                                  children: [
+                                    const Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
                                         "NO OF TIMES",
@@ -480,9 +500,9 @@ class _CartScreenState extends State<CartScreen> {
                                     Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
-                                        "2 Times",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        ''+ cartList[index]["NoofTimes"].toString(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600),
                                       ),
@@ -504,8 +524,8 @@ class _CartScreenState extends State<CartScreen> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Padding(
+                                  children: [
+                                    const Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
                                         "TOTAL",
@@ -515,11 +535,11 @@ class _CartScreenState extends State<CartScreen> {
                                             fontWeight: FontWeight.w400),),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
-                                        "\$21.00",
+                                        "\$" + cartList[index]["ActualPrice"].toString(),
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600),
                                       ),

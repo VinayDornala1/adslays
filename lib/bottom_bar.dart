@@ -13,6 +13,7 @@ import 'HistoryScreen.dart';
 import 'MainScreen.dart';
 import 'ProfileScreen.dart';
 import 'StoresList.dart';
+import 'StoresScreen.dart';
 
 class BottomNavigationMenu extends StatefulWidget {
   static int indexbottom=0;
@@ -35,7 +36,7 @@ class _BottomNavigationMenuState extends State<BottomNavigationMenu> {
   // int _selectedPage = 0;
   List<Widget> pageList=[
     MainScreen(),
-    StoresList(),
+    StoresScreen(),
     HistoryScreen(),
     ProfileScreen(),
   ];
