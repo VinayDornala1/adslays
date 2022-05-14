@@ -298,8 +298,8 @@ class _OTPScreenState extends State<OTPScreen> {
 
 
   Widget pinputwidget() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 25),
+    return const Padding(
+      padding: EdgeInsets.only(right: 25),
       // child: PinPut(
       //   fieldsCount: 6,
       //   withCursor: true,

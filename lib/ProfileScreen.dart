@@ -1,5 +1,12 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
+
+import 'API.dart';
 import 'Constant/ConstantsColors.dart';
 import 'ThankYouScreen.dart';
 
@@ -15,15 +22,198 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List tabBars = ['Personal Details', 'Order Details'];
   int _currentIndex = 0;
 
+  bool isLoading = true;
+  bool isCheckoutAvailable = false;
+  List<dynamic> ordersHistoryList = [];
+  List<dynamic> userDetails = [];
+
+  String email = '';
+  String mobileNumber = '';
+  double subTotalValue = 0.0;
+
+  late ProgressDialog pr;
+
+
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController mobileNumberController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+
+
+  Future<void> getData() async {
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        mobileNumber = prefs.getString('mobilenumber')!;
+        email = prefs.getString('email')!;
+      });
+    }catch(e){
+      print(e);
+    }
+    String url1 = APIConstant.getCartHistoryItems;
+    print("Get orders history items url is: "+url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+    };
+    print('Get orders history items api body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    //print('Get orders history items response :' + response.body.toString());
+    setState(() {
+      ordersHistoryList = jsonDecode(response.body)['OrdersList'];
+    });
+
+    if (ordersHistoryList.isEmpty) {
+      print("No orders history found.");
+      isCheckoutAvailable = false;
+    }
+    else{
+      for (var item in ordersHistoryList) {
+        double actualPrice = item["ActualPrice"];
+        subTotalValue += actualPrice;
+        //print("Cart items actual prices are: "+actualPrice.toString());
+      }
+      isCheckoutAvailable = true;
+      print("Cart items total price: "+subTotalValue.toString());
+    }
+    _getUserProfileDetails();
+
+    setState(() {
+      isLoading=false;
+    });
+  }
+
+  Future<void> _getOrdersHistory() async {
+
+    String url1 = APIConstant.getCartHistoryItems;
+    print("Get orders history items url is: "+url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+    };
+    print('Get orders history items api body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    //print('Get orders history items response :' + response.body.toString());
+    setState(() {
+      ordersHistoryList = jsonDecode(response.body)['OrdersList'];
+    });
+
+    if (ordersHistoryList.isEmpty) {
+      print("No orders history found.");
+      isCheckoutAvailable = false;
+    }
+    else{
+      for (var item in ordersHistoryList) {
+        double actualPrice = item["ActualPrice"];
+        subTotalValue += actualPrice;
+        //print("Cart items actual prices are: "+actualPrice.toString());
+      }
+      isCheckoutAvailable = true;
+      print("Cart items total price: "+subTotalValue.toString());
+    }
+
+    setState(() {
+      isLoading=false;
+    });
+  }
+
+  Future<void> _getUserProfileDetails() async {
+
+    String url1 = APIConstant.login;
+    print(url1);
+    Map<String, dynamic> body = {
+      'MobileNo': '9160747554',
+    };
+    print("Profile get details api calling :" + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+
+    Map data = jsonDecode(response.body);
+    print(data);
+    String msg = data['msg'];
+    print(msg);
+
+    if (msg=='No Records Found') {
+
+    } else {
+      setState(() {
+
+        userNameController.text = data['objCustomers']['FirstName'] + " " + data['objCustomers']['LastName'];
+        emailController.text = data['objCustomers']['Email'];
+        mobileNumberController.text = data['objCustomers']['MobileNo'];
+        var FirstName = data['objCustomers']['FirstName'];
+        var Email = data['objCustomers']['Email'];
+        var MobileNo = data['objCustomers']['MobileNo'];
+
+
+        print('dasfdasfasdfsadfasdfadsfas'+userDetails[0]["FirstName"]);
+        userNameController.text = userDetails[0]["FirstName"] + " " + userDetails[0]["LastName"];
+      });
+    }
+
+    setState(() {
+      isLoading=false;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+
+  }
+
 
   _onSelected(int index) {
     setState(() {
       _currentIndex = index;
+
+      if (index == 1){
+        _getOrdersHistory();
+      }else if (index == 0){
+        _getUserProfileDetails();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    pr = ProgressDialog(context);
+    pr.style(
+        message: 'Loading',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: Container(
+            padding: const EdgeInsets.all(10.0),
+            child: const CircularProgressIndicator()),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: const TextStyle(
+            color: Colors.black, fontSize: 10.0, fontWeight: FontWeight.w400),
+        messageTextStyle: const TextStyle(
+            color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600)
+    );
+
+
     return Scaffold(
       body: SafeArea(
         left: false,
@@ -37,19 +227,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Image.asset(
-                        "assets/images/back.png",
-                        width: 45,
-                        height: 65,
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Navigator.pop(context);
+                  //   },
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.only(top: 10),
+                  //     child: Image.asset(
+                  //       "assets/images/back.png",
+                  //       width: 45,
+                  //       height: 65,
+                  //     ),
+                  //   ),
+                  // ),
                   Padding(
                       padding: const EdgeInsets.only(
                           top: 0, right: 30, left: 10),
@@ -132,12 +322,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         _previewImage(),
 
-                        const Center(
+                        Center(
                           child: Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "Yashwanth Puvvada",
-                              style: TextStyle(
+                              "" + userNameController.text,
+                              style: const TextStyle(
                                   fontSize: 18,
                                   fontFamily: "Mont-Regular"
                               ),
@@ -149,11 +339,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Spacer(),
-                            const Text(
-                              "   +91 99999 99999",
+                            Text(
+                              "+91 $mobileNumber",
                               style: TextStyle(
                                   fontSize: 17,
-                                  fontFamily: "Mont-Light"
+                                  fontFamily: "Mont-Light",
+                                  color: ConstantColors.appTheme,
                               ),
                             ),
                             const Spacer(),
@@ -240,15 +431,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _currentIndex == 0
                             ? _personalDetails()
                             : _currentIndex == 1
-                            ? _orderDetails()
+                            ? _ordersHistoryItems()
                             : const SizedBox(width: 0,height: 0,)
                       ],
                     )
                 ),
               )
-
-
-
             ]),
       ),
     );
@@ -376,27 +564,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-              child: TextField(
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  hintText: 'Your Name',
-                  labelText: 'Your Name',
 
-                ),
-              ),
-            ),
             const Padding(
-              padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: TextField(
+
                 decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
@@ -406,8 +578,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   filled: true,
                   fillColor: Colors.transparent,
-                  hintText: "Email Address",
-                  labelText: "Email Address",
+                  hintText: 'Enter Your Name',
 
                 ),
               ),
@@ -426,8 +597,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   filled: true,
                   fillColor: Colors.transparent,
                   hintText: 'Mobile Number',
-                  labelText: 'Mobile Number',
-
 
                 ),
               ),
@@ -445,32 +614,126 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   filled: true,
                   fillColor: Colors.transparent,
-                  hintText: 'Your Company',
-                  labelText: 'Your Company',
-
+                  hintText: 'Enter Company Name',
 
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-              child: TextField(
+            // const Padding(
+            //   padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+            //   child: TextField(
+            //
+            //     decoration: InputDecoration(
+            //       enabledBorder: UnderlineInputBorder(
+            //         borderSide: BorderSide(color: Colors.grey),
+            //       ),
+            //       focusedBorder: UnderlineInputBorder(
+            //         borderSide: BorderSide(color: Colors.grey),
+            //       ),
+            //       filled: true,
+            //       fillColor: Colors.transparent,
+            //       hintText: 'Enter Your Address',
+            //
+            //     ),
+            //   ),
+            // ),
 
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:  const [
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(15, 10, 5, 0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        hintText: 'City',
+                        // suffixIcon:  Icon(
+                        //   Icons.arrow_drop_down,
+                        // ),
+                      ),
+                    ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  hintText: 'Your Address',
-                  labelText: 'Your Address',
-
                 ),
-              ),
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        hintText: 'State',
+                        suffixIcon:  Icon(
+                          Icons.arrow_drop_down,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children:  const [
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(15, 10, 5, 0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        hintText: 'Country',
+                        suffixIcon:  Icon(
+                          Icons.arrow_drop_down,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        filled: true,
+                        fillColor: Colors.transparent,
+                        hintText: 'Enter Zip Code ',
+
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+
             const SizedBox(height: 50)
           ],
         ),
@@ -479,13 +742,92 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   }
 
-  Widget _orderDetails() {
-
-    return ListView.builder(
+  Widget _ordersHistoryItems() {
+    return isLoading
+        ? Shimmer.fromColors(
+        baseColor: ConstantColors.lightGrey,
+        highlightColor: Colors.white,
+        enabled: true,
+        child: ListView(
+          shrinkWrap: true, // use it
+          physics: const BouncingScrollPhysics(),
+          children: [
+            GridView.count(
+              crossAxisCount: 1,
+              childAspectRatio: 1.5,
+              physics: const ScrollPhysics(),
+              shrinkWrap: true,
+              children: List.generate(10, (index) {
+                return InkWell(
+                  child: GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:
+                          [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: MediaQuery.of(context).size.width * 0.40,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 10,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            const SizedBox(height: 10,width: 10,),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 10,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              ),
+            )
+          ],
+        )
+    )
+        : ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
-      itemCount: 10,//cartList.length,
+      itemCount: ordersHistoryList.length,
       itemBuilder: (context, index) {
         return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -498,47 +840,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.asset(
-                            "assets/images/desibg.png",
-                            height: 160,
+                        Card(
+                          elevation: 1,
+                          child: Image.network(
+                            ordersHistoryList[index]["ImageUrl"],
+                            height: 170,
                             width: MediaQuery.of(context).size.width,
-                            fit: BoxFit.fitWidth,
+                            fit: BoxFit.contain,
                           ),
-                        )
+                        ),
+                        // ClipRRect(
+                        //   borderRadius: BorderRadius.circular(8.0),
+                        //   child: Image.asset(
+                        //     "assets/images/desibg.png",
+                        //     height: 160,
+                        //     width: MediaQuery.of(context).size.width,
+                        //     fit: BoxFit.fitWidth,
+                        //   ),
+                        // )
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30),
-                      child: Center(
-                        child: Image.asset(
-                          "assets/images/desilogo.png",
-                          fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                        top: 10,
-                        right: 8,
-                        child: Image.asset(
-                          "assets/images/delete.png",
-                          fit: BoxFit.fill,
-                          height: 45,
-                          width: 45,
-                        ))
+
+                    // Positioned(
+                    //     top: 10,
+                    //     right: 8,
+                    //     child: Image.asset(
+                    //       "assets/images/delete.png",
+                    //       fit: BoxFit.fill,
+                    //       height: 45,
+                    //       width: 45,
+                    //     ))
 
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(15, 0, 5, 8),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 0, 5, 8),
                 child: Text(
-                  "Desi District - Riverside Dr, Irving, TX",
+                  "" + ordersHistoryList[index]["StoreName"] +", "+ ordersHistoryList[index]["City"] +", "+ ordersHistoryList[index]["State"],
                   maxLines: 2,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 18.0,
                       fontFamily: 'Mont-SemiBold'
                   ),
@@ -546,20 +887,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Row(
                 children:  [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(15, 5, 5, 8),
-                    child: Text(
-                      "\$3.00",
-                      maxLines: 2,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontFamily: 'Mont-Regular',
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
+                  // const Padding(
+                  //   padding: EdgeInsets.fromLTRB(15, 5, 5, 8),
+                  //   child: Text(
+                  //     "\$3.00",
+                  //     maxLines: 2,
+                  //     style: TextStyle(
+                  //       fontSize: 18.0,
+                  //       fontFamily: 'Mont-Regular',
+                  //       color: Colors.blue,
+                  //     ),
+                  //   ),
+                  // ),
                   const Spacer(),
-                  const Padding(
+                  (ordersHistoryList[index]["IsFileUpload"] == "Yes") ?const Padding(
                     padding: EdgeInsets.fromLTRB(15, 5, 5, 8),
                     child: Text(
                       "UPLOAD AD!",
@@ -570,8 +911,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontFamily: 'Mont-Regular',
                       ),
                     ),
-                  ),
-                  Padding(
+                  ):const SizedBox(width: 0,height: 0,),
+                  (ordersHistoryList[index]["IsFileUpload"] == "Yes") ?Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
                     child: Image.asset(
                       "assets/images/link.png",
@@ -579,7 +920,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 20,
                       width: 20,
                     ),
-                  )
+                  ):const SizedBox(width: 0,height: 0,),
                 ],
               ),
               Padding(
@@ -601,10 +942,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Stack(
                               children: [
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Padding(
+                                  children:  [
+                                    const Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
                                         "SCREEN SIZE",
@@ -618,9 +959,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
-                                        "40 Inch",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        "" + ordersHistoryList[index]["ScreenSize"].toString(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontFamily: 'Mont-SemiBold',
                                         ),
@@ -642,10 +983,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Stack(
                               children: [
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Padding(
+                                  children:  [
+                                    const Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
                                         "NO OF TIMES",
@@ -657,11 +998,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
-                                        "2 Times",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        "" + ordersHistoryList[index]["NoofTimes"].toString(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontFamily: 'Mont-SemiBold',
                                         ),
@@ -683,10 +1024,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Stack(
                               children: [
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Padding(
+                                  children:  [
+                                    const Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
                                         "TOTAL",
@@ -698,11 +1039,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
-                                        "\$21.00",
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        // "\$21.00",
+                                        "\$" + ordersHistoryList[index]["ActualPrice"].toString(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontFamily: 'Mont-SemiBold',
                                         ),
@@ -753,7 +1095,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       },
     );
-
   }
 
 

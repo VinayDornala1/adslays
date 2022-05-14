@@ -20,11 +20,14 @@ class StoreDetails extends StatefulWidget {
   var durationinDays;
   var noofTimes;
 
-  StoreDetails({this.storeId,this.packagename,this.actualPrice
-  ,this.packageId
-  ,this.screenSize
-  ,this.durationinDays
-  ,this.noofTimes
+  StoreDetails({
+    this.storeId,
+    this.packagename,
+    this.actualPrice,
+    this.packageId,
+    this.screenSize,
+    this.durationinDays,
+    this.noofTimes
 
   });
 
@@ -40,20 +43,20 @@ class _StoreDetailsState extends State<StoreDetails> {
   String deviceOS = '';
   double screenWidth = 0.0;
 
-  late int storeId;
-  late String city;
-  late String title;
-  late String state;
-  late String country;
-  late String zipCode;
-  late String imageUrl;
-  late String screenSize;
-  late int durationInDays;
-  late double actualPrice;
-  late double offerPrice;
-  late String footTraffic;
-  late String type;
-  late String fileFormat;
+  int storeId = 0;
+  String city = '';
+  String title = '';
+  String state = '';
+  String country = '';
+  String zipCode = '';
+  String imageUrl = '';
+  String screenSize = '';
+  int durationInDays = 0;
+  double actualPrice = 0.0;
+  double offerPrice = 0.0;
+  String footTraffic = '';
+  String type = '';
+  String fileFormat = '';
 
   Future<void> getData() async {
 
@@ -223,14 +226,13 @@ class _StoreDetailsState extends State<StoreDetails> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 220,//MediaQuery.of(context).size.width * 0.50,
-                              alignment: Alignment.center,
-                              child: Image(
-                                fit: BoxFit.fill,
-                                image: NetworkImage(imageUrl,
-                                ),
-                              ),
+                            width: MediaQuery.of(context).size.width,
+                            height: 220,//MediaQuery.of(context).size.width * 0.50,
+                            alignment: Alignment.center,
+                            child: Image(
+                              fit: BoxFit.fill,
+                              image: NetworkImage(imageUrl),
+                            ),
                           ),
                           // Container(
                           //     width: MediaQuery.of(context).size.width,
@@ -515,7 +517,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                     padding: const EdgeInsets.only(top: 10),
                     child: MaterialButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> UploadFiles()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> UploadFiles(storeId: widget.storeId)));
                       },
                       textColor: Colors.white,
                       padding: const EdgeInsets.all(0.0),

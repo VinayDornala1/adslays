@@ -15,7 +15,9 @@ import 'dart:io' show Platform;
 import 'dart:ui';
 
 import 'CartScreen.dart';
+import 'Constant/ConstantsColors.dart';
 import 'HowItWorks.dart';
+import 'LoginScreen.dart';
 import 'StoreDetails.dart';
 import 'StoresList.dart';
 
@@ -65,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
       body: body,
       encoding: encoding,
     );
-    print('Home Screen api calling body:' + response.body.toString());
+    //print('Home Screen api calling body:' + response.body.toString());
     setState(() {
       MobileBannersList = jsonDecode(response.body)['ThemeBannersList'];
       CategoriesList = jsonDecode(response.body)['CategoriesList'];
@@ -140,7 +142,7 @@ class _MainScreenState extends State<MainScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _imageSlider(),
-                      const Padding(
+                      isLoading? const SizedBox(height: 0,width: 0,):const Padding(
                         padding: EdgeInsets.fromLTRB(10, 8, 5, 8),
                         child: Text(
                           "Ad Space Categories",
@@ -151,7 +153,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                       _adSpaceCategories(),
-                      const Padding(
+                      isLoading?const SizedBox(height: 0,width: 0,):const Padding(
                         padding: EdgeInsets.fromLTRB(10, 8, 5, 0),
                         child: Text(
                           "Featured Ad Spaces",
@@ -355,13 +357,18 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
-                      false);
-                  _scaffoldKey.currentState?.openEndDrawer();
-                  _boolProvider.setBottomChange(3);
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
+                onTap: () async {
+                  _boolProvider.setBottomChange(0);
+                  SharedPreferences preferences =
+                      await SharedPreferences
+                      .getInstance();
+                  await preferences.clear();
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder:
+                              (BuildContext context) => LoginScreen()),
+                      ModalRoute.withName('/'));
 
                 },
                 child: Column(
@@ -389,6 +396,8 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+
+
 
   Widget _appBar() {
     return Padding(
@@ -478,7 +487,25 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _imageSlider() {
-    return Padding(
+    return isLoading
+        ? Shimmer.fromColors(
+      baseColor: ConstantColors.lightGrey,
+      highlightColor: Colors.white,
+      enabled: true,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          height: 180,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: ConstantColors.lightGrey,
+          ),
+          //  height: 180,
+          width: double.infinity,
+        ),
+      ),
+    )
+        : Padding(
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
       child:
       Container(
@@ -509,7 +536,7 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                     )
-                        : CarouselSlider(
+                        :CarouselSlider(
                       items: [
                         for(int i=0;i<MobileBannersList.length;i++)
                           Padding(
@@ -551,7 +578,7 @@ class _MainScreenState extends State<MainScreen> {
                     )),
 
                 isLoading
-                    ?Shimmer.fromColors(
+                    ? Shimmer.fromColors(
                   baseColor: Colors.grey,
                   highlightColor: Colors.grey,
                   enabled: true,
@@ -568,7 +595,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ),
                 )
-                    :Row(
+                    : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: MobileBannersList.asMap().entries.map((entry) {
                     return _current == entry.key
@@ -577,7 +604,7 @@ class _MainScreenState extends State<MainScreen> {
                         width: 8.0,
                         height: 8.0,
                         margin: EdgeInsets.symmetric(vertical: 6.0, horizontal: 2.0),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.blue),
                       ),
@@ -585,8 +612,8 @@ class _MainScreenState extends State<MainScreen> {
                       child: Container(
                         width: 4.0,
                         height: 4.0,
-                        margin: EdgeInsets.symmetric(vertical: 6.0, horizontal: 2.0),
-                        decoration: BoxDecoration(
+                        margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 2.0),
+                        decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.amber),
                       ),
@@ -602,7 +629,86 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _adSpaceCategories(){
-    return GridView.builder(
+    return isLoading
+        ? Shimmer.fromColors(
+        baseColor: ConstantColors.lightGrey,
+        highlightColor: Colors.white,
+        enabled: true,
+        child: ListView(
+          shrinkWrap: true, // use it
+          physics: const BouncingScrollPhysics(),
+          children: [
+            GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 0.90,
+              physics: const ScrollPhysics(),
+              shrinkWrap: true,
+              children: List.generate(6, (index) {
+                return InkWell(
+                  child: GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:
+                          [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: MediaQuery.of(context).size.width * 0.40,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 10,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 10,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              ),
+            )
+          ],
+        )
+    )
+        : GridView.builder(
       padding: EdgeInsets.zero,
       itemCount: CategoriesList.length,
       shrinkWrap: true,
@@ -814,117 +920,83 @@ class _MainScreenState extends State<MainScreen> {
   Widget _featuredAdSpace(){
     return isLoading
         ? Shimmer.fromColors(
-      baseColor: Colors.grey,
-      highlightColor: Colors.grey,
-      enabled: true,
-      child: Container(
-          height: 244.0,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 2,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
-                  child: Card(
-                    elevation: 2,
-                    shadowColor: Color(0xFF000000).withOpacity(0.08),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14.0)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 137.0,
-                          width: 320,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(14.0),
-                                topLeft: Radius.circular(14.0)),
-                          ),
-                          child: Container(
-                            height: 137.0,
-                            width: 320,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: FractionalOffset.topCenter,
-                                  end: FractionalOffset.bottomCenter,
-                                  colors: [
-                                    Color(0xFFC4C4C4).withOpacity(0.0),
-                                    Color(0xFF0063AD).withOpacity(0.7),
-                                  ],
-                                  stops: [
-                                    0.0,
-                                    1.0
-                                  ]),
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(14.0),
-                                  topLeft: Radius.circular(14.0)),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                          const EdgeInsets.fromLTRB(14, 10, 0, 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color:
-                                  Color(0xFF141E28).withOpacity(1.0),
-                                  fontSize: 14,
-                                  letterSpacing: 0,
-                                  fontFamily: "Mont-Regular",
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+        baseColor: ConstantColors.lightGrey,
+        highlightColor: Colors.white,
+        enabled: true,
+        child: ListView(
+          shrinkWrap: true, // use it
+          physics: const BouncingScrollPhysics(),
+          children: [
+            GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 0.99,
+              physics: const ScrollPhysics(),
+              shrinkWrap: true,
+              children: List.generate(
+                2, (index) {
+                return InkWell(
+                  child: GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:
+                          [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        '',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontFamily: "Mont-Regular",
-                                            color: Color(0xFF141E28)
-                                                .withOpacity(.45),
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text(
-                                        '',
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            fontFamily: "Mont-Regular",
-                                            color: Color(0xFF0063AD)
-                                                .withOpacity(1.0),
-                                            fontWeight: FontWeight.w400),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: MediaQuery.of(context).size.width * 0.30,
+                                        alignment: Alignment.center,
                                       ),
                                     ],
-                                  ),
-                                  SizedBox(
-                                    width: 40,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                  )),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 10,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Card(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 10,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 );
-              })),
+              },
+              ),
+            )
+          ],
+        )
     )
         : SizedBox(
       height: 180.0,

@@ -10,6 +10,7 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'API.dart';
+import 'ChoosePlan.dart';
 
 class StoresScreen extends StatefulWidget {
   const StoresScreen({Key? key}) : super(key: key);
@@ -48,7 +49,6 @@ class _StoresScreenState extends State<StoresScreen> {
     print('Category base StoresList url: '+url1);
     Map<String, dynamic> body = {
       'Mobile': '9160747554',
-      'CategoryId': "1",
     };
     print('Category base StoresList body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -59,7 +59,7 @@ class _StoresScreenState extends State<StoresScreen> {
       body: body,
       encoding: encoding,
     );
-    print('Category base StoresList response in stores tab :' + response.body.toString());
+    //print('Category base StoresList response in stores tab :' + response.body.toString());
     setState(() {
       storesList = jsonDecode(response.body)['StoresList'];
     });
@@ -94,19 +94,19 @@ class _StoresScreenState extends State<StoresScreen> {
                 children: <Widget>[
                   Row(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Image.asset(
-                            "assets/images/back.png",
-                            width: 45,
-                            height: 65,
-                          ),
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Navigator.pop(context);
+                      //   },
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.only(top: 10),
+                      //     child: Image.asset(
+                      //       "assets/images/back.png",
+                      //       width: 45,
+                      //       height: 65,
+                      //     ),
+                      //   ),
+                      // ),
                       Padding(
                           padding: const EdgeInsets.only(top: 0, right: 30,left: 10),
                           child: Image.asset("assets/images/home-logo.png",width: 130,)
@@ -193,9 +193,6 @@ class _StoresScreenState extends State<StoresScreen> {
               children: List.generate(10, (index) {
                 return InkWell(
                   child: GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails()));
-                    },
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                       child: Center(
@@ -271,7 +268,8 @@ class _StoresScreenState extends State<StoresScreen> {
             return InkWell(
               child: GestureDetector(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails()));
+                  print("Selected store id is:"+storesList[index]["StoreId"].toString());
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: storesList[index]["StoreId"].toString())));
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),

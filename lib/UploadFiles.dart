@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adslay/ChoosePlan.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -15,10 +16,10 @@ import 'CartScreen.dart';
 class UploadFiles extends StatefulWidget {
 
   var storeId;
+  var cartId;
 
 
-  UploadFiles({this.storeId
-  });
+  UploadFiles({this.storeId,this.cartId});
 
   @override
   State<UploadFiles> createState() => _UploadFilesState();
@@ -34,7 +35,36 @@ class _UploadFilesState extends State<UploadFiles> {
 
   final selecteddate = TextEditingController();
 
-  getData() async {
+  late TimeOfDay time;
+  bool isLoading = true;
+  String deviceOS = '';
+
+  // int storeId = 0;
+  String title = '';
+  String city = '';
+  String state = '';
+  String country = '';
+  String zipCode = '';
+  String imageUrl = '';
+  String screenSize = '';
+  int durationInDays = 0;
+  double actualPrice = 0.0;
+  double offerPrice = 0.0;
+  String footTraffic = '';
+  String type = '';
+  String fileFormat = '';
+  String? selectedCountryName;
+  String? selectedCountryNameTimes;
+
+  TextEditingController vendor_image = new TextEditingController();
+
+
+  List<dynamic> screenSizeList = [];
+  List<dynamic> noOfTimesList = [];
+  List<dynamic> storePackagesList = [];
+  List<dynamic> data1 = [];
+
+  Future<void> getData() async {
 
     try{
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,11 +80,65 @@ class _UploadFilesState extends State<UploadFiles> {
       isLoading = false;
     });
 
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        mobileNumber = prefs.getString('mobilenumber')!;
+        email = prefs.getString('email')!;
+      });
+    } catch (e) {
+      print(e);
+    }
 
+    String url1 = APIConstant.getStoreDetails;
+    print('Category base StoresList url: ' + url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+      'StoreId': widget.storeId.toString(),
+    };
+
+    print('Category base StoresList body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Category base StoresList response :' + response.body.toString());
+    setState(() {
+      String msg = jsonDecode(response.body)['msg'];
+
+      if (msg == "Success" || msg == "success") {
+        title = jsonDecode(response.body)['Title'];
+        city = jsonDecode(response.body)['City'];
+        state = jsonDecode(response.body)['State'];
+        zipCode = jsonDecode(response.body)['ZipCode'];
+        imageUrl = jsonDecode(response.body)['ImageUrl'];
+        screenSize = jsonDecode(response.body)['ScreenSize'];
+        durationInDays = jsonDecode(response.body)['DurationinDays'];
+        actualPrice = jsonDecode(response.body)['ActualPrice'];
+        offerPrice = jsonDecode(response.body)['OfferPrice'];
+        footTraffic = jsonDecode(response.body)['FootTraffic'];
+        type = jsonDecode(response.body)['Type'];
+        fileFormat = jsonDecode(response.body)['FileFormat'];
+
+        screenSizeList = jsonDecode(response.body)['ScreenSizeList'];
+        print('strr:   ' + screenSizeList.toString());
+        print('strr:   ' + screenSizeList[0]['ScreenSize'].toString());
+        noOfTimesList = jsonDecode(response.body)['NoofTimesList'];
+        // storePackagesList = jsonDecode(response.body)['StorePackagesList'];
+
+      } else {
+        print("Unable to get API response.");
+      }
+    });
+
+    setState(() {
+      isLoading = false;
+    });
   }
-
-  late TimeOfDay time;
-
 
   @override
   void initState() {
@@ -187,53 +271,69 @@ class _UploadFilesState extends State<UploadFiles> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 220,//MediaQuery.of(context).size.width * 0.50,
-                              alignment: Alignment.center,
-                              child: Image.asset(
-                                "assets/images/desibg.png",
-                                fit: BoxFit.fill
-                                ,
-                              )
+                          // Container(
+                          //   width: MediaQuery.of(context).size.width,
+                          //   height: 220,//MediaQuery.of(context).size.width * 0.50,
+                          //   alignment: Alignment.center,
+                          //   child: Image(
+                          //     fit: BoxFit.fill,
+                          //     image: NetworkImage(imageUrl),
+                          //     width: double.infinity,
+                          //   ),
+                          // ),
+
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(0.0),
+                            child: Padding(
+                                padding: const EdgeInsets.all(0.0),
+                                child: Card(
+                                  elevation: 2,
+                                  child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 220,//MediaQuery.of(context).size.width * 0.60,
+                                      alignment: Alignment.center,
+                                      child: CachedNetworkImage(
+                                        imageUrl: imageUrl,
+                                        placeholder: (context, url) => const Center(
+                                            child: CircularProgressIndicator()),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset("assets/images/logo.jpg"),
+                                        //const Icon(Icons.refresh_outlined),
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        // height: 150,
+                                      )
+                                  ),
+                                )
+                            ),
                           ),
                           // Container(
                           //     width: MediaQuery.of(context).size.width,
                           //     height: 220,//MediaQuery.of(context).size.width * 0.60,
                           //     alignment: Alignment.center,
                           //     child: CachedNetworkImage(
-                          //       imageUrl: "https://image.tmdb.org/t/p/w300_and_h450_bestv2//iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg",
+                          //       imageUrl: imageUrl,
                           //       placeholder: (context, url) => const Center(
                           //           child: CircularProgressIndicator()),
                           //       errorWidget: (context, url, error) =>
-                          //       const Icon(Icons.error),
+                          //           Image.asset("assets/images/logo.jpg"),
+                          //       //const Icon(Icons.refresh_outlined),
                           //       fit: BoxFit.cover,
                           //       width: double.infinity,
                           //       // height: 150,
                           //     )
-                          // ),s
+                          // ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 50),
-                        child: Center(
-                          child: Image.asset(
-                            "assets/images/desilogo.png",
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: 100,
-                          ),
-                        ),
-                      )
                     ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(15, 0, 5, 8),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 0, 5, 8),
                   child: Text(
-                    "Desi District - Riverside Dr, Irving, TX",
+                    "$title - $city,$state,$country",
                     maxLines: 2,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.w600),
                   ),
@@ -353,45 +453,45 @@ class _UploadFilesState extends State<UploadFiles> {
                         ),
 
                         Positioned(
-                            //top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: MaterialButton(
-                                onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
-                                },
-                                textColor: Colors.white,
-                                padding: const EdgeInsets.all(0.0),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * 0.60,
-                                  height: 45,
-                                  decoration:  const BoxDecoration(
-                                      gradient:  LinearGradient(
-                                        colors: [
-                                          Color(0xff3962cb),
-                                          Color(0xff3962cb),
-                                        ],
-                                      )
-                                  ),
-                                  //padding: const EdgeInsets.all(10.0),
-                                  child: const Center(
-                                    child: Text(
-                                      "BOOK NOW",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          fontFamily: "Lorin"
-                                      ),
+                          //top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: MaterialButton(
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
+                              },
+                              textColor: Colors.white,
+                              padding: const EdgeInsets.all(0.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.60,
+                                height: 45,
+                                decoration:  const BoxDecoration(
+                                    gradient:  LinearGradient(
+                                      colors: [
+                                        Color(0xff3962cb),
+                                        Color(0xff3962cb),
+                                      ],
+                                    )
+                                ),
+                                //padding: const EdgeInsets.all(10.0),
+                                child: const Center(
+                                  child: Text(
+                                    "BOOK NOW",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Lorin"
                                     ),
                                   ),
                                 ),
                               ),
                             ),
+                          ),
                         ),
 
                       ],
@@ -432,9 +532,6 @@ class _UploadFilesState extends State<UploadFiles> {
       print(fileName);
       vendor_image.text = data1['fileName'].toString();
 
-
-
-
       String url1 = APIConstant.base_url + "StoresAPI/CustomerBookImageAPI";
       print('Category base StoresList url: '+url1);
       Map<String, dynamic> body = {
@@ -458,18 +555,12 @@ class _UploadFilesState extends State<UploadFiles> {
 
       await pr.hide();
 
-      // Navigator.pushReplacement(
-      //     context,
-      //     new MaterialPageRoute(
-      //         builder: (BuildContext context) => new ConformYourDocuments()));
       setState(() {
         isLoading = true;
         // getdata();
       });
     }
   }
-  bool isLoading = true;
-  TextEditingController vendor_image = new TextEditingController();
 
   Future<String> uploadImage(filepath, url) async {
     var request = MultipartRequest('POST', Uri.parse(url));
