@@ -63,6 +63,7 @@ class _CartScreenState extends State<CartScreen> {
       isCheckoutAvailable = false;
     }
     else{
+      subTotalValue = 0.0;
       for (var item in cartList) {
         double actualPrice = item["ActualPrice"];
         subTotalValue += actualPrice;
