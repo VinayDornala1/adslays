@@ -409,12 +409,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                                     13),
                                                 color: const Color(
                                                     0xFFFFFFFFF)),
-                                            child: (screenSizeList ==
-                                                null)
-                                                ? const SizedBox(
-                                                height: 0,
-                                                width:
-                                                double.infinity)
+                                            child: screenSizeList == null ? const SizedBox(height: 0, width: double.infinity)
                                                 : DropdownButton(
                                               icon: Icon(
                                                 Icons

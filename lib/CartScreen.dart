@@ -269,8 +269,7 @@ class _CartScreenState extends State<CartScreen> {
                                         child: MaterialButton(
                                           onPressed: () {
                                             //Check out
-
-                                            Navigator.push(context, MaterialPageRoute(builder: (context)=> BillingScreen()));
+                                            Navigator.push(context, MaterialPageRoute(builder: (context)=> BillingScreen(total:subTotalValue.toString())));
                                           },
                                           textColor: Colors.white,
                                           padding: const EdgeInsets.all(0.0),
