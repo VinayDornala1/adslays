@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:adslay/CartScreen.dart';
 import 'package:adslay/ChoosePlan.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -373,7 +374,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                     child: Padding(
                                       padding: EdgeInsets.fromLTRB(8, 0, 10, 8),
                                       child: Text(
-                                        ""+widget.screenSize,
+                                        ""+screenSize,
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
                                         style: const TextStyle(
@@ -496,7 +497,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                                         "\$"+actualPrice.toString(),
                                         maxLines: 3,
                                         textAlign: TextAlign.start,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.normal,
                                           fontSize: 15,
                                           color: Colors.black,
@@ -511,13 +512,51 @@ class _StoreDetailsState extends State<StoreDetails> {
                         )),
                   ),
                 ),
+                // Align(
+                //   alignment: Alignment.center,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(top: 10),
+                //     child: MaterialButton(
+                //       onPressed: () {
+                //         Navigator.push(context, MaterialPageRoute(builder: (context)=> UploadFiles(storeId: widget.storeId,packageId: widget.packageId)));
+                //       },
+                //       textColor: Colors.white,
+                //       padding: const EdgeInsets.all(0.0),
+                //       child: Container(
+                //         width: 180,
+                //         height: 45,
+                //         decoration:  const BoxDecoration(
+                //             gradient:  LinearGradient(
+                //               colors: [
+                //                 Color(0xff3962cb),
+                //                 Color(0xff3962cb),
+                //               ],
+                //             )
+                //         ),
+                //         //padding: const EdgeInsets.all(10.0),
+                //         child: const Center(
+                //           child: Text(
+                //             "BOOK NOW",
+                //             textAlign: TextAlign.center,
+                //             style: TextStyle(
+                //                 color: Color(0xFFFFFFFF),
+                //                 fontSize: 16,
+                //                 fontWeight: FontWeight.w400,
+                //                 fontFamily: "Lorin"
+                //             ),
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Align(
                   alignment: Alignment.center,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                     child: MaterialButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> UploadFiles(storeId: widget.storeId)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
                       },
                       textColor: Colors.white,
                       padding: const EdgeInsets.all(0.0),
@@ -527,42 +566,6 @@ class _StoreDetailsState extends State<StoreDetails> {
                         decoration:  const BoxDecoration(
                             gradient:  LinearGradient(
                               colors: [
-                                Color(0xff3962cb),
-                                Color(0xff3962cb),
-                              ],
-                            )
-                        ),
-                        //padding: const EdgeInsets.all(10.0),
-                        child: const Center(
-                          child: Text(
-                            "BOOK NOW",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Color(0xFFFFFFFF),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: "Lorin"
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    child: MaterialButton(
-                      onPressed: () { },
-                      textColor: Colors.white,
-                      padding: const EdgeInsets.all(0.0),
-                      child: Container(
-                        width: 180,
-                        height: 45,
-                        decoration:  const BoxDecoration(
-                            gradient:  LinearGradient(
-                              colors: [
                                 Color(0xff11abdd),
                                 Color(0xff11abdd),
                               ],
@@ -571,7 +574,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                         //padding: const EdgeInsets.all(10.0),
                         child: const Center(
                           child: Text(
-                            "ADD TO CART",
+                            "GO TO CART",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Color(0xFFFFFFFF),

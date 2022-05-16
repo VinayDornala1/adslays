@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:adslay/ChoosePlan.dart';
+import 'package:adslay/StoreDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +18,11 @@ class UploadFiles extends StatefulWidget {
 
   var storeId;
   var cartId;
+  var packageId;
 
 
-  UploadFiles({this.storeId,this.cartId});
+
+  UploadFiles({this.storeId,this.cartId,this.packageId});
 
   @override
   State<UploadFiles> createState() => _UploadFilesState();
@@ -66,6 +69,7 @@ class _UploadFilesState extends State<UploadFiles> {
 
   Future<void> getData() async {
 
+    print("Selected packahe id is:" + widget.packageId.toString());
     try{
       SharedPreferences prefs = await SharedPreferences.getInstance();
       setState(() {
@@ -461,7 +465,7 @@ class _UploadFilesState extends State<UploadFiles> {
                             padding: const EdgeInsets.only(top: 10),
                             child: MaterialButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails(storeId: widget.storeId.toString(),packageId: widget.packageId.toString(),)));
                               },
                               textColor: Colors.white,
                               padding: const EdgeInsets.all(0.0),

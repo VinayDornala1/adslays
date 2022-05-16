@@ -881,12 +881,14 @@ class _ChoosePlanState extends State<ChoosePlan> {
       if (msg == "Product Added to Your Cart" || msg == "success")
       {
         int CartDetailId=jsonDecode(response.body)['CartDetailId'];
+        print("------>"+PackageId.text);
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => UploadFiles(
                   storeId: widget.storeId.toString() ,
                   cartId: CartDetailId.toString(),
+                  packageId: PackageId.text,
                 )));
         // Navigator.push(
         //     context,
