@@ -15,6 +15,7 @@ import 'dart:io' show Platform;
 import 'dart:ui';
 
 import 'CartScreen.dart';
+import 'ChoosePlan.dart';
 import 'Constant/ConstantsColors.dart';
 import 'HowItWorks.dart';
 import 'LoginScreen.dart';
@@ -1007,13 +1008,7 @@ class _MainScreenState extends State<MainScreen> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (context) => CourseOverview(
-                //             UniversityCourseId: ReadytoApply[index]
-                //             ['UniversityCourseId']
-                //                 .toString())));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: StoresListDict[index]["StoreId"].toString())));
 
               },
               child: Padding(

@@ -108,78 +108,82 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          SingleChildScrollView(
-            child: SafeArea(
-              left: false,
-              top: true,
-              right: false,
-              bottom: false,
-              child: Stack(
-                children: [
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Stack(
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: Image.asset(
-                                      "assets/images/back.png",
-                                      width: 45,
-                                      height: 65,
+          Container(
+            height: double.infinity,
+            child: SingleChildScrollView(
+              child: SafeArea(
+                left: false,
+                top: true,
+                right: false,
+                bottom: false,
+                child: Stack(
+                  children: [
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Stack(
+                            children: <Widget>[
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: Image.asset(
+                                        "assets/images/back.png",
+                                        width: 45,
+                                        height: 65,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 0, right: 30, left: 10),
-                                    child: Image.asset(
-                                      "assets/images/home-logo.png", width: 130,)
-                                ),
-                                const Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Card(
-                                    elevation: 2,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          21.5), // if you need this
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          color: Colors.transparent,
-                                          width: 43,
-                                          height: 43,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10, 10, 5, 0),
-                                          child: Image.asset(
-                                            "assets/images/search.png",
-                                            width: 25,
-                                            height: 25,
+                                  Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 0, right: 30, left: 10),
+                                      child: Image.asset(
+                                        "assets/images/home-logo.png", width: 130,)
+                                  ),
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            21.5), // if you need this
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            color: Colors.transparent,
+                                            width: 43,
+                                            height: 43,
                                           ),
-                                        ),
-                                      ],
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                10, 10, 5, 0),
+                                            child: Image.asset(
+                                              "assets/images/search.png",
+                                              width: 25,
+                                              height: 25,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        _cartItems(),
-                        const SizedBox(height: 140,),
-                      ]),
-                ],
+                                ],
+                              ),
+                            ],
+                          ),
+                          _cartItems(),
+                          const SizedBox(height: 140,),
+                        ]),
+                  ],
+                ),
               ),
             ),
           ),
@@ -320,7 +324,7 @@ class _CartScreenState extends State<CartScreen> {
                 ],
               ),
             ),
-          ):const SizedBox(height: 20,width: 20),
+          ) :const SizedBox(height: 20,width: 20),
         ],
       ),
     );

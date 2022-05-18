@@ -226,13 +226,39 @@ class _StoreDetailsState extends State<StoreDetails> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 220,//MediaQuery.of(context).size.width * 0.50,
-                            alignment: Alignment.center,
-                            child: Image(
-                              fit: BoxFit.fill,
-                              image: NetworkImage(imageUrl),
+                          // Container(
+                          //   width: MediaQuery.of(context).size.width,
+                          //   height: 220,//MediaQuery.of(context).size.width * 0.50,
+                          //   alignment: Alignment.center,
+                          //   child: Image(
+                          //     fit: BoxFit.fill,
+                          //     image: NetworkImage(imageUrl),
+                          //   ),
+                          // ),
+
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(0.0),
+                            child: Padding(
+                                padding: const EdgeInsets.all(0.0),
+                                child: Card(
+                                  elevation: 2,
+                                  child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 220,//MediaQuery.of(context).size.width * 0.60,
+                                      alignment: Alignment.center,
+                                      child: CachedNetworkImage(
+                                        imageUrl: imageUrl,
+                                        placeholder: (context, url) => const Center(
+                                            child: CircularProgressIndicator()),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset("assets/images/logo.jpg"),
+                                        //const Icon(Icons.refresh_outlined),
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                        // height: 150,
+                                      )
+                                  ),
+                                )
                             ),
                           ),
                           // Container(

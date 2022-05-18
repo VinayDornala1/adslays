@@ -530,14 +530,14 @@ class _UploadFilesState extends State<UploadFiles> {
       await pr.show();
 
       var res = await uploadImage( picked.files.first.path, uploadUrl);
-      print(res);
+      print("File uploading to server response: "+ res.toString());
       Map data1 = jsonDecode(res);
       String fileName = picked.files.first.path!.split('/').last;
       print(fileName);
       vendor_image.text = data1['fileName'].toString();
 
       String url1 = APIConstant.base_url + "StoresAPI/CustomerBookImageAPI";
-      print('Category base StoresList url: '+url1);
+      print('Upload file url: '+url1);
       Map<String, dynamic> body = {
         'MobileNo': '9160747554',
         'CartDetailId': widget.storeId.toString(),
