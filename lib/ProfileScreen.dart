@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
@@ -37,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
+  TextEditingController profileImage = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
 
@@ -159,13 +161,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         userNameController.text = data['objCustomers']['FirstName'] + " " + data['objCustomers']['LastName'];
         emailController.text = data['objCustomers']['Email'];
         mobileNumberController.text = data['objCustomers']['MobileNo'];
+        profileImage.text = data['objCustomers']['ProfileImage'];
         var FirstName = data['objCustomers']['FirstName'];
+        var LastName = data['objCustomers']['LastName'];
         var Email = data['objCustomers']['Email'];
         var MobileNo = data['objCustomers']['MobileNo'];
 
 
-        print('dasfdasfasdfsadfasdfadsfas'+userDetails[0]["FirstName"]);
-        userNameController.text = userDetails[0]["FirstName"] + " " + userDetails[0]["LastName"];
+        userNameController.text =  FirstName+ " " + LastName;
       });
     }
 
@@ -180,6 +183,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     getData();
 
+  }
+
+  String tenthDoc='';
+  final String uploadUrl = APIConstant.base_url + 'AccountAPI/UpdateCustomerProfileImageAPI';
+  TextEditingController vendor_image = new TextEditingController();
+
+  _tenthFilepicker() async {
+    var picked = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'pdf',],
+    );
+    if (picked != null) {
+      setState(() {
+        tenthDoc = picked.files.first.path!;
+      });
+      print(''+picked.files.first.path!);
+      await pr.show();
+      var res = await uploadImage( picked.files.first.path, uploadUrl);
+      print("File uploading to server response: "+ res.toString());
+      Map data1 = jsonDecode(res);
+      String fileName = picked.files.first.path!.split('/').last;
+      print(fileName);
+      vendor_image.text = data1['fileName'].toString();
+      String url1 = APIConstant.base_url + "StoresAPI/CustomerBookImageAPI";
+      print('Upload file url: '+url1);
+      Map<String, dynamic> body = {
+        'MobileNo': '9160747554',
+        'ProfileImage': vendor_image.text.toString(),
+      };
+      print('Category base StoresList body:' + body.toString());
+      final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+      final encoding = Encoding.getByName('utf-8');
+      final response = await post(
+        Uri.parse(url1),
+        headers: headers,
+        body: body,
+        encoding: encoding,
+      );
+      print('Category base StoresList response :' + response.body.toString());
+      await pr.hide();
+      setState(() {
+        isLoading = true;
+        // getdata();
+      });
+    }
+  }
+
+  Future<String> uploadImage(filepath, url) async {
+    var request = MultipartRequest('POST', Uri.parse(url));
+    request.files.add(await MultipartFile.fromPath('file', filepath));
+    var res = await request.send();
+    var responseString = await res.stream.bytesToString();
+    print(responseString);
+    return responseString;
   }
 
 
@@ -452,6 +509,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         GestureDetector(
           onTap: () {
             // _pickImage();
+            _tenthFilepicker();
             print("Choose profile image.");
           },
           child: Padding(
