@@ -1,13 +1,16 @@
 import 'dart:convert';
 
 import 'package:adslay/ChoosePlan.dart';
+import 'package:adslay/Constant/ConstantsColors.dart';
 import 'package:adslay/StoreDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'API.dart';
 import 'CartScreen.dart';
@@ -66,6 +69,7 @@ class _UploadFilesState extends State<UploadFiles> {
   List<dynamic> noOfTimesList = [];
   List<dynamic> storePackagesList = [];
   List<dynamic> data1 = [];
+  List<dynamic> uploadedImagesList = [];
 
   Future<void> getData() async {
 
@@ -174,12 +178,12 @@ class _UploadFilesState extends State<UploadFiles> {
         borderRadius: 10.0,
         backgroundColor: Colors.white,
         progressWidget: Container(
-            padding: EdgeInsets.all(10.0), child: CircularProgressIndicator()),
+            padding: const EdgeInsets.all(10.0), child: const CircularProgressIndicator()),
         elevation: 10.0,
         insetAnimCurve: Curves.easeInOut,
-        progressTextStyle: TextStyle(
+        progressTextStyle: const TextStyle(
             color: Colors.black, fontSize: 10.0, fontWeight: FontWeight.w400),
-        messageTextStyle: TextStyle(
+        messageTextStyle: const TextStyle(
             color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600));
     return Scaffold(
       body: SingleChildScrollView(
@@ -275,17 +279,6 @@ class _UploadFilesState extends State<UploadFiles> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Container(
-                          //   width: MediaQuery.of(context).size.width,
-                          //   height: 220,//MediaQuery.of(context).size.width * 0.50,
-                          //   alignment: Alignment.center,
-                          //   child: Image(
-                          //     fit: BoxFit.fill,
-                          //     image: NetworkImage(imageUrl),
-                          //     width: double.infinity,
-                          //   ),
-                          // ),
-
                           ClipRRect(
                             borderRadius: BorderRadius.circular(0.0),
                             child: Padding(
@@ -311,22 +304,6 @@ class _UploadFilesState extends State<UploadFiles> {
                                 )
                             ),
                           ),
-                          // Container(
-                          //     width: MediaQuery.of(context).size.width,
-                          //     height: 220,//MediaQuery.of(context).size.width * 0.60,
-                          //     alignment: Alignment.center,
-                          //     child: CachedNetworkImage(
-                          //       imageUrl: imageUrl,
-                          //       placeholder: (context, url) => const Center(
-                          //           child: CircularProgressIndicator()),
-                          //       errorWidget: (context, url, error) =>
-                          //           Image.asset("assets/images/logo.jpg"),
-                          //       //const Icon(Icons.refresh_outlined),
-                          //       fit: BoxFit.cover,
-                          //       width: double.infinity,
-                          //       // height: 150,
-                          //     )
-                          // ),
                         ],
                       ),
                     ],
@@ -344,7 +321,20 @@ class _UploadFilesState extends State<UploadFiles> {
                 ),
                 GestureDetector(
                   onTap: (){
-                    _tenthFilepicker();
+                    if (selecteddate.text =='')
+                      {
+                        Fluttertoast.showToast(
+                            msg: "Please choose start date",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0
+                        );
+                      }else {
+                      _chooseFiles();
+                    }
                   },
                   child: SizedBox(
                     //height: 220,
@@ -455,7 +445,6 @@ class _UploadFilesState extends State<UploadFiles> {
                             ),
                           ),
                         ),
-
                         Positioned(
                           //top: 0,
                           left: 0,
@@ -465,7 +454,21 @@ class _UploadFilesState extends State<UploadFiles> {
                             padding: const EdgeInsets.only(top: 10),
                             child: MaterialButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails(storeId: widget.storeId.toString(),packageId: widget.packageId.toString(),)));
+
+                                if (uploadedImagesList.isNotEmpty)
+                                  {
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails(storeId: widget.storeId.toString(),packageId: widget.packageId.toString())));
+                                  }else {
+                                  Fluttertoast.showToast(
+                                      msg: "Please upload atleast one AD file.",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0
+                                  );
+                                  }
                               },
                               textColor: Colors.white,
                               padding: const EdgeInsets.all(0.0),
@@ -483,7 +486,7 @@ class _UploadFilesState extends State<UploadFiles> {
                                 //padding: const EdgeInsets.all(10.0),
                                 child: const Center(
                                   child: Text(
-                                    "BOOK NOW",
+                                    "CONTINUE",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: Color(0xFFFFFFFF),
@@ -497,12 +500,170 @@ class _UploadFilesState extends State<UploadFiles> {
                             ),
                           ),
                         ),
-
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 50),
+                isLoading
+                    ?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 2,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(3, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.30,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                )
+                    :ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: uploadedImagesList.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                flex: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.network(
+                                    uploadedImagesList[index]["ImageUrl"],
+                                    height: 100,
+                                    width: 150,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(8, 10, 5, 15),
+                                      child: Text(
+                                        "" + uploadedImagesList[index]["FileName"],
+                                        maxLines: 2,
+                                        style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+
+                                    MaterialButton(
+                                      onPressed: () {
+                                        removeUploadedFiles(uploadedImagesList[index]["CusAdId"]);
+                                      },
+                                      textColor: Colors.white,
+                                      padding: const EdgeInsets.all(0.0),
+                                      child: Container(
+                                        width: 80,
+                                        height: 40,
+                                        child: const Center(
+                                          child: Text(
+                                            "Remove",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                decoration: TextDecoration.underline,
+                                                color: Colors.blue,//ConstantColors.appTheme,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Lorin"
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ]
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 50),
+
+
               ]),
         ),
       ),
@@ -510,20 +671,20 @@ class _UploadFilesState extends State<UploadFiles> {
   }
 
 
-  String tenthDoc='';
+  String selectedFile='';
   final String uploadUrl = APIConstant.base_url + 'StoresAPI/CustomerBookImages';
   late ProgressDialog pr;
 
-  _tenthFilepicker() async {
+  _chooseFiles() async {
 
     var picked = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'pdf',],
+      allowedExtensions: ['jpg',],
     );
 
     if (picked != null) {
       setState(() {
-        tenthDoc = picked.files.first.path!;
+        selectedFile = picked.files.first.path!;
 
       });
       print(''+picked.files.first.path!);
@@ -535,27 +696,15 @@ class _UploadFilesState extends State<UploadFiles> {
       String fileName = picked.files.first.path!.split('/').last;
       print(fileName);
       vendor_image.text = data1['fileName'].toString();
+      print("Successfully File uploaded to server"+vendor_image.text);
 
-      String url1 = APIConstant.base_url + "StoresAPI/CustomerBookImageAPI";
-      print('Upload file url: '+url1);
-      Map<String, dynamic> body = {
-        'MobileNo': '9160747554',
-        'CartDetailId': widget.storeId.toString(),
-        'ImageUrl': fileName.toString(),
-        'VideoUrl': fileName.toString(),
-        'StartDate': '',
+      String msg = data1['msg'].toString();
 
-      };
-      print('Category base StoresList body:' + body.toString());
-      final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-      final encoding = Encoding.getByName('utf-8');
-      final response = await post(
-        Uri.parse(url1),
-        headers: headers,
-        body: body,
-        encoding: encoding,
-      );
-      print('Category base StoresList response :' + response.body.toString());
+      if (msg == "Success" || msg == "success") {
+        _uploadFileDetailsToserver();
+      } else {
+          print("Unable to upload file details to server");
+      }
 
       await pr.hide();
 
@@ -566,6 +715,44 @@ class _UploadFilesState extends State<UploadFiles> {
     }
   }
 
+  Future<void> _uploadFileDetailsToserver() async {
+    pr.show();
+    String url1 = APIConstant.base_url + "StoresAPI/CustomerBookImageAPI";
+    print('Upload file url: '+url1);
+    Map<String, dynamic> body = {
+      'MobileNo': '9160747554',
+      'CartDetailId': widget.cartId.toString(),
+      'ImageUrl': vendor_image.text,
+      'VideoUrl': '',
+      'StartDate': selecteddate.text,
+    };
+    print('Category base StoresList body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    pr.hide();
+    print('Category base StoresList response :' + response.body.toString());
+
+    String msg = jsonDecode(response.body)['msg'];
+
+    if (msg == "Success" || msg == "success") {
+
+      setState(() {
+        isLoading = true;
+        getUploadedFiles();
+      });
+    } else {
+      print("Unable to get uploaded Images List response.");
+    }
+
+  }
+
+
   Future<String> uploadImage(filepath, url) async {
     var request = MultipartRequest('POST', Uri.parse(url));
     request.files.add(await MultipartFile.fromPath('file', filepath));
@@ -573,6 +760,80 @@ class _UploadFilesState extends State<UploadFiles> {
     var responseString = await res.stream.bytesToString();
     print(responseString);
     return responseString;
+  }
+
+  Future<void> getUploadedFiles() async {
+
+    String url1 = APIConstant.getUploadedImagesList;
+    print('Get Uploaded Images List url: ' + url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+      'CartDetailId': widget.cartId.toString(),
+    };
+
+    print('Get Uploaded Images List body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Get Uploaded Images List response :' + response.body.toString());
+    setState(() {
+      String msg = jsonDecode(response.body)['msg'];
+
+      if (msg == "Success" || msg == "success") {
+
+        uploadedImagesList = jsonDecode(response.body)['CustomerBookImageList'];
+        print('Uploaded Image List :' + uploadedImagesList.toString());
+      } else {
+        print("Unable to get uploaded Images List response.");
+      }
+    });
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> removeUploadedFiles(CusAdId) async {
+
+    String url1 = APIConstant.removeUploadedImagesFromList;
+    print('Remove Uploaded Images From List url: ' + url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+      'CusAdId': CusAdId.toString(),
+    };
+
+    print('Remove Uploaded Images From List body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Remove Uploaded Images From List response :' + response.body.toString());
+    setState(() {
+      String msg = jsonDecode(response.body)['msg'];
+
+      if (msg == "Success" || msg == "success") {
+
+        print("File removed successfully.");
+        isLoading = true;
+        getUploadedFiles();
+
+      } else {
+        print("Unable to get uploaded Images List response.");
+      }
+    });
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
 }

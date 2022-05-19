@@ -26,4 +26,14 @@ class APIConstant
 
   static String deleteCartItem = base_url + 'StoresAPI/CartRemoveAPI';
 
+  static String getUploadedImagesList = base_url + 'StoresAPI/GetCustomerBookImagesListAPI';
+
+  static String removeUploadedImagesFromList = base_url + 'StoresAPI/RemoveCustomerBookImage';
+
+  static String postProfilePicToServer = base_url + 'AccountAPI/PostCustomerImage';
+
+  static String postProfilePicDetailsToServer = base_url + 'AccountAPI/UpdateCustomerProfileImageAPI';
+
+
+
 }

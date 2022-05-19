@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:adslay/CartScreen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -185,34 +186,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   }
 
-  String tenthDoc='';
-  final String uploadUrl = APIConstant.base_url + 'AccountAPI/UpdateCustomerProfileImageAPI';
+  String profilePic='';
+  final String uploadUrl = APIConstant.postProfilePicToServer;
   TextEditingController vendor_image = new TextEditingController();
 
   _tenthFilepicker() async {
     var picked = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['jpg', 'pdf',],
+      allowedExtensions: ['jpg'],
     );
     if (picked != null) {
       setState(() {
-        tenthDoc = picked.files.first.path!;
+        profilePic = picked.files.first.path!;
       });
-      print(''+picked.files.first.path!);
+      print('file path: '+picked.files.first.path!);
       await pr.show();
       var res = await uploadImage( picked.files.first.path, uploadUrl);
-      print("File uploading to server response: "+ res.toString());
+      print("Profile pic uploading to server response: "+ res.toString());
       Map data1 = jsonDecode(res);
       String fileName = picked.files.first.path!.split('/').last;
-      print(fileName);
+      print('Uploaded file name: '+data1.toString());
+
       vendor_image.text = data1['fileName'].toString();
-      String url1 = APIConstant.base_url + "StoresAPI/CustomerBookImageAPI";
-      print('Upload file url: '+url1);
+      String url1 = APIConstant.postProfilePicDetailsToServer;
+      print('Upload profile pic details to server url: '+url1);
       Map<String, dynamic> body = {
         'MobileNo': '9160747554',
         'ProfileImage': vendor_image.text.toString(),
       };
-      print('Category base StoresList body:' + body.toString());
+      print('Upload profile pic details to server body:' + body.toString());
       final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
       final encoding = Encoding.getByName('utf-8');
       final response = await post(
@@ -221,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         body: body,
         encoding: encoding,
       );
-      print('Category base StoresList response :' + response.body.toString());
+      print('Upload profile pic details to server data :' + response.body.toString());
       await pr.hide();
       setState(() {
         isLoading = true;
@@ -235,7 +237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     request.files.add(await MultipartFile.fromPath('file', filepath));
     var res = await request.send();
     var responseString = await res.stream.bytesToString();
-    print(responseString);
+    print('Upload image to server data response: '+responseString);
     return responseString;
   }
 
@@ -304,29 +306,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         "assets/images/home-logo.png", width: 130,)
                   ),
                   const Spacer(),
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          21.5), // if you need this
-                    ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          color: Colors.transparent,
-                          width: 43,
-                          height: 43,
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
+                    },
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            21.5), // if you need this
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            color: Colors.transparent,
+                            width: 43,
+                            height: 43,
 
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
-                          child: Image.asset(
-                            "assets/images/cart.png",
-                            width: 28,
-                            height: 28,
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
+                            child: Image.asset(
+                              "assets/images/cart.png",
+                              width: 28,
+                              height: 28,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Card(
@@ -622,7 +629,225 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-
+            // Padding(
+            //   padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+            //   child: TextField(
+            //     //controller: nameController,
+            //     decoration: const InputDecoration(
+            //       enabledBorder: UnderlineInputBorder(
+            //         borderSide: BorderSide(color: Colors.grey),
+            //       ),
+            //       focusedBorder: UnderlineInputBorder(
+            //         borderSide: BorderSide(color: Colors.grey),
+            //       ),
+            //       filled: true,
+            //       fillColor: Colors.transparent,
+            //       hintText: 'Enter Your Name',
+            //
+            //     ),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+            //   child: TextField(
+            //     controller: addressController,
+            //     decoration: const InputDecoration(
+            //       enabledBorder: UnderlineInputBorder(
+            //         borderSide: BorderSide(color: Colors.grey),
+            //       ),
+            //       focusedBorder: UnderlineInputBorder(
+            //         borderSide: BorderSide(color: Colors.grey),
+            //       ),
+            //       filled: true,
+            //       fillColor: Colors.transparent,
+            //       hintText: 'Enter Your Address',
+            //
+            //     ),
+            //   ),
+            // ),
+            //
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.start,
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children:   [
+            //     Flexible(
+            //       child: Padding(
+            //         padding: const EdgeInsets.fromLTRB(15, 10, 5, 0),
+            //         child: CountriesList == null
+            //             ? const SizedBox(height: 0, width: double.infinity)
+            //             : Column(
+            //           children: [
+            //             Padding(
+            //               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+            //               child: DropdownButton(
+            //                 icon: const Icon(
+            //                   Icons
+            //                       .arrow_drop_down_circle_outlined,
+            //                   size: 15,
+            //                 ),
+            //                 dropdownColor:
+            //                 Colors.white,
+            //                 isExpanded: true,
+            //                 underline: SizedBox(),
+            //                 hint: const Text(
+            //                   'Select Country',
+            //                   style: TextStyle(
+            //                       fontFamily:
+            //                       "Lorin",
+            //                       fontWeight:
+            //                       FontWeight
+            //                           .w700,
+            //                       fontSize: 14.0,
+            //                       color: Color(
+            //                           0xFF141E28)),
+            //                 ),
+            //                 value: countryController.text != '' ? countryController.text : null,
+            //                 items: CountriesList
+            //                     .map((item) {
+            //                   return DropdownMenuItem(
+            //                     child: Text(
+            //                       item['CountryName'],
+            //                       style: const TextStyle(
+            //                           color: Color(
+            //                               0xFF000000)),
+            //                     ),
+            //                     value: item['CountryName']
+            //                         .toString(),
+            //                   );
+            //                 }).toList(), onChanged: (Object? value) {
+            //                 setState(() {
+            //                   print('' + value!.toString());
+            //                   countryController.text =
+            //                       value.toString();
+            //                   for(int i=0;i<CountriesList.length;i++){
+            //                     if(countryController.text==CountriesList[i]['CountryName']){
+            //                       countryControllerId.text=CountriesList[i]['CountryId'].toString();
+            //                     }
+            //                   }
+            //                   loadstates();
+            //                 });
+            //               },
+            //
+            //               ),
+            //             ),
+            //             const Divider(thickness: 1,height: 1,color: Colors.grey,)
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //     Flexible(
+            //       child: Padding(
+            //         padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
+            //         child: statelists == null ? const SizedBox(height: 0, width: double.infinity)
+            //             : Column(
+            //           children: [
+            //             Padding(
+            //               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+            //               child: DropdownButton(
+            //                 icon: const Icon(
+            //                   Icons
+            //                       .arrow_drop_down_circle_outlined,
+            //                   size: 15,
+            //                 ),
+            //                 dropdownColor:
+            //                 Colors.white,
+            //                 isExpanded: true,
+            //                 underline: SizedBox(),
+            //                 hint: const Text(
+            //                   'Select State',
+            //                   style: TextStyle(
+            //                       fontFamily:
+            //                       "Lorin",
+            //                       fontWeight:
+            //                       FontWeight
+            //                           .w700,
+            //                       fontSize: 14.0,
+            //                       color: Color(
+            //                           0xFF141E28)),
+            //                 ),
+            //                 value: stateController.text != '' ? stateController.text : null,
+            //                 items: statelists
+            //                     .map((item) {
+            //                   return DropdownMenuItem(
+            //                     child: Text(
+            //                       item['StateName'],
+            //                       style: const TextStyle(
+            //                           color: Color(
+            //                               0xFF000000)),
+            //                     ),
+            //                     value: item['StateName']
+            //                         .toString(),
+            //                   );
+            //                 }).toList(), onChanged: (Object? value) {
+            //                 setState(() {
+            //                   print('' + value!.toString());
+            //                   stateController.text =
+            //                       value.toString();
+            //                   // for(int i=0;i<CountriesList.length;i++){
+            //                   //   if(countryController.text==CountriesList[i]['CountryName']){
+            //                   //     countryControllerId.text=CountriesList[i]['CountryId'].toString();
+            //                   //   }
+            //                   // }
+            //                   // loadstates();
+            //                 });
+            //               },
+            //
+            //               ),
+            //             ),
+            //             const Divider(thickness: 1,height: 1,color: Colors.grey,)
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.start,
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children:   [
+            //     Flexible(
+            //       child: Padding(
+            //         padding: EdgeInsets.fromLTRB(15, 10, 5, 0),
+            //         child: TextField(
+            //           controller: cityController,
+            //           decoration: const InputDecoration(
+            //             enabledBorder: UnderlineInputBorder(
+            //               borderSide: BorderSide(color: Colors.grey),
+            //             ),
+            //             focusedBorder: UnderlineInputBorder(
+            //               borderSide: BorderSide(color: Colors.grey),
+            //             ),
+            //             filled: true,
+            //             fillColor: Colors.transparent,
+            //             hintText: 'Select City',
+            //
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //     Flexible(
+            //       child: Padding(
+            //         padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
+            //         child: TextField(
+            //           controller: zipcodeController,
+            //           keyboardType: TextInputType.number,
+            //           decoration: const InputDecoration(
+            //             enabledBorder: UnderlineInputBorder(
+            //               borderSide: BorderSide(color: Colors.grey),
+            //             ),
+            //             focusedBorder: UnderlineInputBorder(
+            //               borderSide: BorderSide(color: Colors.grey),
+            //             ),
+            //             filled: true,
+            //             fillColor: Colors.transparent,
+            //             hintText: 'Enter Zip Code ',
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            //
             const Padding(
               padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: TextField(
@@ -677,24 +902,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            // const Padding(
-            //   padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-            //   child: TextField(
-            //
-            //     decoration: InputDecoration(
-            //       enabledBorder: UnderlineInputBorder(
-            //         borderSide: BorderSide(color: Colors.grey),
-            //       ),
-            //       focusedBorder: UnderlineInputBorder(
-            //         borderSide: BorderSide(color: Colors.grey),
-            //       ),
-            //       filled: true,
-            //       fillColor: Colors.transparent,
-            //       hintText: 'Enter Your Address',
-            //
-            //     ),
-            //   ),
-            // ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.start,

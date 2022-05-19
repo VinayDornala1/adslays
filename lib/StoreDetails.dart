@@ -8,6 +8,7 @@ import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'API.dart';
+import 'Constant/ConstantsColors.dart';
 import 'UploadFiles.dart';
 
 
@@ -77,7 +78,6 @@ class _StoreDetailsState extends State<StoreDetails> {
       'Mobile': '9160747554',
       'StoreId': widget.storeId.toString(),
       'PackageId': widget.packageId.toString(),
-
     };
     print('Category base StoresList body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -589,11 +589,11 @@ class _StoreDetailsState extends State<StoreDetails> {
                       child: Container(
                         width: 180,
                         height: 45,
-                        decoration:  const BoxDecoration(
+                        decoration:  BoxDecoration(
                             gradient:  LinearGradient(
                               colors: [
-                                Color(0xff11abdd),
-                                Color(0xff11abdd),
+                                ConstantColors.appTheme,
+                                ConstantColors.appTheme,
                               ],
                             )
                         ),

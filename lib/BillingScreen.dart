@@ -94,8 +94,8 @@ class _BillingScreenState extends State<BillingScreen> {
         emailController.text = data['objCustomers']['Email'];
         mobileNumberController.text = data['objCustomers']['MobileNo'];
         cityController.text = data['objCustomers']['City'];
-        // stateController.text = data['objCustomers']['State'];
-        // countryController.text = data['objCustomers']['Country'];
+        //stateController.text = data['objCustomers']['State'];
+        //countryController.text = data['objCustomers']['Country'];
         zipcodeController.text = data['objCustomers']['ZipCode'];
         addressController.text = data['objCustomers']['Address1'] ?? '';
 
@@ -831,15 +831,16 @@ class _BillingScreenState extends State<BillingScreen> {
 
   Future<void> getData11() async {
     String url1 = 'http://adslay.arjunweb.in/API/OrderAPI/OrderInsertAPI';
-    print('Category base StoresList url: '+url1);
+    print('Upload billing details url: '+url1);
     Map<String, dynamic> body = {
+      'MobileNo': '9160747554',//mobileNumber.toString(),
       'BillingAddress1': ''+addressController.text.toString(),
       'BillingAddress2': ''+zipcodeController.text.toString(),
       'BillingCity': ''+cityController.text.toString(),
       'BillingState': ''+stateController.text.toString(),
       'BillingCountry': ''+countryController.text.toString(),
     };
-    print('Category base StoresList body:' + body.toString());
+    print('Upload billing details body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
     final encoding = Encoding.getByName('utf-8');
     final response = await post(
@@ -848,10 +849,10 @@ class _BillingScreenState extends State<BillingScreen> {
       body: body,
       encoding: encoding,
     );
-    print('Category base StoresList response :' + response.body.toString());
+    print('Upload billing details response :' + response.body.toString());
     setState(() {
       String msg = jsonDecode(response.body)['msg'];
-      if (msg == "Product Added to Your Cart" || msg == "success")
+      if (msg == "Product Added to Your Cart" || msg == "success" ||  msg == "Success")
       {
         Navigator.push(
             context,
