@@ -55,6 +55,11 @@ dependencies:
   connectivity_plus: ^2.3.0
   responsive_framework: ^0.1.4
   cached_network_image:
+  dio: ^4.0.6
+  flutter_bloc: ^8.0.1
+  flutter_credit_card: ^3.0.1
+  font_awesome_flutter: ^10.1.0
+  stripe_payment: ^1.1.4
 
 
 dev_dependencies:

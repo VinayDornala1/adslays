@@ -25,11 +25,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _currentIndex = 0;
 
   bool isLoading = true;
+  bool isEditProfile = false;
   bool isCheckoutAvailable = false;
   List<dynamic> ordersHistoryList = [];
   List<dynamic> userDetails = [];
+  List<dynamic> countriesList = [];
+  List<dynamic> statesLists = [];
 
   String email = '';
+  String customerId = '';
   String mobileNumber = '';
   double subTotalValue = 0.0;
 
@@ -41,6 +45,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController mobileNumberController = TextEditingController();
   TextEditingController profileImage = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController companyController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+  TextEditingController countryControllerId = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController zipcodeController = TextEditingController();
 
 
   Future<void> getData() async {
@@ -49,6 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         mobileNumber = prefs.getString('mobilenumber')!;
         email = prefs.getString('email')!;
+        customerId = prefs.getString('CustomerId')!;
       });
     }catch(e){
       print(e);
@@ -163,6 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         emailController.text = data['objCustomers']['Email'];
         mobileNumberController.text = data['objCustomers']['MobileNo'];
         profileImage.text = data['objCustomers']['ProfileImage'];
+
         var FirstName = data['objCustomers']['FirstName'];
         var LastName = data['objCustomers']['LastName'];
         var Email = data['objCustomers']['Email'];
@@ -415,7 +427,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(height: 24,width: 2,child: Container(color: ConstantColors.lightGrey,),),
                             const Spacer(),
                             Text(
-                              "Unique ID: 13425223",
+                              "Unique ID: $customerId",
                               style: TextStyle(
                                   color: ConstantColors.appTheme,
                                   fontSize: 17,
@@ -571,7 +583,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Padding(
         padding: const EdgeInsets.only(top: 20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children:  [
@@ -587,9 +599,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const Spacer(),
-                  GestureDetector(
+                  isEditProfile?SizedBox(width: 0,height: 0,):GestureDetector(
                     onTap: (){
-                      print("Edit profile clicked.");
+                      setState(() {
+                        isEditProfile = true;
+                      });
                     },
                     child: Container(
                       width: 90,
@@ -624,7 +638,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                  )
+                  ),
 
                 ],
               ),
@@ -848,11 +862,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             //   ],
             // ),
             //
-            const Padding(
+
+            Padding(
               padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: TextField(
-
-                decoration: InputDecoration(
+                controller: userNameController,
+                decoration: const InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
                   ),
@@ -866,11 +881,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: TextField(
-
-                decoration: InputDecoration(
+                controller: addressController,
+                decoration: const InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
                   ),
@@ -879,25 +894,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   filled: true,
                   fillColor: Colors.transparent,
-                  hintText: 'Mobile Number',
-
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-              child: TextField(
-
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  hintText: 'Enter Company Name',
+                  hintText: 'Enter Your Address',
 
                 ),
               ),
@@ -906,46 +903,131 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:  const [
+              children:   [
                 Flexible(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(15, 10, 5, 0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                    padding: const EdgeInsets.fromLTRB(15, 10, 5, 0),
+                    child: countriesList == null
+                        ? const SizedBox(height: 0, width: double.infinity)
+                        : Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: DropdownButton(
+                            icon: const Icon(
+                              Icons
+                                  .arrow_drop_down_circle_outlined,
+                              size: 15,
+                            ),
+                            dropdownColor:
+                            Colors.white,
+                            isExpanded: true,
+                            underline: const SizedBox(),
+                            hint: const Padding(
+                              padding:  EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                'Select Country',
+                                style: TextStyle(
+                                    fontFamily:
+                                    "Lorin",
+                                    fontSize: 16.0,
+                                    color: Colors.black),
+                              ),
+                            ),
+                            value: countryController.text != '' ? countryController.text : null,
+                            items: countriesList
+                                .map((item) {
+                              return DropdownMenuItem(
+                                child: Text(
+                                  item['CountryName'],
+                                  style: const TextStyle(
+                                      color: Color(
+                                          0xFF000000)),
+                                ),
+                                value: item['CountryName']
+                                    .toString(),
+                              );
+                            }).toList(), onChanged: (Object? value) {
+                            setState(() {
+                              print('' + value!.toString());
+                              countryController.text =
+                                  value.toString();
+                              for(int i=0;i<countriesList.length;i++){
+                                if(countryController.text==countriesList[i]['CountryName']){
+                                  countryControllerId.text=countriesList[i]['CountryId'].toString();
+                                }
+                              }
+                              loadstates();
+                            });
+                          },
+
+                          ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        hintText: 'City',
-                        // suffixIcon:  Icon(
-                        //   Icons.arrow_drop_down,
-                        // ),
-                      ),
+                        const Divider(thickness: 1,height: 1,color: Colors.grey,)
+                      ],
                     ),
                   ),
                 ),
                 Flexible(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                    child: statesLists == null ? const SizedBox(height: 0, width: double.infinity)
+                        : Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: DropdownButton(
+                            icon: const Icon(
+                              Icons
+                                  .arrow_drop_down_circle_outlined,
+                              size: 15,
+                            ),
+                            dropdownColor:
+                            Colors.white,
+                            isExpanded: true,
+                            underline: SizedBox(),
+                            hint: const Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                'Select State',
+                                style: TextStyle(
+                                    fontFamily:
+                                    "Lorin",
+                                    fontSize: 16.0,
+                                    color: Colors.black),
+                              ),
+                            ),
+                            value: stateController.text != '' ? stateController.text : null,
+                            items: statesLists
+                                .map((item) {
+                              return DropdownMenuItem(
+                                child: Text(
+                                  item['StateName'],
+                                  style: const TextStyle(
+                                      color: Color(
+                                          0xFF000000)),
+                                ),
+                                value: item['StateName']
+                                    .toString(),
+                              );
+                            }).toList(), onChanged: (Object? value) {
+                            setState(() {
+                              print('' + value!.toString());
+                              stateController.text =
+                                  value.toString();
+                              // for(int i=0;i<CountriesList.length;i++){
+                              //   if(countryController.text==CountriesList[i]['CountryName']){
+                              //     countryControllerId.text=CountriesList[i]['CountryId'].toString();
+                              //   }
+                              // }
+                              // loadstates();
+                            });
+                          },
+
+                          ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        hintText: 'State',
-                        suffixIcon:  Icon(
-                          Icons.arrow_drop_down,
-                        ),
-                      ),
+                        const Divider(thickness: 1,height: 1,color: Colors.grey,)
+                      ],
                     ),
                   ),
                 ),
@@ -954,12 +1036,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:  const [
+              children:   [
                 Flexible(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(15, 10, 5, 0),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: cityController,
+                      decoration: const InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
@@ -968,10 +1051,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         filled: true,
                         fillColor: Colors.transparent,
-                        hintText: 'Country',
-                        suffixIcon:  Icon(
-                          Icons.arrow_drop_down,
-                        ),
+                        hintText: 'Select City',
+
                       ),
                     ),
                   ),
@@ -980,7 +1061,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: zipcodeController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
                         ),
@@ -990,7 +1073,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         filled: true,
                         fillColor: Colors.transparent,
                         hintText: 'Enter Zip Code ',
-
                       ),
                     ),
                   ),
@@ -999,12 +1081,80 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
 
 
+
+
+            isEditProfile?Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: MaterialButton(
+                onPressed: () {
+                    //Write update profile details api and do isEditProfile to false
+
+                  setState(() {
+                    isEditProfile = false;
+                  });
+                },
+                textColor: Colors.white,
+                padding: const EdgeInsets.all(0.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.40,
+                  height: 46,
+                  decoration:  BoxDecoration(
+                    borderRadius: BorderRadius.circular(23),
+                      gradient:  const LinearGradient(
+                        colors: [
+                          Color(0xff3962cb),
+                          Color(0xff3962cb),
+                        ],
+                      )
+                  ),
+                  //padding: const EdgeInsets.all(10.0),
+                  child: const Center(
+                    child: Text(
+                      "UPDATE",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Color(0xFFFFFFFF),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: "Lorin"
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ):SizedBox(width: 0,height: 0,),
             const SizedBox(height: 50)
           ],
         ),
       ),
     );
 
+  }
+
+
+  Future<void> loadstates() async {
+    String url1 = 'http://adslay.arjunweb.in/API/HomeAPI/StatesList';
+    print(url1);
+    Map<String, dynamic> body = {
+      'CountryId': ''+countryControllerId.text.toString(),
+    };
+    print("Profile get details api calling :" + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+
+    Map data = jsonDecode(response.body);
+    print(data);
+    setState(() {
+      print(''+data.toString());
+      statesLists =data['StatesList'];
+      isLoading=false;
+    });
   }
 
   Widget _ordersHistoryItems() {

@@ -1,16 +1,31 @@
 import 'package:adslay/bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'BoolProvider.dart';
 import 'Constant/ConstantsColors.dart';
 
 
 class ThankYouScreen extends StatefulWidget {
-  const ThankYouScreen({Key? key}) : super(key: key);
+
+  var date;
+  var transactionId;
+  var storeName;
+  var status;
+  var totalAmount;
+
+  ThankYouScreen({this.date,this.transactionId,this.storeName,this.status,this.totalAmount});
 
   @override
   State<ThankYouScreen> createState() => _ThankYouScreenState();
 }
 
 class _ThankYouScreenState extends State<ThankYouScreen> {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  BoolProvider _boolProvider = BoolProvider();
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +44,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.pop(context);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> BottomNavigationMenu()));
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10),
@@ -45,56 +60,56 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                           child: Image.asset("assets/images/home-logo.png",width: 130,)
                       ),
                       const Spacer(),
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              21.5), // if you need this
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              color: Colors.transparent,
-                              width: 43,
-                              height: 43,
-
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
-                              child: Image.asset(
-                                "assets/images/cart.png",
-                                width: 28,
-                                height: 28,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              21.5), // if you need this
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              color: Colors.transparent,
-                              width: 43,
-                              height: 43,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  10, 10, 5, 0),
-                              child: Image.asset(
-                                "assets/images/search.png",
-                                width: 25,
-                                height: 25,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Card(
+                      //   elevation: 2,
+                      //   shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(
+                      //         21.5), // if you need this
+                      //   ),
+                      //   child: Stack(
+                      //     children: [
+                      //       Container(
+                      //         color: Colors.transparent,
+                      //         width: 43,
+                      //         height: 43,
+                      //
+                      //       ),
+                      //       Padding(
+                      //         padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
+                      //         child: Image.asset(
+                      //           "assets/images/cart.png",
+                      //           width: 28,
+                      //           height: 28,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
+                      // Card(
+                      //   elevation: 2,
+                      //   shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(
+                      //         21.5), // if you need this
+                      //   ),
+                      //   child: Stack(
+                      //     children: [
+                      //       Container(
+                      //         color: Colors.transparent,
+                      //         width: 43,
+                      //         height: 43,
+                      //       ),
+                      //       Padding(
+                      //         padding: const EdgeInsets.fromLTRB(
+                      //             10, 10, 5, 0),
+                      //         child: Image.asset(
+                      //           "assets/images/search.png",
+                      //           width: 25,
+                      //           height: 25,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],
@@ -439,7 +454,15 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                           EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 5.0),
                                           child: MaterialButton(
                                             onPressed: () {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context)=> BottomNavigationMenu()));
+                                              //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> BottomNavigationMenu()));
+
+                                              Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
+                                                  false);
+                                              _scaffoldKey.currentState?.openEndDrawer();
+                                              _boolProvider.setBottomChange(0);
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(builder: (context) =>BottomNavigationMenu()));
+
                                             },
                                             textColor: Colors.white,
                                             padding: const EdgeInsets.all(0.0),

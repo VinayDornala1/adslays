@@ -357,8 +357,8 @@ class _OTPScreenState extends State<OTPScreen> {
           prefs.setString('username', FirstName);
           prefs.setString('email', Email);
           prefs.setString('mobilenumber', MobileNo);
-          print(CustomerId.toString());
-          print(FirstName.toString());
+          print("CustomerID is: "+CustomerId.toString());
+          print("First Name is: "+FirstName.toString());
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BottomNavigationMenu()));
         }
   }

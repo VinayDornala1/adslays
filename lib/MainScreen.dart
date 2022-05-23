@@ -222,7 +222,7 @@ class _MainScreenState extends State<MainScreen> {
                   Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
                       false);
                   _scaffoldKey.currentState?.openEndDrawer();
-                  _boolProvider.setBottomChange(3);
+                  //_boolProvider.setBottomChange(3);
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) =>HowItWorks()));
 

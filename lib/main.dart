@@ -1,5 +1,6 @@
 import 'package:adslay/BoolProvider.dart';
 import 'package:adslay/SplashScreen.dart';
+import 'package:adslay/stripe/services/stripe_service.dart';
 import 'package:flutter/material.dart';
 import 'MultipleNotifier3.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    StripeService().init();
     return Consumer<BoolProvider>(
       builder: (context, model, child){
         return GetMaterialApp(

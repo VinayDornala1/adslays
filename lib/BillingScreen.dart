@@ -688,140 +688,6 @@ class _BillingScreenState extends State<BillingScreen> {
                 ],
               ),
             ),
-            // Positioned(
-            //   left: 0,
-            //   right: 0,
-            //   bottom: 0,
-            //   child: SizedBox(
-            //     child: Stack(
-            //       children: [
-            //         Column(
-            //           children: [
-            //             ClipRRect(
-            //               borderRadius: BorderRadius.circular(10.0),
-            //               child: Padding(
-            //                 padding: const EdgeInsets.all(0.0),
-            //                 child: Column(
-            //                   crossAxisAlignment: CrossAxisAlignment.start,
-            //                   mainAxisAlignment: MainAxisAlignment.end,
-            //                   children:  [
-            //                     Container(
-            //                       color: Colors.transparent,
-            //                       height: 125,
-            //                       child: Stack(
-            //                         children: [
-            //                           ClipRRect(
-            //                             borderRadius: BorderRadius.circular(10.0),
-            //                             child: Padding(
-            //                               padding: const EdgeInsets.only(bottom: 15.0),
-            //                               child: Card(
-            //                                   elevation: 2,
-            //                                   child: Column(
-            //                                     crossAxisAlignment: CrossAxisAlignment.start,
-            //                                     mainAxisAlignment: MainAxisAlignment.start,
-            //                                     children:  [
-            //                                       Padding(
-            //                                         padding: const EdgeInsets.fromLTRB(10, 15, 5, 5),
-            //                                         child: Row(
-            //                                           children: const [
-            //                                             Text(
-            //                                               "Subtotal: ",
-            //                                               style: TextStyle(
-            //                                                 fontSize: 20,
-            //                                                 fontWeight: FontWeight.bold,
-            //                                                 color: Colors.blue,
-            //                                               ),
-            //
-            //                                             ),
-            //                                             Text(
-            //                                               "\$56.00 USD",
-            //                                               style: TextStyle(
-            //                                                 fontSize: 20,
-            //                                                 fontWeight: FontWeight.w500,
-            //                                                 color: Colors.black,
-            //                                               ),
-            //
-            //                                             ),
-            //                                           ],
-            //                                         ),
-            //                                       ),
-            //                                       const Padding(
-            //                                         padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-            //                                         child: Text(
-            //                                           "Taxes and shipping caculated at checkout",
-            //                                           style: TextStyle(
-            //                                             fontSize: 14,
-            //                                             fontWeight: FontWeight.w500,
-            //                                             color: Colors.black,
-            //                                           ),
-            //
-            //                                         ),
-            //                                       ),
-            //                                     ],
-            //                                   )),
-            //                             ),
-            //                           ),
-            //                           Positioned(
-            //                             //top: 0,
-            //                             left: 0,
-            //                             right: 0,
-            //                             bottom: 0,
-            //                             child: Padding(
-            //                               padding: const EdgeInsets.only(top: 10),
-            //                               child: MaterialButton(
-            //                                 onPressed: () {
-            //                                   Navigator.push(context, MaterialPageRoute(builder: (context)=> BillingScreen()));
-            //                                 },
-            //                                 textColor: Colors.white,
-            //                                 padding: const EdgeInsets.all(0.0),
-            //                                 child: Container(
-            //                                   width: MediaQuery.of(context).size.width * 0.60,
-            //                                   height: 45,
-            //                                   decoration:  const BoxDecoration(
-            //                                       gradient:  LinearGradient(
-            //                                         colors: [
-            //                                           Color(0xff3962cb),
-            //                                           Color(0xff3962cb),
-            //                                         ],
-            //                                       )
-            //                                   ),
-            //                                   //padding: const EdgeInsets.all(10.0),
-            //                                   child: const Center(
-            //                                     child: Text(
-            //                                       "CHECK OUT",
-            //                                       textAlign: TextAlign.center,
-            //                                       style: TextStyle(
-            //                                           color: Color(0xFFFFFFFF),
-            //                                           fontSize: 16,
-            //                                           fontWeight: FontWeight.w500,
-            //                                           fontFamily: "Lorin"
-            //                                       ),
-            //                                     ),
-            //                                   ),
-            //                                 ),
-            //                               ),
-            //                             ),
-            //                           ),
-            //                           const SizedBox(height: 10,),
-            //                         ],
-            //                       ),
-            //                     ),
-            //                   ],
-            //                 ),
-            //               ),
-            //             ),
-            //             SizedBox(
-            //               height: 10,
-            //               child: Container(
-            //                 color: Colors.transparent,
-            //               ),
-            //             )
-            //           ],
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -854,7 +720,7 @@ class _BillingScreenState extends State<BillingScreen> {
       String msg = jsonDecode(response.body)['msg'];
       if (msg == "Product Added to Your Cart" || msg == "success" ||  msg == "Success")
       {
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => ThankYouScreen()));
