@@ -34,6 +34,8 @@ class APIConstant
 
   static String postProfilePicDetailsToServer = base_url + 'AccountAPI/UpdateCustomerProfileImageAPI';
 
+  static String updateProfileDetails = base_url + '/AccountAPI/ProfileUpdate';
+
 
 
 }
