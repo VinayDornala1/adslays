@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:adslay/CartScreen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -33,6 +35,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<dynamic> statesLists = [];
 
   String email = '';
+  String profilePicUrl = '';
+  String fullName = '';
   String customerId = '';
   String mobileNumber = '';
   double subTotalValue = 0.0;
@@ -41,6 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
   TextEditingController userNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
   TextEditingController profileImage = TextEditingController();
@@ -51,6 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController countryControllerId = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController zipcodeController = TextEditingController();
+  TextEditingController customerIdController = TextEditingController();
 
 
   Future<void> getData() async {
@@ -64,38 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }catch(e){
       print(e);
     }
-    String url1 = APIConstant.getCartHistoryItems;
-    print("Get orders history items url is: "+url1);
-    Map<String, dynamic> body = {
-      'Mobile': '9160747554',
-    };
-    print('Get orders history items api body:' + body.toString());
-    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-    final encoding = Encoding.getByName('utf-8');
-    final response = await post(
-      Uri.parse(url1),
-      headers: headers,
-      body: body,
-      encoding: encoding,
-    );
-    //print('Get orders history items response :' + response.body.toString());
-    setState(() {
-      ordersHistoryList = jsonDecode(response.body)['OrdersList'];
-    });
 
-    if (ordersHistoryList.isEmpty) {
-      print("No orders history found.");
-      isCheckoutAvailable = false;
-    }
-    else{
-      for (var item in ordersHistoryList) {
-        double actualPrice = item["ActualPrice"];
-        subTotalValue += actualPrice;
-        //print("Cart items actual prices are: "+actualPrice.toString());
-      }
-      isCheckoutAvailable = true;
-      print("Cart items total price: "+subTotalValue.toString());
-    }
     _getUserProfileDetails();
 
     String url ="http://adslay.arjunweb.in/API/HomeAPI/CountriesList" ;
@@ -134,7 +109,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (ordersHistoryList.isEmpty) {
       print("No orders history found.");
-      isCheckoutAvailable = false;
     }
     else{
       for (var item in ordersHistoryList) {
@@ -142,7 +116,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         subTotalValue += actualPrice;
         //print("Cart items actual prices are: "+actualPrice.toString());
       }
-      isCheckoutAvailable = true;
       print("Cart items total price: "+subTotalValue.toString());
     }
 
@@ -174,22 +147,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print(msg);
 
     if (msg=='No Records Found') {
-
+      print("No records found...");
     } else {
       setState(() {
 
-        userNameController.text = data['objCustomers']['FirstName'] + " " + data['objCustomers']['LastName'];
+        fullName = data['objCustomers']['FirstName'] + " " + data['objCustomers']['LastName'];
+        userNameController.text = data['objCustomers']['FirstName'];
+        lastNameController.text = data['objCustomers']['LastName'];
         emailController.text = data['objCustomers']['Email'];
         mobileNumberController.text = data['objCustomers']['MobileNo'];
         profileImage.text = data['objCustomers']['ProfileImage'];
+        addressController.text = data['objCustomers']['Address1'];
+        cityController.text = data['objCustomers']['City'];
+        stateController.text = data['objCustomers']['State'];
+        countryController.text = data['objCustomers']['Country'];
+        zipcodeController.text = data['objCustomers']['ZipCode'];
+        customerIdController.text = data['objCustomers']['CustomerId'].toString();
 
-        var FirstName = data['objCustomers']['FirstName'];
-        var LastName = data['objCustomers']['LastName'];
-        var Email = data['objCustomers']['Email'];
-        var MobileNo = data['objCustomers']['MobileNo'];
-
-
-        userNameController.text =  FirstName+ " " + LastName;
+        profilePicUrl = data['objCustomers']['ImageUrl'];
       });
     }
 
@@ -210,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final String uploadUrl = APIConstant.postProfilePicToServer;
   TextEditingController vendor_image = new TextEditingController();
 
-  _tenthFilepicker() async {
+  _chooseProfilePic() async {
     var picked = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg'],
@@ -247,7 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await pr.hide();
       setState(() {
         isLoading = true;
-        // getdata();
+        _getUserProfileDetails();
       });
     }
   }
@@ -267,6 +242,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _currentIndex = index;
 
       if (index == 1){
+        setState(() {
+          isEditProfile = false;
+          isLoading = true;
+        });
+
         _getOrdersHistory();
       }else if (index == 0){
         _getUserProfileDetails();
@@ -410,7 +390,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "" + userNameController.text,
+                              "" + fullName,
                               style: const TextStyle(
                                   fontSize: 18,
                                   fontFamily: "Mont-Regular"
@@ -435,7 +415,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(height: 24,width: 2,child: Container(color: ConstantColors.lightGrey,),),
                             const Spacer(),
                             Text(
-                              "Unique ID: $customerId",
+                              "Unique ID: " + customerIdController.text,
                               style: TextStyle(
                                   color: ConstantColors.appTheme,
                                   fontSize: 17,
@@ -536,7 +516,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         GestureDetector(
           onTap: () {
             // _pickImage();
-            _tenthFilepicker();
+            _chooseProfilePic();
             print("Choose profile image.");
           },
           child: Padding(
@@ -546,7 +526,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
+                  isLoading?
+                  profilePicUrl == null
+                      ?Container(
                       width: 120.0,
                       height: 120.0,
                       decoration: const BoxDecoration(
@@ -557,6 +539,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fit: BoxFit.cover,
                         ),
                       ))
+                      :CachedNetworkImage(
+                    imageUrl: profilePicUrl,
+                    placeholder: (context, url) => const Center(
+                        child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        Image.asset("assets/images/userprofile.jpg"),
+                    //const Icon(Icons.refresh_outlined),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    // height: 150,
+                  ):Container(
+                      width: 120.0,
+                      height: 120.0,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        image: DecorationImage(
+                          image: ExactAssetImage('assets/images/userprofile.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      )),
                 ],
               ),
               Padding(
@@ -651,230 +654,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            // Padding(
-            //   padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-            //   child: TextField(
-            //     //controller: nameController,
-            //     decoration: const InputDecoration(
-            //       enabledBorder: UnderlineInputBorder(
-            //         borderSide: BorderSide(color: Colors.grey),
-            //       ),
-            //       focusedBorder: UnderlineInputBorder(
-            //         borderSide: BorderSide(color: Colors.grey),
-            //       ),
-            //       filled: true,
-            //       fillColor: Colors.transparent,
-            //       hintText: 'Enter Your Name',
-            //
-            //     ),
-            //   ),
-            // ),
-            // Padding(
-            //   padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-            //   child: TextField(
-            //     controller: addressController,
-            //     decoration: const InputDecoration(
-            //       enabledBorder: UnderlineInputBorder(
-            //         borderSide: BorderSide(color: Colors.grey),
-            //       ),
-            //       focusedBorder: UnderlineInputBorder(
-            //         borderSide: BorderSide(color: Colors.grey),
-            //       ),
-            //       filled: true,
-            //       fillColor: Colors.transparent,
-            //       hintText: 'Enter Your Address',
-            //
-            //     ),
-            //   ),
-            // ),
-            //
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children:   [
-            //     Flexible(
-            //       child: Padding(
-            //         padding: const EdgeInsets.fromLTRB(15, 10, 5, 0),
-            //         child: CountriesList == null
-            //             ? const SizedBox(height: 0, width: double.infinity)
-            //             : Column(
-            //           children: [
-            //             Padding(
-            //               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-            //               child: DropdownButton(
-            //                 icon: const Icon(
-            //                   Icons
-            //                       .arrow_drop_down_circle_outlined,
-            //                   size: 15,
-            //                 ),
-            //                 dropdownColor:
-            //                 Colors.white,
-            //                 isExpanded: true,
-            //                 underline: SizedBox(),
-            //                 hint: const Text(
-            //                   'Select Country',
-            //                   style: TextStyle(
-            //                       fontFamily:
-            //                       "Lorin",
-            //                       fontWeight:
-            //                       FontWeight
-            //                           .w700,
-            //                       fontSize: 14.0,
-            //                       color: Color(
-            //                           0xFF141E28)),
-            //                 ),
-            //                 value: countryController.text != '' ? countryController.text : null,
-            //                 items: CountriesList
-            //                     .map((item) {
-            //                   return DropdownMenuItem(
-            //                     child: Text(
-            //                       item['CountryName'],
-            //                       style: const TextStyle(
-            //                           color: Color(
-            //                               0xFF000000)),
-            //                     ),
-            //                     value: item['CountryName']
-            //                         .toString(),
-            //                   );
-            //                 }).toList(), onChanged: (Object? value) {
-            //                 setState(() {
-            //                   print('' + value!.toString());
-            //                   countryController.text =
-            //                       value.toString();
-            //                   for(int i=0;i<CountriesList.length;i++){
-            //                     if(countryController.text==CountriesList[i]['CountryName']){
-            //                       countryControllerId.text=CountriesList[i]['CountryId'].toString();
-            //                     }
-            //                   }
-            //                   loadstates();
-            //                 });
-            //               },
-            //
-            //               ),
-            //             ),
-            //             const Divider(thickness: 1,height: 1,color: Colors.grey,)
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //     Flexible(
-            //       child: Padding(
-            //         padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
-            //         child: statelists == null ? const SizedBox(height: 0, width: double.infinity)
-            //             : Column(
-            //           children: [
-            //             Padding(
-            //               padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-            //               child: DropdownButton(
-            //                 icon: const Icon(
-            //                   Icons
-            //                       .arrow_drop_down_circle_outlined,
-            //                   size: 15,
-            //                 ),
-            //                 dropdownColor:
-            //                 Colors.white,
-            //                 isExpanded: true,
-            //                 underline: SizedBox(),
-            //                 hint: const Text(
-            //                   'Select State',
-            //                   style: TextStyle(
-            //                       fontFamily:
-            //                       "Lorin",
-            //                       fontWeight:
-            //                       FontWeight
-            //                           .w700,
-            //                       fontSize: 14.0,
-            //                       color: Color(
-            //                           0xFF141E28)),
-            //                 ),
-            //                 value: stateController.text != '' ? stateController.text : null,
-            //                 items: statelists
-            //                     .map((item) {
-            //                   return DropdownMenuItem(
-            //                     child: Text(
-            //                       item['StateName'],
-            //                       style: const TextStyle(
-            //                           color: Color(
-            //                               0xFF000000)),
-            //                     ),
-            //                     value: item['StateName']
-            //                         .toString(),
-            //                   );
-            //                 }).toList(), onChanged: (Object? value) {
-            //                 setState(() {
-            //                   print('' + value!.toString());
-            //                   stateController.text =
-            //                       value.toString();
-            //                   // for(int i=0;i<CountriesList.length;i++){
-            //                   //   if(countryController.text==CountriesList[i]['CountryName']){
-            //                   //     countryControllerId.text=CountriesList[i]['CountryId'].toString();
-            //                   //   }
-            //                   // }
-            //                   // loadstates();
-            //                 });
-            //               },
-            //
-            //               ),
-            //             ),
-            //             const Divider(thickness: 1,height: 1,color: Colors.grey,)
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children:   [
-            //     Flexible(
-            //       child: Padding(
-            //         padding: EdgeInsets.fromLTRB(15, 10, 5, 0),
-            //         child: TextField(
-            //           controller: cityController,
-            //           decoration: const InputDecoration(
-            //             enabledBorder: UnderlineInputBorder(
-            //               borderSide: BorderSide(color: Colors.grey),
-            //             ),
-            //             focusedBorder: UnderlineInputBorder(
-            //               borderSide: BorderSide(color: Colors.grey),
-            //             ),
-            //             filled: true,
-            //             fillColor: Colors.transparent,
-            //             hintText: 'Select City',
-            //
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //     Flexible(
-            //       child: Padding(
-            //         padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
-            //         child: TextField(
-            //           controller: zipcodeController,
-            //           keyboardType: TextInputType.number,
-            //           decoration: const InputDecoration(
-            //             enabledBorder: UnderlineInputBorder(
-            //               borderSide: BorderSide(color: Colors.grey),
-            //             ),
-            //             focusedBorder: UnderlineInputBorder(
-            //               borderSide: BorderSide(color: Colors.grey),
-            //             ),
-            //             filled: true,
-            //             fillColor: Colors.transparent,
-            //             hintText: 'Enter Zip Code ',
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            //
 
             Padding(
               padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: TextField(
                 controller: userNameController,
+                decoration: const InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  hintText: 'Enter Your Name',
+
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+              child: TextField(
+                controller: lastNameController,
                 decoration: const InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
@@ -957,7 +759,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             }).toList(), onChanged: (Object? value) {
                             setState(() {
-                              print('' + value!.toString());
+                              print('selected country' + value!.toString());
                               countryController.text =
                                   value.toString();
                               for(int i=0;i<countriesList.length;i++){
@@ -1087,19 +889,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
+            
 
-
-
-
-            isEditProfile?Padding(
+            isEditProfile
+                ? Padding(
               padding: const EdgeInsets.only(top: 20),
               child: MaterialButton(
                 onPressed: () {
                     //Write update profile details api and do isEditProfile to false
-
-                  setState(() {
-                    isEditProfile = false;
-                  });
+                  verifyFormDetails();
                 },
                 textColor: Colors.white,
                 padding: const EdgeInsets.all(0.0),
@@ -1520,6 +1318,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Future<void> updateProfileDetails() async {
+    await pr.show();
+    //API Calling
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+
+      String url1 = APIConstant.updateProfileDetails;
+      print("Update profile details api:" + url1);
+
+      Map<String, dynamic> body;
+
+        body = {
+          'MobileNo': mobileNumber,
+          'FullName': userNameController.text,
+          'LastName': lastNameController.text,
+          'Country': countryController.text,
+          'State': stateController.text,
+          'City': cityController.text,
+          'ZipCode': zipcodeController.text,
+          'Address1': addressController.text,
+        };
+
+      print('' + body.toString());
+      final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+      final encoding = Encoding.getByName('utf-8');
+      final response = await post(
+        Uri.parse(url1),
+        headers: headers,
+        body: body,
+        encoding: encoding,
+      );
+      Map data1 = jsonDecode(response.body);
+      print("Update profile data response:" + data1.toString());
+      await pr.hide();
+      String msg = data1["msg"];
+
+      if (msg == "Success" || msg == "Updated" || msg == "success" ) {
+        print("Profile details updated successfully.");
+
+        setState(() {
+          isEditProfile = false;
+          isLoading = true;
+          getData();
+        });
+
+      } else {
+        print("Something went wrong..");
+      }
+    } else {
+      print("Check internet connection..!");
+    }
+  }
+
+  Future<void> verifyFormDetails() async {
+    if (userNameController.text == null || userNameController.text == '') {
+      print("Please enter first name");
+      return;
+    } else if (lastNameController.text == null || lastNameController.text == '') {
+      print("Please enter last name");
+      return;
+    } else if (countryController.text == null || countryController.text == '') {
+      print("Please select country");
+      return;
+    } else if (stateController.text == null || stateController.text == '') {
+      print("Please select state.");
+      return;
+    } else if (cityController.text == null || cityController.text == '') {
+      print("Please enter city.");
+      return;
+    } else {
+      print('updating profile details..');
+      updateProfileDetails();
+      return;
+    }
+  }
 
 
 }

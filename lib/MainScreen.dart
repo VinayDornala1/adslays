@@ -303,10 +303,10 @@ class _MainScreenState extends State<MainScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
-                      false);
-                  _scaffoldKey.currentState?.openEndDrawer();
-                  _boolProvider.setBottomChange(3);
+                  //Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
+                    //  false);
+                  //_scaffoldKey.currentState?.openEndDrawer();
+                  //_boolProvider.setBottomChange(3);
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
 
