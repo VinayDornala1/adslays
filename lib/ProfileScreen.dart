@@ -98,6 +98,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
     _getUserProfileDetails();
 
+    String url ="http://adslay.arjunweb.in/API/HomeAPI/CountriesList" ;
+    print(url);
+    var response1 =
+    await get(Uri.parse(url), headers: {"Accept": "application/json"});
+    setState(() {
+      print(''+response1.body.toString());
+      countriesList = jsonDecode(response1.body)['CountriesList'];
+    });
     setState(() {
       isLoading=false;
     });

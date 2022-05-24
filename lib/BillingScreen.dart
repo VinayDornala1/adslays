@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:adslay/stripe/blocs/pay/pay_bloc.dart';
+import 'package:adslay/stripe/services/stripe_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
@@ -150,9 +153,12 @@ class _BillingScreenState extends State<BillingScreen> {
 
   }
 
+  final stripeService = StripeService();
 
   @override
   Widget build(BuildContext context) {
+    final payBloc = BlocProvider.of<PayBloc>(context);
+
     return Scaffold(
       body: GestureDetector(
         onTap: (){
@@ -584,7 +590,7 @@ class _BillingScreenState extends State<BillingScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                                       child: MaterialButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           if (nameController.text == '') {
                                             Fluttertoast.showToast(
                                                 msg: "enter name",
@@ -646,7 +652,20 @@ class _BillingScreenState extends State<BillingScreen> {
                                                 fontSize: 16.0
                                             );
                                           }else {
-                                            getData11();
+                                            // getData11();
+                                            showLoading(context);
+                                            final amount = payBloc.state.amount;
+                                            final currency = payBloc.state.currency;
+                                            final resp = await stripeService.payWithNewCard(
+                                                amount: amount,
+                                                currency: currency
+                                            );
+                                            Navigator.pop(context);
+                                            if ( resp.ok ) {
+                                              showAlert(context, 'Credit Card ok', 'Success Payment');
+                                            } else {
+                                              showAlert(context, 'Upsssss!', resp.msg!);
+                                            }
                                           }
                                         },
                                         textColor: Colors.white,
@@ -694,6 +713,38 @@ class _BillingScreenState extends State<BillingScreen> {
     );
   }
 
+
+  showAlert( BuildContext context, String title, String message ) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: ( _ ) => AlertDialog(
+          title: Text( title ),
+          content: Text( message ),
+          actions: [
+            MaterialButton(
+              child: const Text( 'ok' ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                getData11();
+                // Navigator.pop(context);
+              },
+            )
+          ],
+        )
+    );
+  }
+
+  showLoading( BuildContext context ) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: ( _ ) =>  const AlertDialog(
+        title: Text( 'Await....'),
+        content: LinearProgressIndicator(),
+      ),
+    );
+  }
 
   Future<void> getData11() async {
     String url1 = 'http://adslay.arjunweb.in/API/OrderAPI/OrderInsertAPI';

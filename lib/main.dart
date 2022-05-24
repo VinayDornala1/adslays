@@ -1,7 +1,9 @@
 import 'package:adslay/BoolProvider.dart';
 import 'package:adslay/SplashScreen.dart';
+import 'package:adslay/stripe/blocs/pay/pay_bloc.dart';
 import 'package:adslay/stripe/services/stripe_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'MultipleNotifier3.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +20,7 @@ main()  async {
   return runApp(
       MultiProvider(providers: [
         ChangeNotifierProvider(create: (_) => BoolProvider()),
+        BlocProvider(create: ( _ ) => PayBloc())
       ],
         child: MyApp(),
       )
