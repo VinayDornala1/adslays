@@ -164,7 +164,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         zipcodeController.text = data['objCustomers']['ZipCode'];
         customerIdController.text = data['objCustomers']['CustomerId'].toString();
 
-        profilePicUrl = data['objCustomers']['ImageUrl'];
+        profilePicUrl = data['objCustomers']['ProfileImage'];
+        print("Profile pic url is:"+profilePicUrl);
+
       });
     }
 
@@ -279,7 +281,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
         top: true,
         right: false,
         bottom: false,
-        child: Column(
+        child: isLoading
+            ?Shimmer.fromColors(
+            baseColor: ConstantColors.lightGrey,
+            highlightColor: Colors.white,
+            enabled: true,
+            child: ListView(
+              shrinkWrap: true, // use it
+              physics: const BouncingScrollPhysics(),
+              children: [
+                GridView.count(
+                  crossAxisCount: 1,
+                  childAspectRatio: 1.5,
+                  physics: const ScrollPhysics(),
+                  shrinkWrap: true,
+                  children: List.generate(10, (index) {
+                    return InkWell(
+                      child: GestureDetector(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children:
+                              [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Card(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            height: MediaQuery.of(context).size.width * 0.40,
+                                            alignment: Alignment.center,
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Card(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            height: 10,
+                                            alignment: Alignment.center,
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                const SizedBox(height: 10,width: 10,),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Card(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            height: 10,
+                                            alignment: Alignment.center,
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  ),
+                )
+              ],
+            )
+        )
+            :Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -406,9 +488,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Text(
                               "+91 $mobileNumber",
                               style: TextStyle(
-                                  fontSize: 17,
-                                  fontFamily: "Mont-Light",
-                                  color: ConstantColors.appTheme,
+                                fontSize: 17,
+                                fontFamily: "Mont-Light",
+                                color: ConstantColors.appTheme,
                               ),
                             ),
                             const Spacer(),
@@ -526,8 +608,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  isLoading?
-                  profilePicUrl == null
+                  profilePicUrl == ''
                       ?Container(
                       width: 120.0,
                       height: 120.0,
@@ -539,27 +620,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fit: BoxFit.cover,
                         ),
                       ))
-                      :CachedNetworkImage(
-                    imageUrl: profilePicUrl,
-                    placeholder: (context, url) => const Center(
-                        child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) =>
-                        Image.asset("assets/images/userprofile.jpg"),
-                    //const Icon(Icons.refresh_outlined),
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    // height: 150,
-                  ):Container(
-                      width: 120.0,
-                      height: 120.0,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        image: DecorationImage(
-                          image: ExactAssetImage('assets/images/userprofile.png'),
-                          fit: BoxFit.cover,
-                        ),
-                      )),
+                      :Container(
+                    height: 130,
+                    width: 130,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(65.0),
+                      child: CachedNetworkImage(
+                        imageUrl: profilePicUrl,
+                        placeholder: (context, url) => const Center(
+                            child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) =>
+                            Image.asset("assets/images/userprofile.jpg"),
+                        //const Icon(Icons.refresh_outlined),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        // height: 150,
+                      ),
+                    ),
+                  )
                 ],
               ),
               Padding(
@@ -889,14 +967,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            
+
 
             isEditProfile
                 ? Padding(
               padding: const EdgeInsets.only(top: 20),
               child: MaterialButton(
                 onPressed: () {
-                    //Write update profile details api and do isEditProfile to false
+                  //Write update profile details api and do isEditProfile to false
                   verifyFormDetails();
                 },
                 textColor: Colors.white,
@@ -905,7 +983,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   width: MediaQuery.of(context).size.width * 0.40,
                   height: 46,
                   decoration:  BoxDecoration(
-                    borderRadius: BorderRadius.circular(23),
+                      borderRadius: BorderRadius.circular(23),
                       gradient:  const LinearGradient(
                         colors: [
                           Color(0xff3962cb),
@@ -1330,16 +1408,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       Map<String, dynamic> body;
 
-        body = {
-          'MobileNo': mobileNumber,
-          'FullName': userNameController.text,
-          'LastName': lastNameController.text,
-          'Country': countryController.text,
-          'State': stateController.text,
-          'City': cityController.text,
-          'ZipCode': zipcodeController.text,
-          'Address1': addressController.text,
-        };
+      body = {
+        'MobileNo': mobileNumber,
+        'FullName': userNameController.text,
+        'LastName': lastNameController.text,
+        'Country': countryController.text,
+        'State': stateController.text,
+        'City': cityController.text,
+        'ZipCode': zipcodeController.text,
+        'Address1': addressController.text,
+      };
 
       print('' + body.toString());
       final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
