@@ -12,6 +12,7 @@ import 'package:shimmer/shimmer.dart';
 
 import 'API.dart';
 import 'Constant/ConstantsColors.dart';
+import 'MainScreen.dart';
 import 'ThankYouScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _currentIndex = 0;
 
   bool isLoading = true;
+  bool isLoading1 = true;
   bool isEditProfile = false;
   bool isCheckoutAvailable = false;
   List<dynamic> ordersHistoryList = [];
@@ -120,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     setState(() {
-      isLoading=false;
+      isLoading1=false;
     });
   }
 
@@ -246,7 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (index == 1){
         setState(() {
           isEditProfile = false;
-          isLoading = true;
+          isLoading1 = true;
         });
 
         _getOrdersHistory();
@@ -276,123 +278,178 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
     return Scaffold(
-      body: SafeArea(
-        left: false,
-        top: true,
-        right: false,
-        bottom: false,
-        child: isLoading
-            ?Shimmer.fromColors(
-            baseColor: ConstantColors.lightGrey,
-            highlightColor: Colors.white,
-            enabled: true,
-            child: ListView(
-              shrinkWrap: true, // use it
-              physics: const BouncingScrollPhysics(),
-              children: [
-                GridView.count(
-                  crossAxisCount: 1,
-                  childAspectRatio: 1.5,
-                  physics: const ScrollPhysics(),
-                  shrinkWrap: true,
-                  children: List.generate(10, (index) {
-                    return InkWell(
-                      child: GestureDetector(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                          child: Center(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children:
-                              [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: Card(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context).size.width * 0.40,
-                                            alignment: Alignment.center,
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: Card(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: 10,
-                                            alignment: Alignment.center,
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                const SizedBox(height: 10,width: 10,),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: Card(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context).size.width,
-                                            height: 10,
-                                            alignment: Alignment.center,
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                              ],
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: SafeArea(
+          left: false,
+          top: true,
+          right: false,
+          bottom: false,
+          child: isLoading
+              ?Shimmer.fromColors(
+              baseColor: ConstantColors.lightGrey,
+              highlightColor: Colors.white,
+              enabled: true,
+              child: ListView(
+                shrinkWrap: true, // use it
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  GridView.count(
+                    crossAxisCount: 1,
+                    childAspectRatio: 1.5,
+                    physics: const ScrollPhysics(),
+                    shrinkWrap: true,
+                    children: List.generate(10, (index) {
+                      return InkWell(
+                        child: GestureDetector(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:
+                                [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Card(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              height: MediaQuery.of(context).size.width * 0.40,
+                                              alignment: Alignment.center,
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Card(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              height: 10,
+                                              alignment: Alignment.center,
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                  const SizedBox(height: 10,width: 10,),
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Card(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: MediaQuery.of(context).size.width,
+                                              height: 10,
+                                              alignment: Alignment.center,
+                                            ),
+                                          ],
+                                        )),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                  ),
-                )
-              ],
-            )
-        )
-            :Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     Navigator.pop(context);
-                  //   },
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.only(top: 10),
-                  //     child: Image.asset(
-                  //       "assets/images/back.png",
-                  //       width: 45,
-                  //       height: 65,
-                  //     ),
-                  //   ),
-                  // ),
-                  Padding(
-                      padding: const EdgeInsets.only(
-                          top: 0, right: 30, left: 10),
-                      child: Image.asset(
-                        "assets/images/home-logo.png", width: 130,)
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
+                      );
                     },
-                    child: Card(
+                    ),
+                  )
+                ],
+              )
+          )
+              :Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Navigator.pop(context);
+                    //   },
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.only(top: 10),
+                    //     child: Image.asset(
+                    //       "assets/images/back.png",
+                    //       width: 45,
+                    //       height: 65,
+                    //     ),
+                    //   ),
+                    // ),
+                    Padding(
+                        padding: const EdgeInsets.only(
+                            top: 0, right: 30, left: 10),
+                        child: Image.asset(
+                          "assets/images/home-logo.png", width: 130,)
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
+                      },
+                      child: Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              21.5), // if you need this
+                        ),
+                        child: Stack(
+                          children: [
+                            Container(
+                              color: Colors.transparent,
+                              width: 43,
+                              height: 43,
+
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
+                              child: Image.asset(
+                                "assets/images/cart.png",
+                                width: 28,
+                                height: 28,
+                              ),
+                            ),
+                            MainScreen.cartItemsCount > 0 ?Positioned(
+                              right: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration:  BoxDecoration(
+                                    color: ConstantColors.appTheme,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  //color: Colors.red,
+                                  child:  Center(
+                                    child: Text(
+                                      ""+MainScreen.cartItemsCount.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontFamily: "Mont-Regular"
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ):const SizedBox(height: 1,width: 1,)
+                          ],
+                        ),
+                      ),
+                    ),
+                    Card(
                       elevation: 2,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
@@ -404,186 +461,161 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Colors.transparent,
                             width: 43,
                             height: 43,
-
                           ),
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
+                            padding: const EdgeInsets.fromLTRB(
+                                10, 10, 5, 0),
                             child: Image.asset(
-                              "assets/images/cart.png",
-                              width: 28,
-                              height: 28,
+                              "assets/images/search.png",
+                              width: 25,
+                              height: 25,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          21.5), // if you need this
+                  ],
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "User Profile",
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontFamily: "Mont-SemiBold"
                     ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          color: Colors.transparent,
-                          width: 43,
-                          height: 43,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                              10, 10, 5, 0),
-                          child: Image.asset(
-                            "assets/images/search.png",
-                            width: 25,
-                            height: 25,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  "User Profile",
-                  style: TextStyle(
-                      fontSize: 22,
-                      fontFamily: "Mont-SemiBold"
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: SizedBox(width: 100,child: Divider(height: 1,thickness: 1,color: ConstantColors.appTheme,),),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _previewImage(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: SizedBox(width: 100,child: Divider(height: 1,thickness: 1,color: ConstantColors.appTheme,),),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _previewImage(),
 
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "" + fullName,
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: "Mont-Regular"
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "" + fullName,
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: "Mont-Regular"
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Spacer(),
-                            Text(
-                              "+91 $mobileNumber",
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontFamily: "Mont-Light",
-                                color: ConstantColors.appTheme,
-                              ),
-                            ),
-                            const Spacer(),
-                            SizedBox(height: 24,width: 2,child: Container(color: ConstantColors.lightGrey,),),
-                            const Spacer(),
-                            Text(
-                              "Unique ID: " + customerIdController.text,
-                              style: TextStyle(
-                                  color: ConstantColors.appTheme,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Spacer(),
+                              Text(
+                                "+91 $mobileNumber",
+                                style: TextStyle(
                                   fontSize: 17,
-                                  fontFamily: "Mont-Light"
+                                  fontFamily: "Mont-Light",
+                                  color: ConstantColors.appTheme,
+                                ),
                               ),
-                            ),
-                            const Spacer(),
-                          ],
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.fromLTRB(15.0, 20, 0, 0),
-                            child:
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: tabBars.map((e) {
-                                var index = tabBars.indexOf(e);
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _onSelected(index);
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        right: 10, left: 0),
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width * 0.45,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(20),
-                                        color: _currentIndex == index
-                                            ? ConstantColors.appTheme
-                                            : Color(0xFFF2F2F2),
-                                      ),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            index == 0
-                                                ? Image.asset(
-                                              "assets/images/user.png",
-                                              color: _currentIndex == index ? Colors.white : Colors.black,
-                                              width: 14,
-                                              height: 14,
-                                            )
-                                                : Image.asset(
-                                              "assets/images/orderDetails.png",
-                                              color: _currentIndex == index ? Colors.white : Colors.black,
-                                              width: 16,
-                                              height: 16,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.fromLTRB(5, 2, 5, 0),
-                                              child: Text(
-                                                e.toString(),
-                                                style: TextStyle(
-                                                  fontFamily: 'Mont-Light',
-                                                  color: _currentIndex ==
-                                                      index
-                                                      ? Color(0xFFFFFFFF)
-                                                      : Colors.black,
-                                                  fontSize: 15,
+                              const Spacer(),
+                              SizedBox(height: 24,width: 2,child: Container(color: ConstantColors.lightGrey,),),
+                              const Spacer(),
+                              Text(
+                                "Unique ID: " + customerIdController.text,
+                                style: TextStyle(
+                                    color: ConstantColors.appTheme,
+                                    fontSize: 17,
+                                    fontFamily: "Mont-Light"
+                                ),
+                              ),
+                              const Spacer(),
+                            ],
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.fromLTRB(15.0, 20, 0, 0),
+                              child:
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: tabBars.map((e) {
+                                  var index = tabBars.indexOf(e);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _onSelected(index);
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 10, left: 0),
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width * 0.45,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(20),
+                                          color: _currentIndex == index
+                                              ? ConstantColors.appTheme
+                                              : Color(0xFFF2F2F2),
+                                        ),
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              index == 0
+                                                  ? Image.asset(
+                                                "assets/images/user.png",
+                                                color: _currentIndex == index ? Colors.white : Colors.black,
+                                                width: 14,
+                                                height: 14,
+                                              )
+                                                  : Image.asset(
+                                                "assets/images/orderDetails.png",
+                                                color: _currentIndex == index ? Colors.white : Colors.black,
+                                                width: 16,
+                                                height: 16,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(5, 2, 5, 0),
+                                                child: Text(
+                                                  e.toString(),
+                                                  style: TextStyle(
+                                                    fontFamily: 'Mont-Light',
+                                                    color: _currentIndex ==
+                                                        index
+                                                        ? Color(0xFFFFFFFF)
+                                                        : Colors.black,
+                                                    fontSize: 15,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
-                            )
-                        ),
-                        Divider(height: 25,thickness: 2,color: ConstantColors.lightGrey,),
-                        _currentIndex == 0
-                            ? _personalDetails()
-                            : _currentIndex == 1
-                            ? _ordersHistoryItems()
-                            : const SizedBox(width: 0,height: 0,)
-                      ],
-                    )
-                ),
-              )
-            ]),
+                                  );
+                                }).toList(),
+                              )
+                          ),
+                          Divider(height: 25,thickness: 2,color: ConstantColors.lightGrey,),
+                          _currentIndex == 0
+                              ? _personalDetails()
+                              : _currentIndex == 1
+                              ? _ordersHistoryItems()
+                              : const SizedBox(width: 0,height: 0,)
+                        ],
+                      )
+                  ),
+                )
+              ]),
+        ),
       ),
     );
   }
@@ -737,6 +769,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: TextField(
                 controller: userNameController,
+                readOnly: isEditProfile,
                 decoration: const InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
@@ -755,6 +788,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: TextField(
                 controller: lastNameController,
+                readOnly: isEditProfile,
                 decoration: const InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
@@ -773,6 +807,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
               child: TextField(
                 controller: addressController,
+                readOnly: isEditProfile,
                 decoration: const InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.grey),
@@ -801,54 +836,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                          child: DropdownButton(
-                            icon: const Icon(
-                              Icons
-                                  .arrow_drop_down_circle_outlined,
-                              size: 15,
-                            ),
-                            dropdownColor:
-                            Colors.white,
-                            isExpanded: true,
-                            underline: const SizedBox(),
-                            hint: const Padding(
-                              padding:  EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                'Select Country',
-                                style: TextStyle(
-                                    fontFamily:
-                                    "Lorin",
-                                    fontSize: 16.0,
-                                    color: Colors.black),
+                          child: IgnorePointer(
+                            ignoring: isEditProfile,
+                            child: DropdownButton(
+                              icon: const Icon(
+                                Icons
+                                    .arrow_drop_down_circle_outlined,
+                                size: 15,
                               ),
-                            ),
-                            value: countryController.text != '' ? countryController.text : null,
-                            items: countriesList
-                                .map((item) {
-                              return DropdownMenuItem(
+                              dropdownColor:
+                              Colors.white,
+                              isExpanded: true,
+                              underline: const SizedBox(),
+                              hint: const Padding(
+                                padding:  EdgeInsets.only(left: 8.0),
                                 child: Text(
-                                  item['CountryName'],
-                                  style: const TextStyle(
-                                      color: Color(
-                                          0xFF000000)),
+                                  'Select Country',
+                                  style: TextStyle(
+                                      fontFamily:
+                                      "Lorin",
+                                      fontSize: 16.0,
+                                      color: Colors.black),
                                 ),
-                                value: item['CountryName']
-                                    .toString(),
-                              );
-                            }).toList(), onChanged: (Object? value) {
-                            setState(() {
-                              print('selected country' + value!.toString());
-                              countryController.text =
-                                  value.toString();
-                              for(int i=0;i<countriesList.length;i++){
-                                if(countryController.text==countriesList[i]['CountryName']){
-                                  countryControllerId.text=countriesList[i]['CountryId'].toString();
+                              ),
+                              value: countryController.text != '' ? countryController.text : null,
+                              items: countriesList
+                                  .map((item) {
+                                return DropdownMenuItem(
+                                  child: Text(
+                                    item['CountryName'],
+                                    style: const TextStyle(
+                                        color: Color(
+                                            0xFF000000)),
+                                  ),
+                                  value: item['CountryName']
+                                      .toString(),
+                                );
+                              }).toList(), onChanged: (Object? value) {
+                              setState(() {
+                                print('selected country' + value!.toString());
+                                countryController.text =
+                                    value.toString();
+                                for(int i=0;i<countriesList.length;i++){
+                                  if(countryController.text==countriesList[i]['CountryName']){
+                                    countryControllerId.text=countriesList[i]['CountryId'].toString();
+                                  }
                                 }
-                              }
-                              loadstates();
-                            });
-                          },
+                                loadstates();
+                              });
+                            },
 
+                            ),
                           ),
                         ),
                         const Divider(thickness: 1,height: 1,color: Colors.grey,)
@@ -1042,7 +1080,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _ordersHistoryItems() {
-    return isLoading
+    return isLoading1
         ? Shimmer.fromColors(
         baseColor: ConstantColors.lightGrey,
         highlightColor: Colors.white,
@@ -1056,7 +1094,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               childAspectRatio: 1.5,
               physics: const ScrollPhysics(),
               shrinkWrap: true,
-              children: List.generate(10, (index) {
+              children: List.generate(2, (index) {
                 return InkWell(
                   child: GestureDetector(
                     child: Padding(
@@ -1122,7 +1160,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         )
     )
-        : ListView.builder(
+        : ordersHistoryList.isEmpty?Center(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 40),
+                  child: Image.asset("assets/images/noordersfound.png",width: 250,height: 250,),
+                ),
+              ],
+            )):ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
@@ -1247,7 +1293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     const Padding(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                       child: Text(
-                                        "SCREEN SIZE",
+                                        "AD TYPE",
                                         textAlign: TextAlign.start,
                                         style: TextStyle(
                                           fontSize: 13,

@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'API.dart';
+import 'Constant/ConstantsColors.dart';
+import 'MainScreen.dart';
 import 'StoreDetails.dart';
 import 'UploadFiles.dart';
 
@@ -43,6 +46,8 @@ class _ChoosePlanState extends State<ChoosePlan> {
   String? selectedCountryNameTimes;
   bool isdataloaded = true;
   int _radioValue1 = 100;
+
+
   final PackageName = TextEditingController();
   final ActualPrice = TextEditingController();
   final PackageId = TextEditingController();
@@ -56,6 +61,8 @@ class _ChoosePlanState extends State<ChoosePlan> {
   List<dynamic> storePackagesList = [];
   List<dynamic> data1 = [];
 
+  var cartDetailId = '';
+
   Future<void> getData() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -67,7 +74,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
       print(e);
     }
 
-    String url1 = APIConstant.getStoreDetails;
+    String url1 = APIConstant.getPackageDetails;
     print('Get Store details in choose plan screen url: ' + url1);
     Map<String, dynamic> body = {
       'Mobile': '9160747554',
@@ -82,6 +89,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
       body: body,
       encoding: encoding,
     );
+
     print('Category base StoresList response :' + response.body.toString());
     setState(() {
       String msg = jsonDecode(response.body)['msg'];
@@ -149,7 +157,9 @@ class _ChoosePlanState extends State<ChoosePlan> {
     setState(() {
       data1 = jsonDecode(response.body)['StorePackagesList'];
       print("" + data1.toString());
-
+      _radioValue1=100;
+      PackageName.text = '';
+      ActualPrice.text = '';
       isdataloaded = false;
     });
   }
@@ -163,12 +173,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
           top: true,
           right: true,
           bottom: false,
-          child: isLoading
-              ? SizedBox(
-            width: 0,
-            height: 0,
-          )
-              : Column(
+          child: Column(
             //mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -219,6 +224,31 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                   height: 28,
                                 ),
                               ),
+                              MainScreen.cartItemsCount > 0 ?Positioned(
+                                right: 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration:  BoxDecoration(
+                                      color: ConstantColors.appTheme,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    //color: Colors.red,
+                                    child:  Center(
+                                      child: Text(
+                                        ""+MainScreen.cartItemsCount.toString(),
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                            fontFamily: "Mont-Regular"
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ):const SizedBox(height: 1,width: 1,)
                             ],
                           ),
                         ),
@@ -251,7 +281,85 @@ class _ChoosePlanState extends State<ChoosePlan> {
                     ),
                   ],
                 ),
-                Padding(
+
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Stack(
                     children: [
@@ -329,7 +437,84 @@ class _ChoosePlanState extends State<ChoosePlan> {
                     ],
                   ),
                 ),
-                Padding(
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):Padding(
                   padding: EdgeInsets.fromLTRB(15, 0, 5, 8),
                   child: Text(
                     "$title - $city,$state,$country",
@@ -338,7 +523,84 @@ class _ChoosePlanState extends State<ChoosePlan> {
                         fontSize: 18.0, fontWeight: FontWeight.w600),
                   ),
                 ),
-                SizedBox(
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):SizedBox(
                   //height: 220,
                   child: Stack(
                     children: [
@@ -411,7 +673,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                                     0xFFFFFFFFF)),
                                             child: screenSizeList == null ? const SizedBox(height: 0, width: double.infinity)
                                                 : DropdownButton(
-                                              icon: Icon(
+                                              icon: const Icon(
                                                 Icons
                                                     .arrow_drop_down_circle_outlined,
                                                 size: 15,
@@ -420,7 +682,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                               Colors.white,
                                               isExpanded: true,
                                               underline: SizedBox(),
-                                              hint: Text(
+                                              hint: const Text(
                                                 'Select Screen Size',
                                                 style: TextStyle(
                                                     fontFamily:
@@ -443,11 +705,11 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                               // },
                                               items: screenSizeList
                                                   .map((item) {
-                                                return new DropdownMenuItem(
-                                                  child: new Text(
+                                                return DropdownMenuItem(
+                                                  child: Text(
                                                     item[
                                                     'ScreenSize'],
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         color: Color(
                                                             0xFF000000)),
                                                   ),
@@ -463,6 +725,9 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                                       '' + value!);
                                                   selectedCountryName =
                                                       value;
+                                                  isdataloaded = true;
+                                                  selectedCountryNameTimes=null;
+
                                                 });
                                               },
                                               // items: CountryList.map((valueItem) {
@@ -612,7 +877,84 @@ class _ChoosePlanState extends State<ChoosePlan> {
                     ],
                   ),
                 ),
-                Column(
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -798,8 +1140,85 @@ class _ChoosePlanState extends State<ChoosePlan> {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):Padding(
+                  padding: const EdgeInsets.only(top: 10),
                   child: Center(
                     child: MaterialButton(
                       onPressed: () {
@@ -880,28 +1299,14 @@ class _ChoosePlanState extends State<ChoosePlan> {
 
       if (msg == "Product Added to Your Cart" || msg == "success")
       {
-        int CartDetailId=jsonDecode(response.body)['CartDetailId'];
-        print("------>"+PackageId.text);
+        cartDetailId = jsonDecode(response.body)['CartDetailId'].toString();
+        print("Generated cart detail id is: "+cartDetailId.toString());
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => UploadFiles(
-                  storeId: widget.storeId.toString() ,
-                  cartId: CartDetailId.toString(),
-                  packageId: PackageId.text,
+                  cartDetailId: cartDetailId.toString() ,
                 )));
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => StoreDetails(
-        //           storeId: widget.storeId,
-        //           packagename:PackageName.text,
-        //           actualPrice:ActualPrice.text.toString(),
-        //           packageId:PackageId.text.toString(),
-        //           screenSize:ScreenSize.text.toString(),
-        //           durationinDays:DurationinDays.text.toString(),
-        //           noofTimes:NoofTimes.text.toString(),
-        //         )));
       }else{
         print("Unable to get API response.");
       }

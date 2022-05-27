@@ -8,7 +8,9 @@ class APIConstant
 
   static String categoryBaseStoresList = base_url + 'StoresAPI/StoresList';
 
-  static String getStoreDetails = base_url + 'StoresAPI/StorePackagesDetailsAPI';
+  static String getStoreDetails = base_url + 'StoresAPI/StoreDetails';
+
+  static String getSelectedStoreCartDetails = base_url + 'StoresAPI/CustomerStoreCartDetailsAPI';
 
   static String getStorePackage = base_url + 'StoresAPI/StorePackagesAmount';
 
@@ -35,6 +37,12 @@ class APIConstant
   static String postProfilePicDetailsToServer = base_url + 'AccountAPI/UpdateCustomerProfileImageAPI';
 
   static String updateProfileDetails = base_url + '/AccountAPI/ProfileUpdate';
+
+  static String autoSearchADSpaces = base_url + 'StoresAPI/StoresSearchAutoComplete';
+
+  static String completeBooking = base_url + 'OrderAPI/OrderInsertAPI';
+
+  static String getCompletedOrderDetails = base_url + 'OrderAPI/OrderDetailsGetAPI';
 
 
 

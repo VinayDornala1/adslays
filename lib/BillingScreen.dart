@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'API.dart';
 import 'Constant/ConstantsColors.dart';
+import 'MainScreen.dart';
 import 'ThankYouScreen.dart';
 
 
@@ -221,6 +222,31 @@ class _BillingScreenState extends State<BillingScreen> {
                                       height: 28,
                                     ),
                                   ),
+                                  MainScreen.cartItemsCount > 0 ?Positioned(
+                                    right: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 10.0),
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration:  BoxDecoration(
+                                          color: ConstantColors.appTheme,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        //color: Colors.red,
+                                        child:  Center(
+                                          child: Text(
+                                            ""+MainScreen.cartItemsCount.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                                fontFamily: "Mont-Regular"
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ):const SizedBox(height: 1,width: 1,)
                                 ],
                               ),
                             ),
@@ -726,7 +752,7 @@ class _BillingScreenState extends State<BillingScreen> {
               child: const Text( 'ok' ),
               onPressed: () {
                 Navigator.of(context).pop();
-                getData11();
+                completeBooking();
                 // Navigator.pop(context);
               },
             )
@@ -746,8 +772,8 @@ class _BillingScreenState extends State<BillingScreen> {
     );
   }
 
-  Future<void> getData11() async {
-    String url1 = 'http://adslay.arjunweb.in/API/OrderAPI/OrderInsertAPI';
+  Future<void> completeBooking() async {
+    String url1 = APIConstant.completeBooking;//'http://adslay.arjunweb.in/API/OrderAPI/OrderInsertAPI';
     print('Upload billing details url: '+url1);
     Map<String, dynamic> body = {
       'MobileNo': '9160747554',//mobileNumber.toString(),
@@ -771,10 +797,12 @@ class _BillingScreenState extends State<BillingScreen> {
       String msg = jsonDecode(response.body)['msg'];
       if (msg == "Product Added to Your Cart" || msg == "success" ||  msg == "Success")
       {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ThankYouScreen()));
+        // Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => ThankYouScreen(date: , transactionId:, storeName:, status:, totalAmount:,
+        //         ))
+        // );
       }else{
         print("Unable to get API response.");
       }

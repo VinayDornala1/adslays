@@ -6,31 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'API.dart';
 import 'Constant/ConstantsColors.dart';
+import 'MainScreen.dart';
 import 'UploadFiles.dart';
 
 
 class StoreDetails extends StatefulWidget {
 
   var storeId;
-  var packagename;
-  var actualPrice;
-  var packageId;
-  var screenSize;
-  var durationinDays;
-  var noofTimes;
 
   StoreDetails({
     this.storeId,
-    this.packagename,
-    this.actualPrice,
-    this.packageId,
-    this.screenSize,
-    this.durationinDays,
-    this.noofTimes
-
   });
 
   @override
@@ -73,13 +62,12 @@ class _StoreDetailsState extends State<StoreDetails> {
     }
 
     String url1 = APIConstant.getStoreDetails;
-    print('Category base StoresList url: '+url1);
+    print('Selected store details url: '+url1);
     Map<String, dynamic> body = {
       'Mobile': '9160747554',
       'StoreId': widget.storeId.toString(),
-      'PackageId': widget.packageId.toString(),
     };
-    print('Category base StoresList body:' + body.toString());
+    print('Selected store details body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
     final encoding = Encoding.getByName('utf-8');
     final response = await post(
@@ -88,7 +76,7 @@ class _StoreDetailsState extends State<StoreDetails> {
       body: body,
       encoding: encoding,
     );
-    print('Category base StoresList response :' + response.body.toString());
+    print('Selected store details response :' + response.body.toString());
     setState(() {
       String msg = jsonDecode(response.body)['msg'];
 
@@ -101,9 +89,7 @@ class _StoreDetailsState extends State<StoreDetails> {
         zipCode = jsonDecode(response.body)['ZipCode'];
         imageUrl = jsonDecode(response.body)['ImageUrl'];
         screenSize = jsonDecode(response.body)['ScreenSize'].toString();
-        durationInDays = jsonDecode(response.body)['DurationinDays'];
         actualPrice = jsonDecode(response.body)['ActualPrice'];
-        offerPrice = jsonDecode(response.body)['OfferPrice'];
         footTraffic = jsonDecode(response.body)['FootTraffic'];
         type = jsonDecode(response.body)['Type'];
         fileFormat = jsonDecode(response.body)['FileFormat'];
@@ -187,6 +173,31 @@ class _StoreDetailsState extends State<StoreDetails> {
                                   height: 28,
                                 ),
                               ),
+                              MainScreen.cartItemsCount > 0 ?Positioned(
+                                right: 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration:  BoxDecoration(
+                                      color: ConstantColors.appTheme,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    //color: Colors.red,
+                                    child: const Center(
+                                      child: Text(
+                                        "23",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                            fontFamily: "Mont-Regular"
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ):const SizedBox(height: 1,width: 1,)
                             ],
                           ),
                         ),
@@ -219,7 +230,84 @@ class _StoreDetailsState extends State<StoreDetails> {
                     ),
                   ],
                 ),
-                Padding(
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Stack(
                     children: [
@@ -292,7 +380,84 @@ class _StoreDetailsState extends State<StoreDetails> {
                     ],
                   ),
                 ),
-                Padding(
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):Padding(
                   padding: const EdgeInsets.fromLTRB(15, 0, 5, 8),
                   child: Text(
                     ""+title+','+city+','+state+','+country,
@@ -302,7 +467,84 @@ class _StoreDetailsState extends State<StoreDetails> {
                         fontWeight: FontWeight.w600),
                   ),
                 ),
-                Padding(
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):Padding(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
@@ -538,51 +780,90 @@ class _StoreDetailsState extends State<StoreDetails> {
                         )),
                   ),
                 ),
-                // Align(
-                //   alignment: Alignment.center,
-                //   child: Padding(
-                //     padding: const EdgeInsets.only(top: 10),
-                //     child: MaterialButton(
-                //       onPressed: () {
-                //         Navigator.push(context, MaterialPageRoute(builder: (context)=> UploadFiles(storeId: widget.storeId,packageId: widget.packageId)));
-                //       },
-                //       textColor: Colors.white,
-                //       padding: const EdgeInsets.all(0.0),
-                //       child: Container(
-                //         width: 180,
-                //         height: 45,
-                //         decoration:  const BoxDecoration(
-                //             gradient:  LinearGradient(
-                //               colors: [
-                //                 Color(0xff3962cb),
-                //                 Color(0xff3962cb),
-                //               ],
-                //             )
-                //         ),
-                //         //padding: const EdgeInsets.all(10.0),
-                //         child: const Center(
-                //           child: Text(
-                //             "BOOK NOW",
-                //             textAlign: TextAlign.center,
-                //             style: TextStyle(
-                //                 color: Color(0xFFFFFFFF),
-                //                 fontSize: 16,
-                //                 fontWeight: FontWeight.w400,
-                //                 fontFamily: "Lorin"
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                Align(
+                isLoading?Shimmer.fromColors(
+                    baseColor: ConstantColors.lightGrey,
+                    highlightColor: Colors.white,
+                    enabled: true,
+                    child: ListView(
+                      shrinkWrap: true, // use it
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        GridView.count(
+                          crossAxisCount: 1,
+                          childAspectRatio: 1.5,
+                          physics: const ScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(1, (index) {
+                            return InkWell(
+                              child: GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:
+                                      [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.width * 0.40,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: 10,
+                                                    alignment: Alignment.center,
+                                                  ),
+                                                ],
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          ),
+                        )
+                      ],
+                    )
+                ):Align(
                   alignment: Alignment.center,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                     child: MaterialButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: widget.storeId)));
                       },
                       textColor: Colors.white,
                       padding: const EdgeInsets.all(0.0),
@@ -600,7 +881,7 @@ class _StoreDetailsState extends State<StoreDetails> {
                         //padding: const EdgeInsets.all(10.0),
                         child: const Center(
                           child: Text(
-                            "GO TO CART",
+                            "BOOK NOW",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Color(0xFFFFFFFF),
@@ -615,148 +896,6 @@ class _StoreDetailsState extends State<StoreDetails> {
                   ),
                 ),
                 const SizedBox(height: 10,),
-                // Row(
-                //   crossAxisAlignment: CrossAxisAlignment.center,
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     const Spacer(),
-                //     Container(
-                //       height: 36,
-                //       width: 100,
-                //       decoration: BoxDecoration(
-                //         border: Border.all(
-                //           width: 0.5,
-                //           color: Colors.grey,
-                //         ),
-                //         borderRadius:
-                //         const BorderRadius.all(Radius.circular(18.0),),
-                //       ),
-                //       child: Center(
-                //         child: Row(
-                //             crossAxisAlignment: CrossAxisAlignment.center,
-                //             mainAxisAlignment: MainAxisAlignment.center,
-                //             children:
-                //             [
-                //               Row(
-                //                 crossAxisAlignment: CrossAxisAlignment.center,
-                //                 mainAxisAlignment: MainAxisAlignment.center,
-                //                 children: [
-                //                   Padding(
-                //                     padding: const EdgeInsets.all(8.0),
-                //                     child: SizedBox(
-                //                         height: 20,
-                //                         width: 20,
-                //                         child:
-                //                         Image.asset("assets/images/facebook.png",fit: BoxFit.cover,)),
-                //                   ),
-                //                   const Text(
-                //                     "SHARE",
-                //                     style: TextStyle(
-                //                       fontSize: 13.0,
-                //                       fontWeight: FontWeight.bold,
-                //                       color: Colors.black,
-                //                     ),
-                //                   ),
-                //                 ],
-                //               ),
-                //
-                //             ]
-                //         ),
-                //       ),
-                //     ),
-                //     const SizedBox(width: 10,),
-                //     Container(
-                //       height: 36,
-                //       width: 100,
-                //       decoration: BoxDecoration(
-                //         border: Border.all(
-                //           width: 0.5,
-                //           color: Colors.grey,
-                //         ),
-                //         borderRadius:
-                //         const BorderRadius.all(Radius.circular(18.0),),
-                //       ),
-                //       child: Center(
-                //         child: Row(
-                //             crossAxisAlignment: CrossAxisAlignment.center,
-                //             mainAxisAlignment: MainAxisAlignment.center,
-                //             children:
-                //             [
-                //               Row(
-                //                 crossAxisAlignment: CrossAxisAlignment.center,
-                //                 mainAxisAlignment: MainAxisAlignment.center,
-                //                 children: [
-                //                   Padding(
-                //                     padding: const EdgeInsets.all(8.0),
-                //                     child: SizedBox(
-                //                         height: 20,
-                //                         width: 20,
-                //                         child:
-                //                         Image.asset("assets/images/twitter.png",fit: BoxFit.cover,)),
-                //                   ),
-                //                   const Text(
-                //                     "TWEET",
-                //                     style: TextStyle(
-                //                       fontSize: 13.0,
-                //                       fontWeight: FontWeight.bold,
-                //                       color: Colors.black,
-                //                     ),
-                //                   ),
-                //                 ],
-                //               ),
-                //
-                //             ]
-                //         ),
-                //       ),
-                //     ),
-                //     const SizedBox(width: 10,),
-                //     Container(
-                //       height: 36,
-                //       width: 100,
-                //       decoration: BoxDecoration(
-                //         border: Border.all(
-                //           width: 0.5,
-                //           color: Colors.grey,
-                //         ),
-                //         borderRadius:
-                //         const BorderRadius.all(Radius.circular(18.0),),
-                //       ),
-                //       child: Center(
-                //         child: Row(
-                //             crossAxisAlignment: CrossAxisAlignment.center,
-                //             mainAxisAlignment: MainAxisAlignment.center,
-                //             children:
-                //             [
-                //               Row(
-                //                 crossAxisAlignment: CrossAxisAlignment.center,
-                //                 mainAxisAlignment: MainAxisAlignment.center,
-                //                 children: [
-                //                   Padding(
-                //                     padding: const EdgeInsets.all(8.0),
-                //                     child: SizedBox(
-                //                         height: 20,
-                //                         width: 20,
-                //                         child:
-                //                         Image.asset("assets/images/pinterest.png",fit: BoxFit.cover,)),
-                //                   ),
-                //                   const Text(
-                //                     "PIN IT ",
-                //                     style: TextStyle(
-                //                       fontSize: 13.0,
-                //                       fontWeight: FontWeight.bold,
-                //                       color: Colors.black,
-                //                     ),
-                //                   ),
-                //                 ],
-                //               ),
-                //
-                //             ]
-                //         ),
-                //       ),
-                //     ),
-                //     const Spacer(),
-                //   ],
-                // ),
                 const SizedBox(height: 40,),
               ]),
         ),

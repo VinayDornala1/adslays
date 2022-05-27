@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'API.dart';
 import 'ChoosePlan.dart';
+import 'Constant/ConstantsColors.dart';
+import 'MainScreen.dart';
 import 'StoreDetails.dart';
 
 class StoresList extends StatefulWidget {
@@ -140,6 +142,31 @@ class _StoresList extends State<StoresList> {
                                 height: 28,
                               ),
                             ),
+                            MainScreen.cartItemsCount > 0 ?Positioned(
+                              right: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration:  BoxDecoration(
+                                    color: ConstantColors.appTheme,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  //color: Colors.red,
+                                  child:  Center(
+                                    child: Text(
+                                      ""+MainScreen.cartItemsCount.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontFamily: "Mont-Regular"
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ):const SizedBox(height: 1,width: 1,)
                           ],
                         ),
                       ),
@@ -199,7 +226,8 @@ class _StoresList extends State<StoresList> {
                             child: GestureDetector(
                               onTap: (){
                                 print("Selected store id is:"+storesList[index]["StoreId"].toString());
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: storesList[index]["StoreId"].toString())));
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails(storeId: storesList[index]["StoreId"].toString())));
+                                // Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: storesList[index]["StoreId"].toString())));
                               },
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -228,7 +256,7 @@ class _StoresList extends State<StoresList> {
                                                             child: CircularProgressIndicator()),
                                                         errorWidget: (context, url, error) =>
                                                         const Icon(Icons.error),
-                                                        fit: BoxFit.fill,
+                                                        fit: BoxFit.contain,
                                                         width: double.infinity,
                                                         height: 150,
                                                       ),

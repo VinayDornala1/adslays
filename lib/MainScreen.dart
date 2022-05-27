@@ -19,27 +19,37 @@ import 'ChoosePlan.dart';
 import 'Constant/ConstantsColors.dart';
 import 'HowItWorks.dart';
 import 'LoginScreen.dart';
+import 'SearchScreen.dart';
 import 'StoreDetails.dart';
 import 'StoresList.dart';
 
 
 class MainScreen extends StatefulWidget {
+
+  static int cartItemsCount=0;
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   BoolProvider _boolProvider = BoolProvider();
+
   int _currentIndex = 0;
+
   String Email='';
   String MobileNo='';
   bool isLoading = true;
   String deviceOS='';
   double screenWidth=0.0;
+
   List<dynamic> MobileBannersList=[];
   List<dynamic> CategoriesList=[];
   List<dynamic> StoresListDict=[];
+  List<dynamic> cartList = [];
+
   String mobileNumber='';
   String email='';
   int _current = 0;
@@ -76,11 +86,46 @@ class _MainScreenState extends State<MainScreen> {
 
     });
 
+
+    getCartItems();
+
     setState(() {
       isLoading=false;
     });
 
 
+  }
+
+
+  Future<void> getCartItems() async {
+
+    String url1 = APIConstant.getCartItems;
+    print("Get cart items url is: "+url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+    };
+    print('Get cart items api body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Cart items response :' + response.body.toString());
+    setState(() {
+      cartList = jsonDecode(response.body)['CartList'];
+      if (cartList.isNotEmpty){
+        MainScreen.cartItemsCount = cartList.length;
+      } else {
+        MainScreen.cartItemsCount = 0;
+      }
+    });
+
+    setState(() {
+      isLoading=false;
+    });
   }
 
 
@@ -194,7 +239,7 @@ class _MainScreenState extends State<MainScreen> {
                   Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
                       false);
                   _scaffoldKey.currentState?.openEndDrawer();
-                  _boolProvider.setBottomChange(3);
+                  _boolProvider.setBottomChange(1);
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
 
@@ -247,22 +292,22 @@ class _MainScreenState extends State<MainScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
-                      false);
-                  _scaffoldKey.currentState?.openEndDrawer();
-                  _boolProvider.setBottomChange(3);
+                  // Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
+                  //     false);
+                  // _scaffoldKey.currentState?.openEndDrawer();
+                  // _boolProvider.setBottomChange(3);
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
 
                 },
                 child: Column(
                   children: [
-                    Image.asset("assets/images/menu-notifications.png",width: 40,height: 40,),
+                    Image.asset("assets/images/contactus.png",width: 40,height: 40,),
                     const SizedBox(
                       height: 5,
                     ),
                     const Text(
-                      'Notifications',
+                      'Contact Us',
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
@@ -278,7 +323,7 @@ class _MainScreenState extends State<MainScreen> {
                   Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
                       false);
                   _scaffoldKey.currentState?.openEndDrawer();
-                  _boolProvider.setBottomChange(3);
+                  _boolProvider.setBottomChange(2);
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
 
@@ -290,7 +335,7 @@ class _MainScreenState extends State<MainScreen> {
                       height: 5,
                     ),
                     const Text(
-                      'Your Bookings',
+                      'History',
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
@@ -304,7 +349,7 @@ class _MainScreenState extends State<MainScreen> {
               GestureDetector(
                 onTap: () {
                   //Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
-                    //  false);
+                  //  false);
                   //_scaffoldKey.currentState?.openEndDrawer();
                   //_boolProvider.setBottomChange(3);
                   // Navigator.push(context,
@@ -361,7 +406,7 @@ class _MainScreenState extends State<MainScreen> {
                 onTap: () async {
                   _boolProvider.setBottomChange(0);
                   SharedPreferences preferences =
-                      await SharedPreferences
+                  await SharedPreferences
                       .getInstance();
                   await preferences.clear();
                   Navigator.pushAndRemoveUntil(
@@ -452,33 +497,63 @@ class _MainScreenState extends State<MainScreen> {
                       height: 28,
                     ),
                   ),
+                  MainScreen.cartItemsCount > 0 ?Positioned(
+                    right: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: Container(
+                        height: 20,
+                        width: 20,
+                        decoration:  BoxDecoration(
+                          color: ConstantColors.appTheme,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        //color: Colors.red,
+                        child:  Center(
+                          child: Text(
+                            ""+MainScreen.cartItemsCount.toString(),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontFamily: "Mont-Regular"
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ):const SizedBox(height: 1,width: 1,)
                 ],
               ),
             ),
           ),
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                  21.5), // if you need this
-            ),
-            child: Stack(
-              children: [
-                Container(
-                  color: Colors.transparent,
-                  width: 43,
-                  height: 43,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                      10, 10, 5, 0),
-                  child: Image.asset(
-                    "assets/images/search.png",
-                    width: 25,
-                    height: 25,
+          GestureDetector(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+            },
+            child: Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    21.5), // if you need this
+              ),
+              child: Stack(
+                children: [
+                  Container(
+                    color: Colors.transparent,
+                    width: 43,
+                    height: 43,
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                        10, 10, 5, 0),
+                    child: Image.asset(
+                      "assets/images/search.png",
+                      width: 25,
+                      height: 25,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -773,8 +848,8 @@ class _MainScreenState extends State<MainScreen> {
                                               "assets/images/black-transparent.png",
                                               fit: BoxFit.fill,
 
-                                              ),
                                             ),
+                                          ),
                                         ),
                                         Positioned(
                                           bottom: 0,
@@ -1026,7 +1101,7 @@ class _MainScreenState extends State<MainScreen> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10.0),
                           child: Card(
-                            elevation: 2,
+                              elevation: 2,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(5.0),

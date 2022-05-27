@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'BoolProvider.dart';
 import 'HistoryScreen.dart';
 import 'MainScreen.dart';
+import 'OrderDetailsScreen.dart';
 import 'ProfileScreen.dart';
 import 'StoresList.dart';
 import 'StoresScreen.dart';
@@ -204,9 +205,8 @@ class _BottomNavigationMenuState extends State<BottomNavigationMenu> {
             activeIcon: Padding(
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 5),
               child:Image.asset("assets/images/stores2.png",width: 25,height: 25),
-
             ),
-            label: 'Stores',
+            label: 'AD Spaces',
           ),
           BottomNavigationBarItem(
             icon: Padding(

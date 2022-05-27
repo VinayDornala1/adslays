@@ -11,6 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 import 'API.dart';
 import 'ChoosePlan.dart';
+import 'MainScreen.dart';
 
 class StoresScreen extends StatefulWidget {
   const StoresScreen({Key? key}) : super(key: key);
@@ -94,19 +95,6 @@ class _StoresScreenState extends State<StoresScreen> {
                 children: <Widget>[
                   Row(
                     children: [
-                      // GestureDetector(
-                      //   onTap: () {
-                      //     Navigator.pop(context);
-                      //   },
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.only(top: 10),
-                      //     child: Image.asset(
-                      //       "assets/images/back.png",
-                      //       width: 45,
-                      //       height: 65,
-                      //     ),
-                      //   ),
-                      // ),
                       Padding(
                           padding: const EdgeInsets.only(top: 0, right: 30,left: 10),
                           child: Image.asset("assets/images/home-logo.png",width: 130,)
@@ -134,6 +122,31 @@ class _StoresScreenState extends State<StoresScreen> {
                                 height: 28,
                               ),
                             ),
+                            MainScreen.cartItemsCount > 0 ?Positioned(
+                              right: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration:  BoxDecoration(
+                                    color: ConstantColors.appTheme,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  //color: Colors.red,
+                                  child:  Center(
+                                    child: Text(
+                                      ""+MainScreen.cartItemsCount.toString(),
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontFamily: "Mont-Regular"
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ):const SizedBox(height: 1,width: 1,)
                           ],
                         ),
                       ),
@@ -297,7 +310,7 @@ class _StoresScreenState extends State<StoresScreen> {
                                               child: CircularProgressIndicator()),
                                           errorWidget: (context, url, error) =>
                                           const Icon(Icons.error),
-                                          fit: BoxFit.fill,
+                                          fit: BoxFit.contain,
                                           width: double.infinity,
                                           height: double.infinity,
                                         ),
