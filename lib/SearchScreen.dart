@@ -11,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 import 'API.dart';
 import 'ChoosePlan.dart';
 import 'Constant/ConstantsColors.dart';
+import 'MainScreen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -73,12 +74,12 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: Image.asset("assets/images/home-logo.png",width: 130,)
                         ),
                         const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=> const CartScreen()));
-                            },
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const CartScreen()));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
                             child: Card(
                               elevation: 2,
                               shape: RoundedRectangleBorder(
@@ -100,13 +101,38 @@ class _SearchScreenState extends State<SearchScreen> {
                                       width: 28,
                                       height: 28,
                                     ),
-
                                   ),
+                                  MainScreen.cartItemsCount > 0 ?Positioned(
+                                    right: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 10.0),
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration:  BoxDecoration(
+                                          color: ConstantColors.appTheme,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        //color: Colors.red,
+                                        child:  Center(
+                                          child: Text(
+                                            ""+MainScreen.cartItemsCount.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10,
+                                                fontFamily: "Mont-Regular"
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ):const SizedBox(height: 1,width: 1,)
                                 ],
                               ),
                             ),
                           ),
                         ),
+
 
                       ],
                     ),
@@ -308,7 +334,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: TextFormField(
 
                 onFieldSubmitted: (term) {
-                  if(term.length>3){
+                  if(term.length>2){
                     setState(() {
                       searchKeyword = searchtext.text;
                     });
@@ -321,7 +347,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   }
                 },
                 onChanged: (term) {
-                  if(term.length>3){
+                  if(term.length>2){
                     setState(() {
                       searchKeyword = searchtext.text;
                     });
@@ -431,7 +457,7 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       isLoading = false;
       searchResults = jsonDecode(response.body)['StoresList'];
-      print('Search result stores list'+searchResults.toString());
+      print('Search result stores list: '+searchResults.toString());
 
     });
 

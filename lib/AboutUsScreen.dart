@@ -6,14 +6,14 @@ import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
 
 
-class HowItWorks extends StatefulWidget {
-  const HowItWorks({Key? key}) : super(key: key);
+class AboutUsScreen extends StatefulWidget {
+  const AboutUsScreen({Key? key}) : super(key: key);
 
   @override
-  State<HowItWorks> createState() => _HowItWorksState();
+  State<AboutUsScreen> createState() => _AboutUsScreenState();
 }
 
-class _HowItWorksState extends State<HowItWorks> {
+class _AboutUsScreenState extends State<AboutUsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,88 +135,60 @@ class _HowItWorksState extends State<HowItWorks> {
               Expanded(
                 child: SingleChildScrollView(
                     child: Column(
-                      //crossAxisAlignment: CrossAxisAlignment.center,
-                      //mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            "assets/images/howitworks.png",
-                            height: 400,
-                            width: MediaQuery.of(context).size.width,
+                          padding: const EdgeInsets.all(0.0),
+                          child: Center(
+                            child: Image.asset(
+                              "assets/images/aboutus1.png",
+                              fit: BoxFit.contain,
+                              height: MediaQuery.of(context).size.height * 0.70,
+                              width: MediaQuery.of(context).size.width  * 0.99,
+
+                            ),
                           ),
                         ),
-                        Divider(height: 2,thickness: 5,color: ConstantColors.lightGrey,),
-                        Center(
+                        Align(
+                          alignment: Alignment.center,
                           child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: ConstantColors.lightGrey,
-                                      blurRadius: 10.0,
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: MaterialButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              textColor: Colors.white,
+                              padding: const EdgeInsets.all(0.0),
+                              child: Container(
+                                width: 180,
+                                height: 45,
+                                decoration:  BoxDecoration(
+                                    gradient:  LinearGradient(
+                                      colors: [
+                                        ConstantColors.appTheme,
+                                        ConstantColors.appTheme,
+                                      ],
+                                    )
+                                ),
+                                //padding: const EdgeInsets.all(10.0),
+                                child: const Center(
+                                  child: Text(
+                                    "VIEW AD SPACES",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Color(0xFFFFFFFF),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: "Lorin"
                                     ),
-                                  ]
-                              ),
-                              height: 100,
-                              child: Stack(
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.91,
-                                    child: Image.asset("assets/images/sharebg.png"),
                                   ),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(width: 10,),
-                                      Image.asset(
-                                        "assets/images/share.png",
-                                        width: 60,
-                                        height: 60,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          GradientText(
-                                              "Share With Friends",
-                                              style: const TextStyle(
-                                                  fontFamily: "Mont-Bold",
-                                                  fontSize: 20
-                                              ),
-                                              colors: const [
-                                                Colors.red,
-                                                Colors.orange,
-                                              ]
-                                          ),
-                                          const Text(
-                                            "Help your friends to share the app",
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                fontFamily: "Mont-Regular"
-                                            ),
-                                          ),
-                                          const Text(
-                                            "Make ads to improve business       ",
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                fontFamily: "Mont-Regular"
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(width: 10,),
-                                    ],
-                                  )
-                                ],
+                                ),
                               ),
                             ),
                           ),
                         ),
+
                       ],
                     )
                 ),

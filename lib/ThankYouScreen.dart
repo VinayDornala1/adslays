@@ -1,19 +1,21 @@
+import 'dart:convert';
+
 import 'package:adslay/bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
+import 'API.dart';
 import 'BoolProvider.dart';
 import 'Constant/ConstantsColors.dart';
 
 
 class ThankYouScreen extends StatefulWidget {
 
-  var date;
-  var transactionId;
-  var storeName;
-  var status;
-  var totalAmount;
+  var orderId;
 
-  ThankYouScreen({this.date,this.transactionId,this.storeName,this.status,this.totalAmount});
+  ThankYouScreen({this.orderId});
 
   @override
   State<ThankYouScreen> createState() => _ThankYouScreenState();
@@ -24,10 +26,93 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   BoolProvider _boolProvider = BoolProvider();
 
+/*
+"OrderId": 39,
+    "TransactionId": "pi_3L4IxgEeBLujSW5l0GzKI6Ih",
+    "OrderCreated": "28/05/2022",
+    "PaidAmount": 37555.00,
+    "StoreName": "",
+    "PaymentStatus": "Completed"
+ */
+
+  bool isLoading = true;
+
+  String email = '';
+  String mobileNumber = '';
+  String username = '';
+
+  String transactionId = '';
+  String orderCreated = '';
+  String paidAmount = '';
+  String storeName = '';
+  String paymentStatus = '';
+
+
+  Future<void> getData() async {
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        mobileNumber = prefs.getString('mobilenumber')!;
+        email = prefs.getString('email')!;
+        username = prefs.getString('username')!;
+      });
+    }catch(e){
+      print(e);
+    }
+
+    String url1 = APIConstant.getOrderPaymentDetails;
+    print("Get order payment details body:" +url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+      'OrderId': widget.orderId.toString(),
+    };
+    print("Get order payment details body:" + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+
+    Map data = jsonDecode(response.body);
+    print(data);
+    String msg = data['msg'];
+    print(msg);
+
+    if (msg=='Success' || msg=='success' ) {
+      setState(() {
+
+        transactionId = data['TransactionId'].toString();
+        orderCreated = data['OrderCreated'];
+        paidAmount = data['PaidAmount'].toString();
+        storeName = data['StoreName'];
+        paymentStatus = data['PaymentStatus'];
+
+      });
+    } else {
+
+    }
+
+    setState(() {
+      isLoading=false;
+    });
+  }
 
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       body: SafeArea(
         left: true,
@@ -60,56 +145,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                           child: Image.asset("assets/images/home-logo.png",width: 130,)
                       ),
                       const Spacer(),
-                      // Card(
-                      //   elevation: 2,
-                      //   shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.circular(
-                      //         21.5), // if you need this
-                      //   ),
-                      //   child: Stack(
-                      //     children: [
-                      //       Container(
-                      //         color: Colors.transparent,
-                      //         width: 43,
-                      //         height: 43,
-                      //
-                      //       ),
-                      //       Padding(
-                      //         padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
-                      //         child: Image.asset(
-                      //           "assets/images/cart.png",
-                      //           width: 28,
-                      //           height: 28,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      // Card(
-                      //   elevation: 2,
-                      //   shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.circular(
-                      //         21.5), // if you need this
-                      //   ),
-                      //   child: Stack(
-                      //     children: [
-                      //       Container(
-                      //         color: Colors.transparent,
-                      //         width: 43,
-                      //         height: 43,
-                      //       ),
-                      //       Padding(
-                      //         padding: const EdgeInsets.fromLTRB(
-                      //             10, 10, 5, 0),
-                      //         child: Image.asset(
-                      //           "assets/images/search.png",
-                      //           width: 25,
-                      //           height: 25,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
+
                     ],
                   ),
                 ],
@@ -136,7 +172,86 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                 ),
               ),
 
-              Expanded(
+              isLoading
+                  ?Shimmer.fromColors(
+                  baseColor: ConstantColors.lightGrey,
+                  highlightColor: Colors.white,
+                  enabled: true,
+                  child: ListView(
+                    shrinkWrap: true, // use it
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      GridView.count(
+                        crossAxisCount: 1,
+                        childAspectRatio: 1.5,
+                        physics: const ScrollPhysics(),
+                        shrinkWrap: true,
+                        children: List.generate(2, (index) {
+                          return InkWell(
+                            child: GestureDetector(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                child: Center(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children:
+                                    [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        child: Card(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width,
+                                                  height: MediaQuery.of(context).size.width * 0.40,
+                                                  alignment: Alignment.center,
+                                                ),
+                                              ],
+                                            )),
+                                      ),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        child: Card(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width,
+                                                  height: 10,
+                                                  alignment: Alignment.center,
+                                                ),
+                                              ],
+                                            )),
+                                      ),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        child: Card(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width,
+                                                  height: 10,
+                                                  alignment: Alignment.center,
+                                                ),
+                                              ],
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        ),
+                      )
+                    ],
+                  )
+              )
+                  :Expanded(
                   child: SingleChildScrollView(
                     child: SizedBox(
                       // height: 200,
@@ -162,41 +277,42 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                       children: [
 
                                         Image.asset(
-                                          'assets/images/success.png',
+                                          (paymentStatus == "Completed")?'assets/images/success.png':'assets/images/paymentfailed.png',
                                           height: 100,
                                           width: 100,
                                         ),
                                         const SizedBox(
                                           height: 5,
                                         ),
-                                        const Text(
-                                          'BOOKING CONFIRMED',
+                                        Text(
+                                          (paymentStatus == "Completed")?'BOOKING CONFIRMED':'BOOKING CANCELLED',
                                           style: TextStyle(
                                             fontSize: 25.0,
-                                            color: Colors.green,
+                                            color: (paymentStatus == "Completed")?Colors.green:Colors.red,
                                             fontFamily: "Mont-SemiBold",
                                           ),
                                         ),
                                         const SizedBox(
                                           height: 5,
                                         ),
-                                        const Text(
-                                          'THANK YOU FOR BOOKING SERVICE',
-                                          style: TextStyle(
+                                         Text(
+                                           (paymentStatus == "Completed")?'THANK YOU FOR BOOKING SERVICE':'YOUR SERVICE BOOKING WAS FAILED',
+                                          style: const TextStyle(
                                               fontFamily: "Mont-Light",
                                               fontSize: 19,
-                                              color: Colors.black),
+                                              color: Colors.black
+                                          ),
                                         ),
                                         const SizedBox(
                                           height: 10,
                                         ),
-                                        const Padding(
+                                         Padding(
                                           padding:
-                                          EdgeInsets.fromLTRB(15, 0, 15, 8),
+                                          const EdgeInsets.fromLTRB(15, 0, 15, 8),
                                           child: Text(
-                                            'Thank for choosing us. You would receive you invoice on your registered mail id',
+                                            (paymentStatus == "Completed")?'':'Thank for choosing us. You would receive you invoice on your registered mail id',
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontFamily: "Mont-Light",
                                                 fontSize: 15,
                                                 color: Colors.black),
@@ -207,7 +323,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                           padding:
                                           const EdgeInsets.fromLTRB(15, 15, 15, 15),
                                           child: SizedBox(
-                                            height: 200,
+                                            height: 170,
                                             child: Stack(children: <Widget>[
                                               Container(
                                                 decoration: BoxDecoration(
@@ -218,6 +334,12 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                         color: ConstantColors.appTheme,
                                                         width: 0.7)),
                                                 child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment
+                                                      .start,
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .start,
                                                   children: [
                                                     const Spacer(),
                                                     Row(
@@ -250,14 +372,14 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                const Padding(
+                                                                Padding(
                                                                   padding:
-                                                                  EdgeInsets
+                                                                  const EdgeInsets
                                                                       .fromLTRB(
                                                                       10, 0, 10, 8),
                                                                   child: Text(
-                                                                    '12/07/2020',
-                                                                    style: TextStyle(
+                                                                    '' + orderCreated,
+                                                                    style:const  TextStyle(
                                                                         fontSize: 14,
                                                                         color:
                                                                         Colors
@@ -270,89 +392,47 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                             ),
                                                           ),
                                                         ),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                          CrossAxisAlignment.start,
-                                                          mainAxisAlignment:
-                                                          MainAxisAlignment.start,
-                                                          children: [
-                                                            Padding(
-                                                              padding: const EdgeInsets
-                                                                  .fromLTRB(
-                                                                  10, 8, 10, 5),
-                                                              child: Text(
-                                                                'TRANSACTION ID',
-                                                                style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    color:
-                                                                    ConstantColors.appTheme,
-                                                                  fontFamily: "Mont-Regular",
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const Padding(
-                                                              padding: EdgeInsets
-                                                                  .fromLTRB(
-                                                                  10, 0, 10, 8),
-                                                              child: Text(
-                                                                'paymentid',
-                                                                style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    color: Colors.black,
-                                                                  fontFamily: "Mont-Regular",),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                    Spacer(),
-                                                    Padding(
-                                                      padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          10, 0, 0, 0),
-                                                      child: Row(
-                                                        children: [
-                                                          Column(
+                                                        Expanded(
+                                                          child: Column(
                                                             crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                            CrossAxisAlignment.start,
                                                             mainAxisAlignment:
                                                             MainAxisAlignment.start,
                                                             children: [
                                                               Padding(
-                                                                padding:
-                                                                const EdgeInsets
+                                                                padding: const EdgeInsets
                                                                     .fromLTRB(
                                                                     10, 8, 10, 5),
                                                                 child: Text(
-                                                                  'STORE',
+                                                                  'TRANSACTION ID',
                                                                   style: TextStyle(
                                                                       fontSize: 14,
                                                                       color:
                                                                       ConstantColors.appTheme,
-                                                                    fontFamily: "Mont-Regular",),
+                                                                    fontFamily: "Mont-Regular",
+                                                                  ),
                                                                 ),
                                                               ),
-                                                              const Padding(
-                                                                padding:
-                                                                EdgeInsets
+                                                              Padding(
+                                                                padding: const EdgeInsets
                                                                     .fromLTRB(
                                                                     10, 0, 10, 8),
                                                                 child: Text(
-                                                                  'Desi District - Riverside Dr, Irving, TX ',
-                                                                  style: TextStyle(
+                                                                  '' + transactionId,
+                                                                  maxLines: 2,
+                                                                  style: const TextStyle(
                                                                       fontSize: 14,
-                                                                      color:
-                                                                      Colors.black,
+                                                                      color: Colors.black,
                                                                     fontFamily: "Mont-Regular",),
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
-                                                        ],
-                                                      ),
+                                                        )
+                                                      ],
                                                     ),
+
+
                                                     Spacer(),
                                                     Row(
                                                       children: [
@@ -383,14 +463,14 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                       fontFamily: "Mont-Regular",),
                                                                   ),
                                                                 ),
-                                                                const Padding(
+                                                                Padding(
                                                                   padding:
-                                                                  EdgeInsets
+                                                                  const EdgeInsets
                                                                       .fromLTRB(
                                                                       10, 0, 10, 8),
                                                                   child: Text(
-                                                                    'Completed',
-                                                                    style: TextStyle(
+                                                                    '' + paymentStatus,
+                                                                    style: const TextStyle(
                                                                         fontSize: 14,
                                                                         color: Colors
                                                                             .black,
@@ -420,13 +500,13 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                                                   fontFamily: "Mont-Regular",),
                                                               ),
                                                             ),
-                                                            const Padding(
-                                                              padding: EdgeInsets
+                                                            Padding(
+                                                              padding: const EdgeInsets
                                                                   .fromLTRB(
                                                                   10, 0, 10, 8),
                                                               child: Text(
-                                                                '\$ 56.00',
-                                                                style: TextStyle(
+                                                                '\$ $paidAmount',
+                                                                style: const TextStyle(
                                                                     fontSize: 14,
                                                                     color: Colors.black,
                                                                   fontFamily: "Mont-Regular",),
@@ -509,7 +589,6 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                     ),
                   )
               )
-
 
             ]),
       ),

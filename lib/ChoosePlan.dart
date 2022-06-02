@@ -4,12 +4,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
+import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'API.dart';
+import 'CartScreen.dart';
 import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
+import 'SearchScreen.dart';
 import 'StoreDetails.dart';
 import 'UploadFiles.dart';
 
@@ -60,6 +63,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
   List<dynamic> noOfTimesList = [];
   List<dynamic> storePackagesList = [];
   List<dynamic> data1 = [];
+  List<dynamic> cartList = [];
 
   var cartDetailId = '';
 
@@ -166,6 +170,24 @@ class _ChoosePlanState extends State<ChoosePlan> {
 
   @override
   Widget build(BuildContext context) {
+
+    pr = ProgressDialog(context);
+    pr.style(
+        message: 'Loading',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: Container(
+            padding: const EdgeInsets.all(10.0),
+            child: const CircularProgressIndicator()),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: const TextStyle(
+            color: Colors.black, fontSize: 10.0, fontWeight: FontWeight.w400),
+        messageTextStyle: const TextStyle(
+            color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600)
+    );
+
+
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -202,79 +224,89 @@ class _ChoosePlanState extends State<ChoosePlan> {
                               width: 130,
                             )),
                         const Spacer(),
-                        Card(
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                21.5), // if you need this
-                          ),
-                          child: Stack(
-                            children: [
-                              Container(
-                                color: Colors.transparent,
-                                width: 43,
-                                height: 43,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    7, 10, 5, 0),
-                                child: Image.asset(
-                                  "assets/images/cart.png",
-                                  width: 28,
-                                  height: 28,
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> const CartScreen()));
+                          },
+                          child: Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  21.5), // if you need this
+                            ),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  color: Colors.transparent,
+                                  width: 43,
+                                  height: 43,
                                 ),
-                              ),
-                              MainScreen.cartItemsCount > 0 ?Positioned(
-                                right: 0,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 10.0),
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration:  BoxDecoration(
-                                      color: ConstantColors.appTheme,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    //color: Colors.red,
-                                    child:  Center(
-                                      child: Text(
-                                        ""+MainScreen.cartItemsCount.toString(),
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 10,
-                                            fontFamily: "Mont-Regular"
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      7, 10, 5, 0),
+                                  child: Image.asset(
+                                    "assets/images/cart.png",
+                                    width: 28,
+                                    height: 28,
+                                  ),
+                                ),
+                                MainScreen.cartItemsCount > 0 ?Positioned(
+                                  right: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10.0),
+                                    child: Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration:  BoxDecoration(
+                                        color: ConstantColors.appTheme,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      //color: Colors.red,
+                                      child:  Center(
+                                        child: Text(
+                                          ""+MainScreen.cartItemsCount.toString(),
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontFamily: "Mont-Regular"
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ):const SizedBox(height: 1,width: 1,)
-                            ],
+                                ):const SizedBox(height: 1,width: 1,)
+                              ],
+                            ),
                           ),
                         ),
-                        Card(
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                21.5), // if you need this
-                          ),
-                          child: Stack(
-                            children: [
-                              Container(
-                                color: Colors.transparent,
-                                width: 43,
-                                height: 43,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    10, 10, 5, 0),
-                                child: Image.asset(
-                                  "assets/images/search.png",
-                                  width: 25,
-                                  height: 25,
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> const SearchScreen()));
+                          },
+                          child: Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  21.5), // if you need this
+                            ),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  color: Colors.transparent,
+                                  width: 43,
+                                  height: 43,
                                 ),
-                              ),
-                            ],
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      10, 10, 5, 0),
+                                  child: Image.asset(
+                                    "assets/images/search.png",
+                                    width: 25,
+                                    height: 25,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -1270,10 +1302,11 @@ class _ChoosePlanState extends State<ChoosePlan> {
     );
   }
 
+  late ProgressDialog pr;
 
   Future<void> getData11() async {
 
-
+    pr.show();
     String url1 = APIConstant.insCartItems;
     print('Category base StoresList url: '+url1);
     Map<String, dynamic> body = {
@@ -1293,22 +1326,32 @@ class _ChoosePlanState extends State<ChoosePlan> {
       body: body,
       encoding: encoding,
     );
+    pr.hide();
     print('Category base StoresList response :' + response.body.toString());
     setState(() {
       String msg = jsonDecode(response.body)['msg'];
 
       if (msg == "Product Added to Your Cart" || msg == "success")
       {
+
+        getCartItems();
         cartDetailId = jsonDecode(response.body)['CartDetailId'].toString();
         print("Generated cart detail id is: "+cartDetailId.toString());
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => UploadFiles(
-                  cartDetailId: cartDetailId.toString() ,
-                )));
+
       }else{
+
+        Fluttertoast.showToast(
+            msg: msg,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+
         print("Unable to get API response.");
+
       }
     });
 
@@ -1318,5 +1361,45 @@ class _ChoosePlanState extends State<ChoosePlan> {
 
 
   }
+
+  Future<void> getCartItems() async {
+
+    String url1 = APIConstant.getCartItems;
+    print("Get cart items url is: "+url1);
+    Map<String, dynamic> body = {
+      'Mobile': '9160747554',
+    };
+    print('Get cart items api body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    //print('Cart items response :' + response.body.toString());
+    setState(() {
+      cartList = jsonDecode(response.body)['CartList'];
+      if (cartList.isNotEmpty){
+        MainScreen.cartItemsCount = cartList.length;
+      } else {
+        MainScreen.cartItemsCount = 0;
+      }
+    });
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => UploadFiles(
+              cartDetailId: cartDetailId.toString() ,
+            )));
+
+    setState(() {
+      isLoading=false;
+    });
+  }
+
+
 
 }

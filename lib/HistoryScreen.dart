@@ -132,59 +132,59 @@ class _HistoryScreen extends State<HistoryScreen> {
                                     "assets/images/home-logo.png", width: 130,)
                               ),
                               const Spacer(),
-                              Card(
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      21.5), // if you need this
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      color: Colors.transparent,
-                                      width: 43,
-                                      height: 43,
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const CartScreen()));
+                                },
+                                child: Card(
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        21.5), // if you need this
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        color: Colors.transparent,
+                                        width: 43,
+                                        height: 43,
 
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context)=> CartScreen()));
-                                        },
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
                                         child: Image.asset(
                                           "assets/images/cart.png",
                                           width: 28,
                                           height: 28,
                                         ),
                                       ),
-                                    ),
-                                    MainScreen.cartItemsCount > 0 ?Positioned(
-                                      right: 0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(bottom: 10.0),
-                                        child: Container(
-                                          height: 20,
-                                          width: 20,
-                                          decoration:  BoxDecoration(
-                                            color: ConstantColors.appTheme,
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          //color: Colors.red,
-                                          child:  Center(
-                                            child: Text(
-                                              ""+MainScreen.cartItemsCount.toString(),
-                                              style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
-                                                  fontFamily: "Mont-Regular"
+                                      MainScreen.cartItemsCount > 0 ?Positioned(
+                                        right: 0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom: 10.0),
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration:  BoxDecoration(
+                                              color: ConstantColors.appTheme,
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            //color: Colors.red,
+                                            child:  Center(
+                                              child: Text(
+                                                ""+MainScreen.cartItemsCount.toString(),
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                    fontFamily: "Mont-Regular"
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ):const SizedBox(height: 1,width: 1,)
-                                  ],
+                                      ):const SizedBox(height: 1,width: 1,)
+                                    ],
+                                  ),
                                 ),
                               ),
                               Card(
@@ -486,18 +486,13 @@ class _HistoryScreen extends State<HistoryScreen> {
                   ),
                   Row(
                     children:  [
-                      // const Padding(
-                      //   padding: EdgeInsets.fromLTRB(15, 5, 5, 8),
-                      //   child: Text(
-                      //     "\$3.00",
-                      //     maxLines: 2,
-                      //     style: TextStyle(
-                      //       fontSize: 18.0,
-                      //       fontFamily: 'Mont-Regular',
-                      //       color: Colors.blue,
-                      //     ),
-                      //   ),
-                      // ),
+                       Padding(
+                        padding: EdgeInsets.fromLTRB(10, 5, 5, 8),
+                         child: Image.asset(
+                           (ordersHistoryList[index]["PaymentStatus"] == "Completed")?"assets/images/completed.png":"assets/images/pending.png",
+                           height: 30,
+                         ),
+                      ),
                       const Spacer(),
                       (ordersHistoryList[index]["IsFileUpload"] == "Yes") ?const Padding(
                         padding: EdgeInsets.fromLTRB(15, 5, 5, 8),

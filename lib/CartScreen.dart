@@ -4,14 +4,17 @@ import 'package:adslay/Constant/ConstantsColors.dart';
 import 'package:adslay/StoreDetails.dart';
 import 'package:adslay/UploadFiles.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 import 'API.dart';
 import 'BillingScreen.dart';
 import 'ChoosePlan.dart';
+import 'LoginScreen.dart';
 import 'MainScreen.dart';
 import 'SearchScreen.dart';
 
@@ -28,6 +31,7 @@ class _CartScreenState extends State<CartScreen> {
   bool isLoading = true;
   bool isCheckoutAvailable = false;
   List<dynamic> cartList = [];
+  List<dynamic> noFilesUploadedItemsList = [];
 
   String email = '';
   String mobileNumber = '';
@@ -57,7 +61,7 @@ class _CartScreenState extends State<CartScreen> {
       body: body,
       encoding: encoding,
     );
-    print('Cart items response :' + response.body.toString());
+    //print('Cart items response :' + response.body.toString());
     setState(() {
       cartList = jsonDecode(response.body)['CartList'];
 
@@ -207,7 +211,7 @@ class _CartScreenState extends State<CartScreen> {
                                   ]
                               );
                             },
-                      ))
+                          ))
 
                     ]),
               ],
@@ -298,30 +302,7 @@ class _CartScreenState extends State<CartScreen> {
                                         padding: const EdgeInsets.only(top: 10),
                                         child: MaterialButton(
                                           onPressed: () {
-                                            //Check out
-                                            int j=0;
-                                            for(int i=0;i<cartList.length;i++){
-                                              if(cartList[i]['IsFileUpload']=='Yes'){
-                                                j=j+1;
-                                              }
-                                            }
-                                            if(j==cartList.length) {
-                                              Navigator.push(context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          BillingScreen(
-                                                              total: subTotalValue
-                                                                  .toString())));
-                                            }else{
-                                              for(int i=0;i<cartList.length;i++){
-                                                if(cartList[i]['IsFileUpload']=='Yes'){
-
-                                                }else{
-                                                  //show popup
-                                                  _showUploadFilesPopUp();
-                                                }
-                                              }
-                                            }
+                                            checkFilesUploadedStatus();
                                           },
                                           textColor: Colors.white,
                                           padding: const EdgeInsets.all(0.0),
@@ -460,14 +441,14 @@ class _CartScreenState extends State<CartScreen> {
         )
     )
         : cartList.isEmpty?Center(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 100, 0, 40),
-                  child: Image.asset("assets/images/nocartitems.png",width: 300,height: 350,),
-                ),
-              ],
-            )):ListView.builder(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 100, 0, 40),
+              child: Image.asset("assets/images/nocartitems.png",width: 300,height: 350,),
+            ),
+          ],
+        )):ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
@@ -475,7 +456,7 @@ class _CartScreenState extends State<CartScreen> {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: (){
-           Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadFiles(cartDetailId: cartList[index]["CartDetailId"].toString())));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadFiles(cartDetailId: cartList[index]["CartDetailId"].toString())));
           },
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,7 +493,7 @@ class _CartScreenState extends State<CartScreen> {
                           right: 8,
                           child: GestureDetector(
                             onTap: (){
-                              _deleteAdFromCart(cartList[index]["CartDetailId"]);
+                              _showDeleteAlertPopUp(cartList[index]["CartDetailId"].toString());
                             },
                             child: Image.asset(
                               "assets/images/delete.png",
@@ -754,6 +735,135 @@ class _CartScreenState extends State<CartScreen> {
 
   late ProgressDialog pr;
 
+
+
+  _showDeleteAlertPopUp(String cartDetailId) {
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Dialog(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Text(
+                                  'Are you sure want to delete?',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Mont-SemiBold',
+                                    color: ConstantColors.appTheme,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: MaterialButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      textColor: Colors.white,
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Container(
+                                        width: 100,
+                                        height: 45,
+                                        decoration:  const BoxDecoration(
+                                            gradient:  LinearGradient(
+                                              colors: [
+                                                Color(0xff3962cb),
+                                                Color(0xff3962cb),
+                                              ],
+                                            )
+                                        ),
+                                        //padding: const EdgeInsets.all(10.0),
+                                        child: const Center(
+                                          child: Text(
+                                            "Cancel",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Lorin"
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: MaterialButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        _deleteAdFromCart(cartDetailId);
+                                      },
+                                      textColor: Colors.white,
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Container(
+                                        width: 100,
+                                        height: 45,
+                                        decoration:  const BoxDecoration(
+                                            gradient:  LinearGradient(
+                                              colors: [
+                                                Color(0xff3962cb),
+                                                Color(0xff3962cb),
+                                              ],
+                                            )
+                                        ),
+                                        //padding: const EdgeInsets.all(10.0),
+                                        child: const Center(
+                                          child: Text(
+                                            "Delete",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Color(0xFFFFFFFF),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                fontFamily: "Lorin"
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+
+                            //_deleteAdFromCart(cartList[index]["CartDetailId"]);
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              });
+        });
+  }
+
+
+
+
   Future<void> _deleteAdFromCart(cartId) async {
     await pr.show();
     String url1 = APIConstant.deleteCartItem;
@@ -772,9 +882,68 @@ class _CartScreenState extends State<CartScreen> {
       encoding: encoding,
     );
     print('Delete cart item response :' + response.body.toString());
+
+    Map data1 = jsonDecode(response.body);
+    print('signup api calling response :' + data1.toString());
+    String msg = data1['msg'];
+    await pr.hide();
+    if(msg=='Success' || msg=='success'){
+      getdata();
+      Fluttertoast.showToast(
+          msg: "Removed Successfully.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: ConstantColors.appTheme,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+
+    }else {
+      Fluttertoast.showToast(
+          msg: "Unable remove AD space.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+    }
+
+
     setState(() {
       isLoading = true;
       getdata();
+    });
+  }
+
+  Future<void> checkFilesUploadedStatus() async {
+    await pr.show();
+    String url1 = APIConstant.getCartNoFilesUploadList;
+    print("Get cart no files uploaded list url is: " + url1);
+    Map<String, dynamic> body = {
+      'Mobile': "9160747554",
+    };
+
+    print('Get cart no files uploaded list body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Get cart no files uploaded list response :' + response.body.toString());
+    await pr.hide();
+    setState(() {
+      noFilesUploadedItemsList = jsonDecode(response.body)['CartList'];
+      if (noFilesUploadedItemsList.isNotEmpty){
+        _showUploadFilesPopUp();
+      }else{
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>BillingScreen()));
+      }
     });
   }
 
@@ -788,115 +957,133 @@ class _CartScreenState extends State<CartScreen> {
               builder: (BuildContext context, StateSetter setState) {
                 return Dialog(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 15),
-                    child: Container(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                    child: SizedBox(
                       width: double.infinity,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(5, 15, 5, 0),
-                            child: Center(
-                              child: Text(
-                                'Give us your valuable feedback.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontFamily: 'Lorin',
-                                    color: Color(0xFF0063AD),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 50,
+                              width: double.infinity,
+                              color: ConstantColors.lightGrey,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(width: 15,),
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    child: Center(
+                                      child: Text(
+                                        '   AD FILES REQUIRED',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'Mont-SemiBold',
+                                          color: ConstantColors.appTheme,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  GestureDetector(
+                                    onTap: (){
+                                      Navigator.pop(context);
+                                    },
+                                    child: Positioned(
+                                      top: 10,
+                                      right: 20,
+                                      child: Image.asset(
+                                        "assets/images/close.png",
+                                        color: Colors.red,
+                                        fit: BoxFit.contain,
+                                        height: 25,
+                                        width: 25,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 15,)
+                                ],
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
+                            const SizedBox(
+                              height: 15,
+                            ),
 
-                          Row(
-                            children: [
-                              const Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 12,top: 20),
-                                child: GestureDetector(
+                            ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: noFilesUploadedItemsList.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
                                   onTap: (){
-
-                                    Navigator.pop(context);
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadFiles(cartDetailId: noFilesUploadedItemsList[index]["CartDetailId"].toString())));
                                   },
-                                  child: Container(
-                                    height: 35,width: 120,
-
-                                    decoration: BoxDecoration(
-                                      color: ConstantColors.appTheme,
-                                      borderRadius: BorderRadius.circular(10),
-                                      // border: Border.all(
-                                      //     color: Color(0xffAAAAAA)
-                                      // ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: const [
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
                                         Padding(
-                                          padding: EdgeInsets.only(left:0),
+                                          padding: const EdgeInsets.fromLTRB(15, 10, 15, 8),
                                           child: Text(
-                                            "Cancel",
-                                            style: TextStyle(
-                                              fontFamily: "lorin",
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
+                                            "" + noFilesUploadedItemsList[index]["StoreName"] +", "+ noFilesUploadedItemsList[index]["City"] +", "+ noFilesUploadedItemsList[index]["State"],
+                                            maxLines: noFilesUploadedItemsList.length,
+                                            style: const TextStyle(
+                                                fontSize: 18.0,
+                                                fontFamily: 'Mont-SemiBold'
                                             ),
                                           ),
                                         ),
 
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 12,top: 20),
-                                child: GestureDetector(
-                                  onTap: (){
-                                    //Navigate to uplod files screen
-                                  },
-                                  child: Container(
-                                    height: 35,width: 120,
-
-                                    decoration: BoxDecoration(
-                                      color: ConstantColors.lightYellow,
-                                      borderRadius: BorderRadius.circular(10),
-                                      // border: Border.all(
-                                      //     color: Color(0xffAAAAAA)
-                                      // ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.only(left:0),
-                                          child: Text(
-                                            "Submit",
-                                            style: TextStyle(
-                                              fontFamily: "lorin",
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
+                                        Center(
+                                          child: Padding(
+                                            padding:  EdgeInsets.fromLTRB(0, 10, 0, 20),
+                                            child: MaterialButton(
+                                              onPressed: () {
+                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>UploadFiles(cartDetailId: noFilesUploadedItemsList[index]["CartDetailId"])));
+                                              },
+                                              textColor: Colors.white,
+                                              padding: const EdgeInsets.all(0.0),
+                                              child: Container(
+                                                width: MediaQuery.of(context).size.width * 0.50,
+                                                height: 45,
+                                                decoration:  const BoxDecoration(
+                                                    gradient:  LinearGradient(
+                                                      colors: [
+                                                        Color(0xff3962cb),
+                                                        Color(0xff3962cb),
+                                                      ],
+                                                    )
+                                                ),
+                                                //padding: const EdgeInsets.all(10.0),
+                                                child: const Center(
+                                                  child: Text(
+                                                    "UPLOAD AD FILES",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        color: Color(0xFFFFFFFF),
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.w500,
+                                                        fontFamily: "Lorin"
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
-
-                                      ],
-                                    ),
+                                      ]
                                   ),
-                                ),
-                              ),
-                              const Spacer(),
-                            ],
-                          ),
-                        ],
+                                );
+                              },
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),

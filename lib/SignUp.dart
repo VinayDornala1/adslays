@@ -197,7 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                                             child: TextField(
-                                              inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),],
+                                              inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-@&.]")),],
                                               keyboardType: TextInputType.emailAddress,
                                               controller: emailController,
                                               decoration: const InputDecoration(

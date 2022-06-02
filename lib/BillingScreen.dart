@@ -10,6 +10,7 @@ import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'API.dart';
+import 'CartScreen.dart';
 import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
 import 'ThankYouScreen.dart';
@@ -56,6 +57,7 @@ class _BillingScreenState extends State<BillingScreen> {
   List<dynamic> CountriesList = [];
   List<dynamic> statelists = [];
 
+  String transactionId = '';
 
   Future<void> getData() async {
     try{
@@ -85,7 +87,7 @@ class _BillingScreenState extends State<BillingScreen> {
     );
 
     Map data = jsonDecode(response.body);
-    print(data);
+    //print(data);
     String msg = data['msg'];
     print(msg);
 
@@ -200,54 +202,59 @@ class _BillingScreenState extends State<BillingScreen> {
                                   "assets/images/home-logo.png", width: 130,)
                             ),
                             const Spacer(),
-                            Card(
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    21.5), // if you need this
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    color: Colors.transparent,
-                                    width: 43,
-                                    height: 43,
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> const CartScreen()));
+                              },
+                              child: Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      21.5), // if you need this
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      color: Colors.transparent,
+                                      width: 43,
+                                      height: 43,
 
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
-                                    child: Image.asset(
-                                      "assets/images/cart.png",
-                                      width: 28,
-                                      height: 28,
                                     ),
-                                  ),
-                                  MainScreen.cartItemsCount > 0 ?Positioned(
-                                    right: 0,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom: 10.0),
-                                      child: Container(
-                                        height: 20,
-                                        width: 20,
-                                        decoration:  BoxDecoration(
-                                          color: ConstantColors.appTheme,
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        //color: Colors.red,
-                                        child:  Center(
-                                          child: Text(
-                                            ""+MainScreen.cartItemsCount.toString(),
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10,
-                                                fontFamily: "Mont-Regular"
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(7, 10, 5, 0),
+                                      child: Image.asset(
+                                        "assets/images/cart.png",
+                                        width: 28,
+                                        height: 28,
+                                      ),
+                                    ),
+                                    MainScreen.cartItemsCount > 0 ?Positioned(
+                                      right: 0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 10.0),
+                                        child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration:  BoxDecoration(
+                                            color: ConstantColors.appTheme,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          //color: Colors.red,
+                                          child:  Center(
+                                            child: Text(
+                                              ""+MainScreen.cartItemsCount.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  fontFamily: "Mont-Regular"
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ):const SizedBox(height: 1,width: 1,)
-                                ],
+                                    ):const SizedBox(height: 1,width: 1,)
+                                  ],
+                                ),
                               ),
                             ),
                             Card(
@@ -396,7 +403,7 @@ class _BillingScreenState extends State<BillingScreen> {
                                               : Column(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                                padding: const EdgeInsets.fromLTRB(12, 0, 5, 0),
                                                 child: DropdownButton(
                                                   icon: const Icon(
                                                     Icons
@@ -686,11 +693,24 @@ class _BillingScreenState extends State<BillingScreen> {
                                                 amount: amount,
                                                 currency: currency
                                             );
+
+                                            print("Payment response: "+resp.msg!);
+
+                                            try{
+                                              var json = jsonDecode(resp.msg!);
+                                              var id = json['id'];
+
+                                              transactionId = jsonEncode(id);
+                                              print("Payment transaction id is: "+transactionId);
+                                            }catch(e){
+                                              transactionId = "NA";
+                                            }
+
                                             Navigator.pop(context);
-                                            if ( resp.ok ) {
-                                              showAlert(context, 'Credit Card ok', 'Success Payment');
+                                            if ( resp.ok) {
+                                              showAlert(context, 'Credit Card ok', 'Success Payment', transactionId, 'Completed', amount);
                                             } else {
-                                              showAlert(context, 'Upsssss!', resp.msg!);
+                                              showAlert(context, 'Credit Card ok', 'Payment Failed', transactionId, 'Pending', amount);
                                             }
                                           }
                                         },
@@ -740,7 +760,7 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 
 
-  showAlert( BuildContext context, String title, String message ) {
+  showAlert( BuildContext context, String title, String message, String transactionId, String status, String amountPaid) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -751,8 +771,10 @@ class _BillingScreenState extends State<BillingScreen> {
             MaterialButton(
               child: const Text( 'ok' ),
               onPressed: () {
+
+                MainScreen.cartItemsCount = 0;
                 Navigator.of(context).pop();
-                completeBooking();
+                completeBooking(status, transactionId, amountPaid);
                 // Navigator.pop(context);
               },
             )
@@ -772,7 +794,8 @@ class _BillingScreenState extends State<BillingScreen> {
     );
   }
 
-  Future<void> completeBooking() async {
+  Future<void> completeBooking(String status, String transactionId, String amountPaid) async {
+
     String url1 = APIConstant.completeBooking;//'http://adslay.arjunweb.in/API/OrderAPI/OrderInsertAPI';
     print('Upload billing details url: '+url1);
     Map<String, dynamic> body = {
@@ -792,19 +815,57 @@ class _BillingScreenState extends State<BillingScreen> {
       body: body,
       encoding: encoding,
     );
+
     print('Upload billing details response :' + response.body.toString());
     setState(() {
       String msg = jsonDecode(response.body)['msg'];
       if (msg == "Product Added to Your Cart" || msg == "success" ||  msg == "Success")
       {
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => ThankYouScreen(date: , transactionId:, storeName:, status:, totalAmount:,
-        //         ))
-        // );
+        var orderId = jsonDecode(response.body)['OrderId'].toString();
+        uploadPaymentDetails(status, transactionId, amountPaid, orderId);
       }else{
         print("Unable to get API response.");
+      }
+    });
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+
+  Future<void> uploadPaymentDetails(String status, String transactionId, String amountPaid, String orderId) async {
+
+    String url1 = APIConstant.uploadPaymentDetails;
+    print('Upload payment details url: '+url1);
+    Map<String, dynamic> body = {
+      'PaymentStatus': status,
+      'TransactionId': transactionId,
+      'PaidAmount': amountPaid,
+      'OrderId': orderId,
+    };
+    print('Upload payment details body:' + body.toString());
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final encoding = Encoding.getByName('utf-8');
+    final response = await post(
+      Uri.parse(url1),
+      headers: headers,
+      body: body,
+      encoding: encoding,
+    );
+    print('Upload payment details response :' + response.body.toString());
+    setState(() {
+      String msg = jsonDecode(response.body)['msg'];
+      if ( msg == "success" ||  msg == "Success")
+      {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ThankYouScreen(orderId: orderId)
+            ),
+            ModalRoute.withName("/")
+        );
+      }else{
+        print("Unable to navigate to thank you page.");
       }
     });
     setState(() {

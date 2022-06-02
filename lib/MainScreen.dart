@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:adslay/API.dart';
 import 'package:adslay/BoolProvider.dart';
+import 'package:adslay/HistoryScreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +15,18 @@ import 'package:shimmer/shimmer.dart';
 import 'dart:io' show Platform;
 import 'dart:ui';
 
+import 'AboutUsScreen.dart';
+import 'AllCategoriesScreen.dart';
 import 'CartScreen.dart';
 import 'ChoosePlan.dart';
 import 'Constant/ConstantsColors.dart';
 import 'HowItWorks.dart';
 import 'LoginScreen.dart';
+import 'OrderDetailsScreen.dart';
 import 'SearchScreen.dart';
 import 'StoreDetails.dart';
 import 'StoresList.dart';
+import 'bottom_bar.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -113,7 +118,7 @@ class _MainScreenState extends State<MainScreen> {
       body: body,
       encoding: encoding,
     );
-    print('Cart items response :' + response.body.toString());
+    //print('Cart items response :' + response.body.toString());
     setState(() {
       cartList = jsonDecode(response.body)['CartList'];
       if (cartList.isNotEmpty){
@@ -348,12 +353,9 @@ class _MainScreenState extends State<MainScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  //Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
-                  //  false);
-                  //_scaffoldKey.currentState?.openEndDrawer();
-                  //_boolProvider.setBottomChange(3);
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
+
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) =>AboutUsScreen()));
 
                 },
                 child: Column(
@@ -376,10 +378,10 @@ class _MainScreenState extends State<MainScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
-                      false);
-                  _scaffoldKey.currentState?.openEndDrawer();
-                  _boolProvider.setBottomChange(3);
+                  // Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
+                  //     false);
+                  // _scaffoldKey.currentState?.openEndDrawer();
+                  //_boolProvider.setBottomChange(3);
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
 
@@ -620,6 +622,27 @@ class _MainScreenState extends State<MainScreen> {
                             child: GestureDetector(
                               onTap: (){
                                 print("Tapped on banner");
+                                print("Selected banner details:"+MobileBannersList[i].toString());
+
+                                var actionToBeOpen = MobileBannersList[i]["ActionToBeOpen"];
+                                var actionValue = MobileBannersList[i]["ActionValue"].toString();
+
+                                if (actionToBeOpen == "ADSpaceDetails"){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>StoreDetails(storeId: actionValue,)));
+                                }else if (actionToBeOpen == "History") {
+                                  _boolProvider.setBottomChange(2);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context, animation1, animation2) => BottomNavigationMenu(),
+                                        transitionDuration: Duration.zero,
+                                        reverseTransitionDuration: Duration.zero,
+                                      ),
+                                  );
+                                }else if (actionToBeOpen == "CompleteOrder") {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderDetailsScreen(cartOrderId: actionValue,)));
+                                }
+
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -800,7 +823,16 @@ class _MainScreenState extends State<MainScreen> {
             Expanded(
               child: GestureDetector(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresList(categoryId: CategoriesList[index]["CategoryId"].toString(),storeCategory: CategoriesList[index]["CategoryName"])));
+
+                  String categoryName = CategoriesList[index]["CategoryName"].toString();
+
+                  if (categoryName == "All" || categoryName == "all") {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AllCategoriesScreen()));
+                  }else{
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresList(categoryId: CategoriesList[index]["CategoryId"].toString(),storeCategory: CategoriesList[index]["CategoryName"])));
+                  }
+
+
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),

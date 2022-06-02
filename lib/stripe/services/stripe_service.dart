@@ -164,16 +164,21 @@ class StripeService {
       
       // create intent
       final paymentIntent = await _createPaymentIntent(amount: amount, currency: currency);
+
       final paymentResult = await StripePayment.confirmPaymentIntent(
         PaymentIntent(
           clientSecret: paymentIntent.clientSecret,
           paymentMethodId: paymentMethod.id
         )
       );
+      //('tadfdafaffadfafafdfrs:  '+paymentIntent.id.toString());
+      //print('tadfdafaffadfafafdfrs:  '+paymentIntent.status.toString());
+      //print('tadfdafaffadfafafdfrs:  '+paymentIntent.invoice.toString());
+      //print('intent:  '+paymentIntent.toJson());
       if ( paymentResult.status == 'succeeded') {
-        return StripeCustomResponse(ok: true);
+        return StripeCustomResponse(ok: true,msg: paymentIntent.toJson());
       } else {
-        return StripeCustomResponse(ok: false, msg: 'Ups!!: ${paymentResult.status}');
+        return StripeCustomResponse(ok: false, msg: paymentIntent.toJson());//'Ups!!: ${paymentResult.status}');
       }
     } catch (e) {
       print('Error: ${e.toString()}');

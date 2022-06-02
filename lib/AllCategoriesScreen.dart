@@ -1,30 +1,32 @@
 import 'dart:convert';
 
-import 'package:adslay/Constant/ConstantsColors.dart';
-import 'package:adslay/SearchScreen.dart';
-import 'package:adslay/StoreDetails.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'API.dart';
 import 'CartScreen.dart';
 import 'ChoosePlan.dart';
+import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
+import 'SearchScreen.dart';
+import 'StoresList.dart';
 
-class StoresScreen extends StatefulWidget {
-  const StoresScreen({Key? key}) : super(key: key);
+
+class AllCategoriesScreen extends StatefulWidget {
+  const AllCategoriesScreen({Key? key}) : super(key: key);
 
   @override
-  State<StoresScreen> createState() => _StoresScreenState();
+  State<AllCategoriesScreen> createState() => _AllCategoriesScreenState();
 }
 
-class _StoresScreenState extends State<StoresScreen> {
+class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
 
-  late List<dynamic> storesList;
+
+
+  late List<dynamic> categoriesList;
   bool isLoading = true;
 
   String Email='';
@@ -48,12 +50,12 @@ class _StoresScreenState extends State<StoresScreen> {
       print(e);
     }
 
-    String url1 = APIConstant.categoryBaseStoresList;
-    print('Category base StoresList url: '+url1);
+    String url1 = APIConstant.getAllCategoriesList;
+    print('Get all categories url: '+url1);
     Map<String, dynamic> body = {
       'Mobile': '9160747554',
     };
-    print('Category base StoresList body:' + body.toString());
+    print('Get all categories body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
     final encoding = Encoding.getByName('utf-8');
     final response = await post(
@@ -62,9 +64,9 @@ class _StoresScreenState extends State<StoresScreen> {
       body: body,
       encoding: encoding,
     );
-    //print('Category base StoresList response in stores tab :' + response.body.toString());
+    //print('Get all categories List response in stores tab :' + response.body.toString());
     setState(() {
-      storesList = jsonDecode(response.body)['StoresList'];
+      categoriesList = jsonDecode(response.body)['CategoriesList'];
     });
 
     setState(() {
@@ -97,6 +99,19 @@ class _StoresScreenState extends State<StoresScreen> {
                 children: <Widget>[
                   Row(
                     children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Image.asset(
+                            "assets/images/back.png",
+                            width: 45,
+                            height: 65,
+                          ),
+                        ),
+                      ),
                       Padding(
                           padding: const EdgeInsets.only(top: 0, right: 30,left: 10),
                           child: Image.asset("assets/images/home-logo.png",width: 130,)
@@ -191,8 +206,18 @@ class _StoresScreenState extends State<StoresScreen> {
                   ),
                 ],
               ),
+
+              const Padding(
+                padding: EdgeInsets.fromLTRB(5, 8, 5, 8),
+                child: Text(
+                  'All Categories',
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
               Expanded(
-                child: _showStoresList(),
+                child: _allAdSpaceCategories(),
               ),
 
             ]),
@@ -200,7 +225,8 @@ class _StoresScreenState extends State<StoresScreen> {
     );
   }
 
-  Widget _showStoresList() {
+
+  Widget _allAdSpaceCategories(){
     return isLoading
         ? Shimmer.fromColors(
         baseColor: ConstantColors.lightGrey,
@@ -215,7 +241,7 @@ class _StoresScreenState extends State<StoresScreen> {
               childAspectRatio: 0.90,
               physics: const ScrollPhysics(),
               shrinkWrap: true,
-              children: List.generate(10, (index) {
+              children: List.generate(6, (index) {
                 return InkWell(
                   child: GestureDetector(
                     child: Padding(
@@ -233,9 +259,9 @@ class _StoresScreenState extends State<StoresScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context).size.width * 0.40,
-                                          alignment: Alignment.center,
+                                        width: MediaQuery.of(context).size.width,
+                                        height: MediaQuery.of(context).size.width * 0.40,
+                                        alignment: Alignment.center,
                                       ),
                                     ],
                                   )),
@@ -280,88 +306,125 @@ class _StoresScreenState extends State<StoresScreen> {
           ],
         )
     )
-        : ListView(
-      shrinkWrap: true, // use it
-      physics: const BouncingScrollPhysics(),
-      children: [
-        GridView.count(
-          crossAxisCount: 2,
-          childAspectRatio: 0.85,
-          physics: const ScrollPhysics(),
-          shrinkWrap: true,
-          children: List.generate(storesList.length, (index) {
-            return InkWell(
+        : GridView.builder(
+      padding: EdgeInsets.zero,
+      itemCount: categoriesList.length,
+      shrinkWrap: true,
+      primary: false,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 1.25,
+      ),
+      itemBuilder: (context, index) {
+        return Row(
+          //mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
               child: GestureDetector(
                 onTap: (){
-                  print("Selected store id is:"+storesList[index]["StoreId"].toString());
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: storesList[index]["StoreId"].toString())));
+
+                  String categoryName = categoriesList[index]["CategoryName"].toString();
+
+                  if (categoryName == "All" || categoryName == "all") {
+                    //Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresList(categoryId: categoriesList[index]["CategoryId"].toString(),storeCategory: categoriesList[index]["CategoryName"])));
+                  }else{
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>StoresList(categoryId: categoriesList[index]["CategoryId"].toString(),storeCategory: categoriesList[index]["CategoryName"])));
+                  }
                 },
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
                   child: Center(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children:
                       [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: Card(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: MediaQuery.of(context).size.width * 0.40,
-                                      alignment: Alignment.center,
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                        child: CachedNetworkImage(
-                                          imageUrl: storesList[index]["ImageUrl"],
-                                          placeholder: (context, url) => const Center(
-                                              child: CircularProgressIndicator()),
-                                          errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                          fit: BoxFit.contain,
-                                          width: double.infinity,
-                                          height: double.infinity,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children:
+                            [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10.0),
+                                child: Card(
+                                    elevation: 2,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(5.0),
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        SizedBox(
+                                          height: 140,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(5),
+                                            child: Image(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(categoriesList[index]['ImageUrl'],
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      )
-                                  ),
-                                ],
-                              )),
-                        ),
-                        Text(
-                          '' + storesList[index]["StoreName"] + ", " + storesList[index]["City"],
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          style: const TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.normal),
-                        ),
-                        Text(
-                          '' + storesList[index]["State"] + ", " + storesList[index]["Country"],
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          style: const TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.normal),
+                                        SizedBox(
+                                          height: 140,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(5),
+                                            child: Image.asset(
+                                              "assets/images/black-transparent.png",
+                                              fit: BoxFit.fill,
+
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 0,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 5.0,right:35,bottom: 8),
+                                            child: Text(
+                                              ''+categoriesList[index]['CategoryName'],
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: const TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontFamily: "Mont-Regular",
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.normal),
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(right: 8.0,bottom: 8),
+                                            child: Image.asset(
+                                              "assets/images/right-arrow.png",
+                                              height: 22,
+                                              width: 22,),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
-            );
-          },
-          ),
-        )
-      ],
+            ),
+          ],
+        );
+      },
     );
-
   }
+
 
 
 }
