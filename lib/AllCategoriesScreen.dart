@@ -53,7 +53,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
     String url1 = APIConstant.getAllCategoriesList;
     print('Get all categories url: '+url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
     };
     print('Get all categories body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};

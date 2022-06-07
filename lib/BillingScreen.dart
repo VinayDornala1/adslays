@@ -74,7 +74,7 @@ class _BillingScreenState extends State<BillingScreen> {
     String url1 = APIConstant.login;
     print(url1);
     Map<String, dynamic> body = {
-      'MobileNo': '9160747554',
+      'MobileNo': ''+mobileNumber,
     };
     print("Profile get details api calling :" + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -708,9 +708,9 @@ class _BillingScreenState extends State<BillingScreen> {
 
                                             Navigator.pop(context);
                                             if ( resp.ok) {
-                                              showAlert(context, 'Credit Card ok', 'Success Payment', transactionId, 'Completed', amount);
+                                              showAlert(context, 'Credit Card ok', 'Success Payment', transactionId, 'Completed', widget.total.toString());
                                             } else {
-                                              showAlert(context, 'Credit Card ok', 'Payment Failed', transactionId, 'Pending', amount);
+                                              showAlert(context, 'Credit Card ok', 'Payment Failed', transactionId, 'Pending', widget.total.toString());
                                             }
                                           }
                                         },
@@ -799,7 +799,7 @@ class _BillingScreenState extends State<BillingScreen> {
     String url1 = APIConstant.completeBooking;//'http://adslay.arjunweb.in/API/OrderAPI/OrderInsertAPI';
     print('Upload billing details url: '+url1);
     Map<String, dynamic> body = {
-      'MobileNo': '9160747554',//mobileNumber.toString(),
+      'MobileNo': ''+mobileNumber,//mobileNumber.toString(),
       'BillingAddress1': ''+addressController.text.toString(),
       'BillingAddress2': ''+zipcodeController.text.toString(),
       'BillingCity': ''+cityController.text.toString(),
@@ -860,7 +860,7 @@ class _BillingScreenState extends State<BillingScreen> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (context) => ThankYouScreen(orderId: orderId)
+                builder: (context) => ThankYouScreen(orderId: orderId,paymentamount:widget.total.toString())
             ),
             ModalRoute.withName("/")
         );

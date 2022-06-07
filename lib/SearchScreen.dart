@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'API.dart';
@@ -34,7 +35,29 @@ class _SearchScreenState extends State<SearchScreen> {
   
   List <dynamic> searchResults = [];
 
+  String email = '';
+  String mobileNumber = '';
 
+  Future<void> getData() async {
+
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        mobileNumber = prefs.getString('mobilenumber')!;
+        email = prefs.getString('email')!;
+      });
+    } catch (e) {
+      print(e);
+    }
+
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -441,7 +464,7 @@ class _SearchScreenState extends State<SearchScreen> {
     String url1 = APIConstant.autoSearchADSpaces;
     print(url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
       'Search': searchtext.text,
     };
     print('Search request body :' + body.toString());

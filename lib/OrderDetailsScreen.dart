@@ -63,7 +63,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     String url1 = APIConstant.getCompletedOrderDetails;
     print('Get Store details in choose plan screen url: ' + url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
       'OrderDetailId': widget.cartOrderId.toString(),
     };
     print('Get Store details in choose plan body:' + body.toString());

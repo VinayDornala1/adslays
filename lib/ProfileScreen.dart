@@ -94,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String url1 = APIConstant.getCartHistoryItems;
     print("Get orders history items url is: "+url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
     };
     print('Get orders history items api body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -132,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String url1 = APIConstant.login;
     print(url1);
     Map<String, dynamic> body = {
-      'MobileNo': '9160747554',
+      'MobileNo': ''+mobileNumber,
     };
     print("Profile get details api calling :" + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -211,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       String url1 = APIConstant.postProfilePicDetailsToServer;
       print('Upload profile pic details to server url: '+url1);
       Map<String, dynamic> body = {
-        'MobileNo': '9160747554',
+        'MobileNo': ''+mobileNumber,
         'ProfileImage': vendor_image.text.toString(),
       };
       print('Upload profile pic details to server body:' + body.toString());
@@ -663,7 +663,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         placeholder: (context, url) => const Center(
                             child: CircularProgressIndicator()),
                         errorWidget: (context, url, error) =>
-                            Image.asset("assets/images/userprofile.jpg"),
+                            Image.asset("assets/images/userprofile.png"),
                         //const Icon(Icons.refresh_outlined),
                         fit: BoxFit.cover,
                         width: double.infinity,

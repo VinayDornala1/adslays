@@ -72,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
     String url1 = APIConstant.home;
     print(url1);
     Map<String, dynamic> body = {
-      'MobileNo': '9160747554',
+      'MobileNo': ''+mobileNumber,
     };
     print('Home Screen api calling :' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -107,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
     String url1 = APIConstant.getCartItems;
     print("Get cart items url is: "+url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
     };
     print('Get cart items api body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};

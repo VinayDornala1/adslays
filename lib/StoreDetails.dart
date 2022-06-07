@@ -65,7 +65,7 @@ class _StoreDetailsState extends State<StoreDetails> {
     String url1 = APIConstant.getStoreDetails;
     print('Selected store details url: '+url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
       'StoreId': widget.storeId.toString(),
     };
     print('Selected store details body:' + body.toString());

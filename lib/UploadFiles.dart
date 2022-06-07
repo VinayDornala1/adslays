@@ -73,16 +73,6 @@ class _UploadFilesState extends State<UploadFiles> {
 
   Future<void> getData() async {
 
-    try{
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      setState(() {
-        mobileNumber = prefs.getString('mobilenumber')!;
-        email = prefs.getString('email')!;
-      });
-    }catch(e){
-      print(e);
-    }
-
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       setState(() {
@@ -96,7 +86,7 @@ class _UploadFilesState extends State<UploadFiles> {
     String url1 = APIConstant.getSelectedStoreCartDetails;
     print('Get cart item details url: ' + url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
       'CartDetailId': widget.cartDetailId.toString(),
     };
 
@@ -1004,7 +994,7 @@ class _UploadFilesState extends State<UploadFiles> {
     String url1 = APIConstant.base_url + "StoresAPI/CustomerBookImageAPI";
     print('Upload file url: '+url1);
     Map<String, dynamic> body = {
-      'MobileNo': '9160747554',
+      'MobileNo': ''+mobileNumber,
       'CartDetailId': widget.cartDetailId.toString(),
       'ImageUrl': vendor_image.text,
       'VideoUrl': '',
@@ -1071,7 +1061,7 @@ class _UploadFilesState extends State<UploadFiles> {
     String url1 = APIConstant.getUploadedImagesList;
     print('Get Uploaded Images List url: ' + url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
       'CartDetailId': widget.cartDetailId.toString(),
     };
 

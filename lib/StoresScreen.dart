@@ -51,7 +51,7 @@ class _StoresScreenState extends State<StoresScreen> {
     String url1 = APIConstant.categoryBaseStoresList;
     print('Category base StoresList url: '+url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
     };
     print('Category base StoresList body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};

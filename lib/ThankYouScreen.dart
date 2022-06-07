@@ -14,8 +14,9 @@ import 'Constant/ConstantsColors.dart';
 class ThankYouScreen extends StatefulWidget {
 
   var orderId;
+  var paymentamount;
 
-  ThankYouScreen({this.orderId});
+  ThankYouScreen({this.orderId,this.paymentamount});
 
   @override
   State<ThankYouScreen> createState() => _ThankYouScreenState();
@@ -63,7 +64,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
     String url1 = APIConstant.getOrderPaymentDetails;
     print("Get order payment details body:" +url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
       'OrderId': widget.orderId.toString(),
     };
     print("Get order payment details body:" + body.toString());

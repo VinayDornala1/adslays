@@ -50,7 +50,7 @@ class _CartScreenState extends State<CartScreen> {
     String url1 = APIConstant.getCartItems;
     print("Get cart items url is: "+url1);
     Map<String, dynamic> body = {
-      'Mobile': '9160747554',
+      'Mobile': ''+mobileNumber,
     };
     print('Get cart items api body:' + body.toString());
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
@@ -923,7 +923,7 @@ class _CartScreenState extends State<CartScreen> {
     String url1 = APIConstant.getCartNoFilesUploadList;
     print("Get cart no files uploaded list url is: " + url1);
     Map<String, dynamic> body = {
-      'Mobile': "9160747554",
+      'Mobile': ""+mobileNumber,
     };
 
     print('Get cart no files uploaded list body:' + body.toString());
@@ -942,7 +942,7 @@ class _CartScreenState extends State<CartScreen> {
       if (noFilesUploadedItemsList.isNotEmpty){
         _showUploadFilesPopUp();
       }else{
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>BillingScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>BillingScreen(total: subTotalValue.toString(),)));
       }
     });
   }
