@@ -2,8 +2,10 @@ import 'package:adslay/BoolProvider.dart';
 import 'package:adslay/SplashScreen.dart';
 import 'package:adslay/stripe/blocs/pay/pay_bloc.dart';
 import 'package:adslay/stripe/services/stripe_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'MultipleNotifier3.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,8 +17,10 @@ import 'bottom_bar.dart';
 
 main()  async {
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = 'pk_test_51KFd7HHjhOs2YctLJgLY8xxj2LJduIQxYPDe04GyTjTLPFP6viTeGUfneSqDWaIHXu5Xlxr17cIfklJATpqB7hOk00NCJjjYro';
+
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp();
   return runApp(
       MultiProvider(providers: [
         ChangeNotifierProvider(create: (_) => BoolProvider()),
@@ -34,7 +38,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    StripeService().init();
+    // StripeService().init();
     return Consumer<BoolProvider>(
       builder: (context, model, child){
         return GetMaterialApp(

@@ -48,6 +48,8 @@ class APIConstant
 
   static String getOrderPaymentDetails = base_url + 'OrderAPI/OrderPaymentDetails';
 
+  static String getOrderPaymentOrderDetails = base_url + 'OrderAPI/OrderDetails';
+
   static String getCartNoFilesUploadList = base_url + 'StoresAPI/CartNoImagesUplaod';
 
   static String getAllCategoriesList = base_url + 'StoresAPI/CategoryList';

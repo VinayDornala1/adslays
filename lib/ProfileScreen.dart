@@ -7,13 +7,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'API.dart';
+import 'BoolProvider.dart';
 import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
 import 'OrderDetailsScreen.dart';
+import 'SearchScreen.dart';
 import 'ThankYouScreen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -251,16 +254,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
           isEditProfile = false;
           isLoading1 = true;
         });
+        // _getOrdersHistory();
+        _boolProvider.setBottomChange(2);
 
-        _getOrdersHistory();
       }else if (index == 0){
         _getUserProfileDetails();
       }
     });
   }
 
+  BoolProvider _boolProvider = BoolProvider();
+
   @override
   Widget build(BuildContext context) {
+    _boolProvider  =  Provider.of<BoolProvider>(context,);
     pr = ProgressDialog(context);
     pr.style(
         message: 'Loading',
@@ -450,29 +457,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    Card(
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            21.5), // if you need this
-                      ),
-                      child: Stack(
-                        children: [
-                          Container(
-                            color: Colors.transparent,
-                            width: 43,
-                            height: 43,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                10, 10, 5, 0),
-                            child: Image.asset(
-                              "assets/images/search.png",
-                              width: 25,
-                              height: 25,
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+                      },
+                      child: Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              21.5), // if you need this
+                        ),
+                        child: Stack(
+                          children: [
+                            Container(
+                              color: Colors.transparent,
+                              width: 43,
+                              height: 43,
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10, 10, 5, 0),
+                              child: Image.asset(
+                                "assets/images/search.png",
+                                width: 25,
+                                height: 25,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

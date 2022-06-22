@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'API.dart';
+import 'BillingScreen.dart';
 import 'CartScreen.dart';
 import 'MainScreen.dart';
 
@@ -29,6 +30,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   bool isLoading = true;
   String deviceOS = '';
 
+  int OrderId = 0;
   String noOfTimes = '';
   String screenSize = '';
   String packageId = '';
@@ -48,6 +50,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   String address = '';
   String bookImageurl = '';
   String paymentStatus = '';
+  List<dynamic> OrderDetailsList = [];
 
   Future<void> getData() async {
     try {
@@ -81,6 +84,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
       if (msg == "Success" || msg == "success") {
 
+        OrderId = jsonDecode(response.body)['OrderId'];
         noOfTimes = jsonDecode(response.body)['NoofTimes'].toString();
         screenSize = jsonDecode(response.body)['ScreenSize'];
         packageId = jsonDecode(response.body)['PackageId'].toString();
@@ -167,7 +171,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
-                      "Complete Order Details",
+                      "Order Details",
                       style: TextStyle(
                           fontSize: 20,
                           fontFamily: "Mont-SemiBold"
@@ -587,7 +591,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                 padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10.0),
-
                                   child: Card(
                                     shape: RoundedRectangleBorder(
                                       side:  BorderSide(
@@ -886,6 +889,54 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                                     ),
                                   ),
                                 ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              paymentStatus=='Pending'||paymentStatus=='pending'?Center(
+                                child: Container(
+                                  margin:
+                                  EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 5.0),
+                                  child: MaterialButton(
+                                    onPressed: () {
+                                      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> BottomNavigationMenu()));
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>BillingScreen(total: paidAmount.toString(),orderid: OrderId,)));
+
+
+                                    },
+                                    textColor: Colors.white,
+                                    padding: const EdgeInsets.all(0.0),
+                                    child: Container(
+                                      width: 250,
+                                      height: 45,
+                                      decoration:  const BoxDecoration(
+                                          gradient:  LinearGradient(
+                                            colors: [
+                                              Color(0xff3962cb),
+                                              Color(0xff3962cb),
+                                            ],
+                                          )
+                                      ),
+                                      //padding: const EdgeInsets.all(10.0),
+                                      child: const Center(
+                                        child: Text(
+                                          "Complete Payment",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: Color(0xFFFFFFFF),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: "Lorin"
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ):SizedBox(width: 0,height: 0,),
+
+                              const SizedBox(
+                                height: 15,
                               ),
                             ]
                         );

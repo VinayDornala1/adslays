@@ -13,6 +13,7 @@ import 'API.dart';
 import 'ChoosePlan.dart';
 import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
+import 'StoreDetails.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -276,7 +277,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: GestureDetector(
                 onTap: (){
                   print("Selected store id is:"+searchResults[index]["StoreId"].toString());
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: searchResults[index]["StoreId"].toString())));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails(storeId: searchResults[index]["StoreId"].toString())));
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),

@@ -398,6 +398,7 @@ class _UploadFilesState extends State<UploadFiles> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
+
                       itemCount: 1,
                       itemBuilder: (context, index) {
                         return Column(
@@ -419,7 +420,7 @@ class _UploadFilesState extends State<UploadFiles> {
                                                 elevation: 2,
                                                 child: Container(
                                                     width: MediaQuery.of(context).size.width,
-                                                    height: 220,//MediaQuery.of(context).size.width * 0.60,
+                                                    height: 210,//MediaQuery.of(context).size.width * 0.60,
                                                     alignment: Alignment.center,
                                                     child: CachedNetworkImage(
                                                       imageUrl: imageUrl,
@@ -580,6 +581,7 @@ class _UploadFilesState extends State<UploadFiles> {
                                   ),
                                 ),
                               ),
+
                               GestureDetector(
                                 onTap: (){
                                   if (selecteddate.text =='')
@@ -603,20 +605,20 @@ class _UploadFilesState extends State<UploadFiles> {
                                     children: [
                                       Column(
                                         children: [
-                                          const SizedBox(height: 80),
+                                          const SizedBox(height: 40),
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(10.0),
                                             child: Padding(
                                               padding: const EdgeInsets.all(10.0),
                                               child: Card(
                                                   child: Container(
-                                                    height: 230,
+                                                    height: 180,
                                                     width: double.infinity,
                                                     child: Column(
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       children: [
-                                                        const SizedBox(height: 80),
+                                                        const SizedBox(height: 60),
                                                         const Align(
                                                           alignment: Alignment.center,
                                                           child: Text(
@@ -691,13 +693,13 @@ class _UploadFilesState extends State<UploadFiles> {
                                             children: [
                                               Container(
                                                 color: Colors.transparent,
-                                                width: 160,
-                                                height: 160,
+                                                width: 100,
+                                                height: 100,
                                                 child: Image.asset(
                                                   "assets/images/uploadfiles.png",
                                                   fit: BoxFit.cover,
-                                                  height: 160,
-                                                  width: 160,
+                                                  height: 100,
+                                                  width: 100,
                                                 ),
 
                                               ),
@@ -765,7 +767,8 @@ class _UploadFilesState extends State<UploadFiles> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 50),
+                              const SizedBox(height: 10),
+
                               isLoading
                                   ?Shimmer.fromColors(
                                   baseColor: ConstantColors.lightGrey,
@@ -848,6 +851,7 @@ class _UploadFilesState extends State<UploadFiles> {
                                   :ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
+
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: uploadedImagesList.length,
                                 itemBuilder: (context, index) {
@@ -1087,9 +1091,13 @@ class _UploadFilesState extends State<UploadFiles> {
       }
     });
 
+
+
     setState(() {
       isLoading = false;
     });
+
+
   }
 
   Future<void> removeUploadedFiles(CusAdId) async {

@@ -4,6 +4,7 @@ import 'package:adslay/stripe/blocs/pay/pay_bloc.dart';
 import 'package:adslay/stripe/services/stripe_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
@@ -13,14 +14,16 @@ import 'API.dart';
 import 'CartScreen.dart';
 import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
+import 'SearchScreen.dart';
 import 'ThankYouScreen.dart';
 
 
 class BillingScreen extends StatefulWidget {
 
   var total;
+  var orderid;
 
-  BillingScreen({this.total});
+  BillingScreen({this.total,this.orderid});
 
   @override
   State<BillingScreen> createState() => _BillingScreenState();
@@ -33,7 +36,6 @@ class _BillingScreenState extends State<BillingScreen> {
   bool isCheckoutAvailable = false;
   List<dynamic> ordersHistoryList = [];
   List<dynamic> userDetails = [];
-
   String email = '';
   String mobileNumber = '';
   String username = '';
@@ -41,8 +43,7 @@ class _BillingScreenState extends State<BillingScreen> {
   double subTotalValue = 0.0;
 
   late ProgressDialog pr;
-
-
+  Map<String, dynamic>? paymentIntentData;
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
@@ -56,7 +57,6 @@ class _BillingScreenState extends State<BillingScreen> {
   TextEditingController zipcodeController = TextEditingController();
   List<dynamic> CountriesList = [];
   List<dynamic> statelists = [];
-
   String transactionId = '';
 
   Future<void> getData() async {
@@ -66,7 +66,7 @@ class _BillingScreenState extends State<BillingScreen> {
         mobileNumber = prefs.getString('mobilenumber')!;
         email = prefs.getString('email')!;
         username = prefs.getString('username')!;
-        userid = prefs.getInt('email')!;
+        userid = prefs.getInt('userid')!;
       });
     }catch(e){
       print(e);
@@ -121,7 +121,6 @@ class _BillingScreenState extends State<BillingScreen> {
     });
   }
 
-
   Future<void> loadstates() async {
     String url1 = 'http://adslay.arjunweb.in/API/HomeAPI/StatesList';
     print(url1);
@@ -156,12 +155,26 @@ class _BillingScreenState extends State<BillingScreen> {
 
   }
 
-  final stripeService = StripeService();
+  // final stripeService = StripeService();
 
   @override
   Widget build(BuildContext context) {
     final payBloc = BlocProvider.of<PayBloc>(context);
-
+    pr = ProgressDialog(context);
+    pr.style(
+        message: 'Loading',
+        borderRadius: 10.0,
+        backgroundColor: Colors.white,
+        progressWidget: Container(
+            padding: const EdgeInsets.all(10.0),
+            child: const CircularProgressIndicator()),
+        elevation: 10.0,
+        insetAnimCurve: Curves.easeInOut,
+        progressTextStyle: const TextStyle(
+            color: Colors.black, fontSize: 10.0, fontWeight: FontWeight.w400),
+        messageTextStyle: const TextStyle(
+            color: Colors.black, fontSize: 17.0, fontWeight: FontWeight.w600)
+    );
     return Scaffold(
       body: GestureDetector(
         onTap: (){
@@ -257,29 +270,34 @@ class _BillingScreenState extends State<BillingScreen> {
                                 ),
                               ),
                             ),
-                            Card(
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    21.5), // if you need this
-                              ),
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    color: Colors.transparent,
-                                    width: 43,
-                                    height: 43,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10, 10, 5, 0),
-                                    child: Image.asset(
-                                      "assets/images/search.png",
-                                      width: 25,
-                                      height: 25,
+                            GestureDetector(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+                              },
+                              child: Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      21.5), // if you need this
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      color: Colors.transparent,
+                                      width: 43,
+                                      height: 43,
                                     ),
-                                  ),
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 10, 5, 0),
+                                      child: Image.asset(
+                                        "assets/images/search.png",
+                                        width: 25,
+                                        height: 25,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -686,32 +704,36 @@ class _BillingScreenState extends State<BillingScreen> {
                                             );
                                           }else {
                                             // getData11();
-                                            showLoading(context);
-                                            final amount = payBloc.state.amount;
-                                            final currency = payBloc.state.currency;
-                                            final resp = await stripeService.payWithNewCard(
-                                                amount: amount,
-                                                currency: currency
-                                            );
+                                            // showLoading(context);
+                                            // final amount = payBloc.state.amount;
+                                            // final currency = payBloc.state.currency;
+                                            // final resp = await stripeService.payWithNewCard(
+                                            //     amount: amount,
+                                            //     currency: currency
+                                            // );
+                                            // print("Payment response: "+resp.msg!);
+                                            //
+                                            // try{
+                                            //   var json = jsonDecode(resp.msg!);
+                                            //   var id = json['id'];
+                                            //
+                                            //   transactionId = jsonEncode(id);
+                                            //   print("Payment transaction id is: "+transactionId);
+                                            // }catch(e){
+                                            //   transactionId = "NA";
+                                            // }
 
-                                            print("Payment response: "+resp.msg!);
+                                            // Navigator.pop(context);
+                                            // if ( resp.ok) {
+                                            //   showAlert(context, 'Credit Card ok', 'Success Payment', transactionId, 'Completed', widget.total.toString());
+                                            // } else {
+                                            //   showAlert(context, 'Credit Card ok', 'Payment Failed', transactionId, 'Pending', widget.total.toString());
+                                            // }
+                                            int i = double.parse(widget.total).toInt();
+                                            print("ii="+i.toString());
+                                            await makePayment(i.toString(), "USD");
 
-                                            try{
-                                              var json = jsonDecode(resp.msg!);
-                                              var id = json['id'];
 
-                                              transactionId = jsonEncode(id);
-                                              print("Payment transaction id is: "+transactionId);
-                                            }catch(e){
-                                              transactionId = "NA";
-                                            }
-
-                                            Navigator.pop(context);
-                                            if ( resp.ok) {
-                                              showAlert(context, 'Credit Card ok', 'Success Payment', transactionId, 'Completed', widget.total.toString());
-                                            } else {
-                                              showAlert(context, 'Credit Card ok', 'Payment Failed', transactionId, 'Pending', widget.total.toString());
-                                            }
                                           }
                                         },
                                         textColor: Colors.white,
@@ -759,6 +781,94 @@ class _BillingScreenState extends State<BillingScreen> {
     );
   }
 
+  Future<void> makePayment(String amount, String currencyCode)async{
+    try {
+      paymentIntentData = await createPaymentIntent(amount, currencyCode); //json.decode(response.body);
+      await Stripe.instance
+          .initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret:
+              paymentIntentData!['client_secret'],
+              //How you can add Apple And Google Pay
+              applePay: true,
+              googlePay: true,
+              testEnv: true,
+              style: ThemeMode.dark,
+              merchantCountryCode: 'US',
+              merchantDisplayName: 'Faiz'))
+          .then((value) {
+        displayPaymentSheet();
+      });
+    } catch (e) {
+      print("Exception OnClick " + e.toString());
+    }
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet(
+          parameters: PresentPaymentSheetParameters(
+            clientSecret: paymentIntentData!['client_secret'],
+            confirmPayment: true,
+          )).then((newValue){
+        print('payment intent'+paymentIntentData!['id'].toString());
+        print('payment intent'+paymentIntentData!['client_secret'].toString());
+        print('payment intent'+paymentIntentData!['amount'].toString());
+        print('payment intent'+paymentIntentData.toString());
+        MainScreen.cartItemsCount = 0;
+        completeBooking("Completed", paymentIntentData!['id'].toString(), widget.total.toString());
+        //orderPlaceApi(paymentIntentData!['id'].toString());
+        setState(() {
+          paymentIntentData = null;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("paid successfully")));
+      }).onError((error, stackTrace){
+        completeBooking("Pending", 'N/A', widget.total.toString());
+        print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
+      });
+
+
+    } on StripeException catch (e) {
+      completeBooking("Pending", 'N/A', widget.total.toString());
+
+      print('Exception/DISPLAYPAYMENTSHEET==> $e');
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+            content: Text("Cancelled "),
+          ));
+    } catch (e) {
+      print('$e');
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try{
+      Map<String, dynamic>body = {
+        'amount': calculateMount(amount),
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+
+      var response = await post(Uri.parse('https://api.stripe.com/v1/payment_intents'),
+          body: body,
+          headers: {
+            'Authorization': 'Bearer sk_test_51KFd7HHjhOs2YctLJjPWRMLLEPI9bFcAWnhy8WGBfNnpJhY2jNMKQS62xznqdHeeGWACqBgUceKIAIwlSJGQgoOv00ELTk8nFR',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+      );
+      print('Create Intent reponse ===> ${response.body.toString()}');
+      return jsonDecode(response.body);
+
+    }catch(e){
+      print("Exception"+e.toString());
+    }
+  }
+
+  calculateMount(String amount){
+    final price = int.parse(amount)*100;
+    return price.toString();
+  }
 
   showAlert( BuildContext context, String title, String message, String transactionId, String status, String amountPaid) {
     showDialog(
@@ -771,7 +881,6 @@ class _BillingScreenState extends State<BillingScreen> {
             MaterialButton(
               child: const Text( 'ok' ),
               onPressed: () {
-
                 MainScreen.cartItemsCount = 0;
                 Navigator.of(context).pop();
                 completeBooking(status, transactionId, amountPaid);
@@ -795,7 +904,7 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 
   Future<void> completeBooking(String status, String transactionId, String amountPaid) async {
-
+    pr.show();
     String url1 = APIConstant.completeBooking;//'http://adslay.arjunweb.in/API/OrderAPI/OrderInsertAPI';
     print('Upload billing details url: '+url1);
     Map<String, dynamic> body = {
@@ -815,14 +924,18 @@ class _BillingScreenState extends State<BillingScreen> {
       body: body,
       encoding: encoding,
     );
-
+    pr.hide();
     print('Upload billing details response :' + response.body.toString());
     setState(() {
       String msg = jsonDecode(response.body)['msg'];
       if (msg == "Product Added to Your Cart" || msg == "success" ||  msg == "Success")
       {
         var orderId = jsonDecode(response.body)['OrderId'].toString();
-        uploadPaymentDetails(status, transactionId, amountPaid, orderId);
+        if(widget.orderid==0) {
+          uploadPaymentDetails(status, transactionId, amountPaid, orderId);
+        }else{
+          uploadPaymentDetails(status, transactionId, amountPaid, widget.orderid.toString());
+        }
       }else{
         print("Unable to get API response.");
       }
@@ -834,7 +947,7 @@ class _BillingScreenState extends State<BillingScreen> {
 
 
   Future<void> uploadPaymentDetails(String status, String transactionId, String amountPaid, String orderId) async {
-
+    pr.show();
     String url1 = APIConstant.uploadPaymentDetails;
     print('Upload payment details url: '+url1);
     Map<String, dynamic> body = {
@@ -852,6 +965,7 @@ class _BillingScreenState extends State<BillingScreen> {
       body: body,
       encoding: encoding,
     );
+    pr.hide();
     print('Upload payment details response :' + response.body.toString());
     setState(() {
       String msg = jsonDecode(response.body)['msg'];

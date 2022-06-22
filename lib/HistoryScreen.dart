@@ -12,6 +12,7 @@ import 'API.dart';
 import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
 import 'OrderDetailsScreen.dart';
+import 'SearchScreen.dart';
 
 class HistoryScreen extends StatefulWidget {
 
@@ -74,7 +75,7 @@ class _HistoryScreen extends State<HistoryScreen> {
       isCheckoutAvailable = true;
       print("Cart items total price: "+subTotalValue.toString());
     }
-
+    print('orderhistory:  '+ordersHistoryList.toString());
     setState(() {
       isLoading=false;
     });
@@ -187,29 +188,34 @@ class _HistoryScreen extends State<HistoryScreen> {
                                   ),
                                 ),
                               ),
-                              Card(
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      21.5), // if you need this
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      color: Colors.transparent,
-                                      width: 43,
-                                      height: 43,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 10, 5, 0),
-                                      child: Image.asset(
-                                        "assets/images/search.png",
-                                        width: 25,
-                                        height: 25,
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+                                },
+                                child: Card(
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        21.5), // if you need this
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        color: Colors.transparent,
+                                        width: 43,
+                                        height: 43,
                                       ),
-                                    ),
-                                  ],
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 10, 5, 0),
+                                        child: Image.asset(
+                                          "assets/images/search.png",
+                                          width: 25,
+                                          height: 25,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

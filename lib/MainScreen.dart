@@ -1115,7 +1115,8 @@ class _MainScreenState extends State<MainScreen> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: StoresListDict[index]["StoreId"].toString())));
+                // Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: StoresListDict[index]["StoreId"].toString())));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>StoreDetails(storeId: StoresListDict[index]["StoreId"].toString(),)));
 
               },
               child: Padding(

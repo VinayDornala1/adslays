@@ -37,17 +37,16 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
  */
 
   bool isLoading = true;
-
   String email = '';
   String mobileNumber = '';
   String username = '';
-
   String transactionId = '';
   String orderCreated = '';
   String paidAmount = '';
   String storeName = '';
   String paymentStatus = '';
 
+  List<dynamic> OrderDetailsList = [];
 
   Future<void> getData() async {
     try{
@@ -61,7 +60,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
       print(e);
     }
 
-    String url1 = APIConstant.getOrderPaymentDetails;
+    String url1 = APIConstant.getOrderPaymentOrderDetails;
     print("Get order payment details body:" +url1);
     Map<String, dynamic> body = {
       'Mobile': ''+mobileNumber,
@@ -76,25 +75,21 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
       body: body,
       encoding: encoding,
     );
+    print(''+response.body);
+    // Map data = jsonDecode(response.body);
+    // print(data);
+    // String msg = data['msg'];
+    // print(msg);
 
-    Map data = jsonDecode(response.body);
-    print(data);
-    String msg = data['msg'];
-    print(msg);
-
-    if (msg=='Success' || msg=='success' ) {
       setState(() {
-
-        transactionId = data['TransactionId'].toString();
-        orderCreated = data['OrderCreated'];
-        paidAmount = data['PaidAmount'].toString();
-        storeName = data['StoreName'];
-        paymentStatus = data['PaymentStatus'];
+        transactionId = jsonDecode(response.body)['TransactionId'].toString();
+        orderCreated = jsonDecode(response.body)['OrderCreated'];
+        paidAmount = jsonDecode(response.body)['PaidAmount'].toString();
+        paymentStatus = jsonDecode(response.body)['PaymentStatus'];
+        OrderDetailsList = jsonDecode(response.body)['OrderDetailsList'];
 
       });
-    } else {
 
-    }
 
     setState(() {
       isLoading=false;
@@ -154,7 +149,7 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
               const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text(
-                  "Payment Confirmation",
+                  "Order Confirmation",
                 style: TextStyle(
                   fontFamily: "Mont-SemiBold",
                   fontSize: 20,
@@ -285,19 +280,19 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                         const SizedBox(
                                           height: 5,
                                         ),
-                                        Text(
-                                          (paymentStatus == "Completed")?'BOOKING CONFIRMED':'BOOKING CANCELLED',
-                                          style: TextStyle(
-                                            fontSize: 25.0,
-                                            color: (paymentStatus == "Completed")?Colors.green:Colors.red,
-                                            fontFamily: "Mont-SemiBold",
-                                          ),
-                                        ),
+                                        // Text(
+                                        //   (paymentStatus == "Completed")?'BOOKING CONFIRMED':'BOOKING CANCELLED',
+                                        //   style: TextStyle(
+                                        //     fontSize: 25.0,
+                                        //     color: (paymentStatus == "Completed")?Colors.green:Colors.red,
+                                        //     fontFamily: "Mont-SemiBold",
+                                        //   ),
+                                        // ),
                                         const SizedBox(
                                           height: 5,
                                         ),
                                          Text(
-                                           (paymentStatus == "Completed")?'THANK YOU FOR BOOKING SERVICE':'YOUR SERVICE BOOKING WAS FAILED',
+                                           (paymentStatus == "Completed")?'THANK YOU FOR PLACING ORDER':'YOUR ORDER WAS FAILED',
                                           style: const TextStyle(
                                               fontFamily: "Mont-Light",
                                               fontSize: 19,
@@ -305,21 +300,8 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                           ),
                                         ),
                                         const SizedBox(
-                                          height: 10,
+                                          height: 5,
                                         ),
-                                         Padding(
-                                          padding:
-                                          const EdgeInsets.fromLTRB(15, 0, 15, 8),
-                                          child: Text(
-                                            (paymentStatus == "Completed")?'':'Thank for choosing us. You would receive you invoice on your registered mail id',
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                fontFamily: "Mont-Light",
-                                                fontSize: 15,
-                                                color: Colors.black),
-                                          ),
-                                        ),
-
                                         Padding(
                                           padding:
                                           const EdgeInsets.fromLTRB(15, 15, 15, 15),
@@ -524,6 +506,297 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
                                               ),
                                             ]),
                                           ),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.fromLTRB(15, 10, 5, 8),
+                                          child: Text(
+                                            "ORDER DETAILS",
+                                            maxLines: 2,
+                                            style: TextStyle(
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                        ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          physics: const BouncingScrollPhysics(),
+                                          itemCount: OrderDetailsList.length,
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                              onTap: (){
+                                              },
+                                              child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.fromLTRB(15, 0, 5, 8),
+                                                      child: Text(
+                                                        ""+(index+1).toString()+". "+OrderDetailsList[index]['StoreName']+" - "+OrderDetailsList[index]['City']+","+OrderDetailsList[index]['State']+","+OrderDetailsList[index]['Country'],
+                                                        maxLines: 2,
+                                                        style: const TextStyle(
+                                                            fontSize: 18.0,
+                                                            fontWeight: FontWeight.w600),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 10),
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(10.0),
+                                                        child: Card(
+                                                          elevation: 2,
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                                                    child: SizedBox(
+                                                                      height: 60,
+                                                                      width: MediaQuery.of(context).size.width * 0.25,
+                                                                      child: Stack(
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children:  [
+                                                                              const Padding(
+                                                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  "AD TYPE",
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.w400),),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  '' + OrderDetailsList[index]['ScreenSize'].toString(),
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: const TextStyle(
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight.w600),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                                                    child: SizedBox(
+                                                                      height: 60,
+                                                                      width: MediaQuery.of(context).size.width * 0.25,
+                                                                      child: Stack(
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children:  [
+                                                                              const Padding(
+                                                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  "NO OF TIMES",
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.w400),),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  ''+  OrderDetailsList[index]['NoofTimes'].toString() + " Times",
+                                                                                  textAlign: TextAlign.center,
+                                                                                  style:const TextStyle(
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight.w600),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                                                    child: SizedBox(
+                                                                      height: 60,
+                                                                      width: MediaQuery.of(context).size.width * 0.24,
+                                                                      child: Stack(
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children:  [
+                                                                              const Padding(
+                                                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  "TOTAL",
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.w400),),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.fromLTRB(0, 5, 2, 0),
+                                                                                child: Text(
+                                                                                  "\$ "+ OrderDetailsList[index]['ActualAmount'].toString(),// + cartList[index]["ActualPrice"].toString(),
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: const TextStyle(
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight.w600),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                                                    child: SizedBox(
+                                                                      height: 60,
+                                                                      width: MediaQuery.of(context).size.width * 0.25,
+                                                                      child: Stack(
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children:  [
+                                                                              const Padding(
+                                                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  "START DATE",
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.w400),),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  '' + OrderDetailsList[index]['StartDate'].toString(),
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: const TextStyle(
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight.w600),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                                                    child: SizedBox(
+                                                                      height: 60,
+                                                                      width: MediaQuery.of(context).size.width * 0.25,
+                                                                      child: Stack(
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children:  [
+                                                                              const Padding(
+                                                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  "END DATE",
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.w400),),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  '' + OrderDetailsList[index]['EndDate'].toString(),
+
+                                                                                  textAlign: TextAlign.center,
+                                                                                  style: const TextStyle(
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight.w600),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.fromLTRB(10, 5, 0, 0),
+                                                                    child: SizedBox(
+                                                                      height: 60,
+                                                                      width: MediaQuery.of(context).size.width * 0.25,
+                                                                      child: Stack(
+                                                                        children: [
+                                                                          Column(
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children: const [
+                                                                              Padding(
+                                                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                                                child: Text(
+                                                                                  "",
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 13,
+                                                                                      fontWeight: FontWeight.w400),),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                                child: Text(
+                                                                                  "",// + cartList[index]["ActualPrice"].toString(),
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: TextStyle(
+                                                                                      fontSize: 16,
+                                                                                      fontWeight: FontWeight.w600),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ]
+                                              ),
+                                            );
+                                          },
                                         ),
 
                                         

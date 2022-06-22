@@ -12,6 +12,7 @@ import 'CartScreen.dart';
 import 'ChoosePlan.dart';
 import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
+import 'SearchScreen.dart';
 import 'StoreDetails.dart';
 
 class StoresList extends StatefulWidget {
@@ -177,29 +178,34 @@ class _StoresList extends State<StoresList> {
                           ),
                         ),
                       ),
-                      Card(
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              21.5), // if you need this
-                        ),
-                        child: Stack(
-                          children: [
-                            Container(
-                              color: Colors.transparent,
-                              width: 43,
-                              height: 43,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  10, 10, 5, 0),
-                              child: Image.asset(
-                                "assets/images/search.png",
-                                width: 25,
-                                height: 25,
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+                        },
+                        child: Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                21.5), // if you need this
+                          ),
+                          child: Stack(
+                            children: [
+                              Container(
+                                color: Colors.transparent,
+                                width: 43,
+                                height: 43,
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    10, 10, 5, 0),
+                                child: Image.asset(
+                                  "assets/images/search.png",
+                                  width: 25,
+                                  height: 25,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

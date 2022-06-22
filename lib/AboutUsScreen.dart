@@ -4,6 +4,7 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 import 'CartScreen.dart';
 import 'Constant/ConstantsColors.dart';
 import 'MainScreen.dart';
+import 'SearchScreen.dart';
 
 
 class AboutUsScreen extends StatefulWidget {
@@ -104,29 +105,34 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                       ),
                     ),
                   ),
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          21.5), // if you need this
-                    ),
-                    child: Stack(
-                      children: [
-                        Container(
-                          color: Colors.transparent,
-                          width: 43,
-                          height: 43,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                              10, 10, 5, 0),
-                          child: Image.asset(
-                            "assets/images/search.png",
-                            width: 25,
-                            height: 25,
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchScreen()));
+                    },
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            21.5), // if you need this
+                      ),
+                      child: Stack(
+                        children: [
+                          Container(
+                            color: Colors.transparent,
+                            width: 43,
+                            height: 43,
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                                10, 10, 5, 0),
+                            child: Image.asset(
+                              "assets/images/search.png",
+                              width: 25,
+                              height: 25,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

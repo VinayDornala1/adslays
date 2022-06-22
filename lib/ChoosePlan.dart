@@ -861,7 +861,7 @@ class _ChoosePlanState extends State<ChoosePlan> {
                                                 return new DropdownMenuItem(
                                                   child: new Text(
                                                     item['NoofTimes']
-                                                        .toString(),
+                                                        .toString()+' times',
                                                     style: TextStyle(
                                                         color: Color(
                                                             0xFF000000)),

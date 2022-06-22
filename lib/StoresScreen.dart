@@ -294,7 +294,9 @@ class _StoresScreenState extends State<StoresScreen> {
               child: GestureDetector(
                 onTap: (){
                   print("Selected store id is:"+storesList[index]["StoreId"].toString());
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: storesList[index]["StoreId"].toString())));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> StoreDetails(storeId: storesList[index]["StoreId"].toString())));
+
+                  // Navigator.push(context, MaterialPageRoute(builder: (context)=> ChoosePlan(storeId: storesList[index]["StoreId"].toString())));
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
