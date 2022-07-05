@@ -80,7 +80,6 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
     // print(data);
     // String msg = data['msg'];
     // print(msg);
-
       setState(() {
         transactionId = jsonDecode(response.body)['TransactionId'].toString();
         orderCreated = jsonDecode(response.body)['OrderCreated'];

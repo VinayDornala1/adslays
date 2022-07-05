@@ -100,11 +100,11 @@ class _BillingScreenState extends State<BillingScreen> {
         emailController.text = data['objCustomers']['Email'];
         mobileNumberController.text = data['objCustomers']['MobileNo'];
         cityController.text = data['objCustomers']['City'];
-        //stateController.text = data['objCustomers']['State'];
-        //countryController.text = data['objCustomers']['Country'];
         zipcodeController.text = data['objCustomers']['ZipCode'];
         addressController.text = data['objCustomers']['Address1'] ?? '';
-
+        cityController.text = data['objCustomers']['City'];
+        stateController.text = data['objCustomers']['State'];
+        countryController.text = data['objCustomers']['Country'];
 
       });
     }
@@ -432,8 +432,19 @@ class _BillingScreenState extends State<BillingScreen> {
                                                   Colors.white,
                                                   isExpanded: true,
                                                   underline: SizedBox(),
-                                                  hint: const Text(
+                                                  hint: countryController.text==''?Text(
                                                     'Select Country',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                        "Lorin",
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w700,
+                                                        fontSize: 14.0,
+                                                        color: Color(
+                                                            0xFF141E28)),
+                                                  ):Text(
+                                                    ''+countryController.text,
                                                     style: TextStyle(
                                                         fontFamily:
                                                         "Lorin",
@@ -496,8 +507,19 @@ class _BillingScreenState extends State<BillingScreen> {
                                                   Colors.white,
                                                   isExpanded: true,
                                                   underline: SizedBox(),
-                                                  hint: const Text(
+                                                  hint: stateController.text==''?Text(
                                                     'Select State',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                        "Lorin",
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w700,
+                                                        fontSize: 14.0,
+                                                        color: Color(
+                                                            0xFF141E28)),
+                                                  ):Text(
+                                                    ''+stateController.text,
                                                     style: TextStyle(
                                                         fontFamily:
                                                         "Lorin",
@@ -731,6 +753,7 @@ class _BillingScreenState extends State<BillingScreen> {
                                             // }
                                             int i = double.parse(widget.total).toInt();
                                             print("ii="+i.toString());
+                                            pr.show();
                                             await makePayment(i.toString(), "USD");
 
 
@@ -816,6 +839,7 @@ class _BillingScreenState extends State<BillingScreen> {
         print('payment intent'+paymentIntentData!['amount'].toString());
         print('payment intent'+paymentIntentData.toString());
         MainScreen.cartItemsCount = 0;
+        pr.hide();
         completeBooking("Completed", paymentIntentData!['id'].toString(), widget.total.toString());
         //orderPlaceApi(paymentIntentData!['id'].toString());
         setState(() {
@@ -823,12 +847,17 @@ class _BillingScreenState extends State<BillingScreen> {
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("paid successfully")));
       }).onError((error, stackTrace){
+        pr.hide();
+
         completeBooking("Pending", 'N/A', widget.total.toString());
         print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
+
       });
 
 
     } on StripeException catch (e) {
+      pr.hide();
+
       completeBooking("Pending", 'N/A', widget.total.toString());
 
       print('Exception/DISPLAYPAYMENTSHEET==> $e');
@@ -870,38 +899,8 @@ class _BillingScreenState extends State<BillingScreen> {
     return price.toString();
   }
 
-  showAlert( BuildContext context, String title, String message, String transactionId, String status, String amountPaid) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: ( _ ) => AlertDialog(
-          title: Text( title ),
-          content: Text( message ),
-          actions: [
-            MaterialButton(
-              child: const Text( 'ok' ),
-              onPressed: () {
-                MainScreen.cartItemsCount = 0;
-                Navigator.of(context).pop();
-                completeBooking(status, transactionId, amountPaid);
-                // Navigator.pop(context);
-              },
-            )
-          ],
-        )
-    );
-  }
 
-  showLoading( BuildContext context ) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: ( _ ) =>  const AlertDialog(
-        title: Text( 'Await....'),
-        content: LinearProgressIndicator(),
-      ),
-    );
-  }
+
 
   Future<void> completeBooking(String status, String transactionId, String amountPaid) async {
     pr.show();

@@ -38,10 +38,10 @@ class _OTPScreenState extends State<OTPScreen> {
   final FocusNode _pinPutFocusNode = FocusNode();
 
   final BoxDecoration pinPutDecoration = BoxDecoration(
-    color: Color(0xFF000000),
+    color: Color(0xFFFFFFFF),
     borderRadius: BorderRadius.circular(12.0),
     border: Border.all(
-      color: Color(0xFFFFFFFF),
+      color: Color(0xFF000000),
     ),
   );
 
@@ -66,7 +66,7 @@ class _OTPScreenState extends State<OTPScreen> {
   verifyPhoneNumber() async{
     await Firebase.initializeApp();
     await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: '+1'+widget.mobileNumber,
+        phoneNumber: '+91'+widget.mobileNumber,
         verificationCompleted: (PhoneAuthCredential crediential) async{
           await FirebaseAuth.instance
               .signInWithCredential(crediential)
@@ -188,7 +188,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                   child: new PinPut(
                                     fieldsCount: 6,
                                     withCursor: true,
-                                    textStyle: TextStyle(fontSize: 25.0, color: Color(0xFFFFFFFF)),
+                                    textStyle: TextStyle(fontSize: 25.0, color: Color(0xFF000000)),
                                     eachFieldWidth: 40.0,
                                     eachFieldHeight: 51.0,
                                     onSubmit: (String pin) async {
@@ -205,9 +205,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                         });
                                       }catch(error){
                                         FocusScope.of(context).unfocus();
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                          content: Text('Invalid Code OTP'),
-                                          duration: Duration(seconds: 5),));
+
                                       }
                                     },
                                     controller: otp11,
@@ -252,9 +250,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                           });
                                         }catch(error){
                                           FocusScope.of(context).unfocus();
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                            content: Text('Invalid Code OTP'),
-                                            duration: Duration(seconds: 5),));
+
                                         }
                                       }
                                     },
@@ -289,7 +285,7 @@ class _OTPScreenState extends State<OTPScreen> {
                               const Padding(
                                 padding: EdgeInsets.only(top:10.0),
                                 child: Text(
-                                  "We have sent a 4 digit OTP to",
+                                  "We have sent a 6 digit OTP to",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     color: Colors.grey,

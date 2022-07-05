@@ -33,7 +33,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   bool isLoading = true;
   bool isLoading1 = true;
-  bool isEditProfile = false;
+  bool isEditProfile = true;
   bool isCheckoutAvailable = false;
   List<dynamic> ordersHistoryList = [];
   List<dynamic> userDetails = [];
@@ -733,10 +733,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const Spacer(),
-                  isEditProfile?SizedBox(width: 0,height: 0,):GestureDetector(
+                  isEditProfile?GestureDetector(
                     onTap: (){
                       setState(() {
-                        isEditProfile = true;
+                        isEditProfile = false;
                       });
                     },
                     child: Container(
@@ -772,7 +772,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                  ),
+                  ):SizedBox(width: 0,height: 0,),
 
                 ],
               ),
@@ -811,7 +811,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   filled: true,
                   fillColor: Colors.transparent,
-                  hintText: 'Enter Your Name',
+                  hintText: 'Enter Your Last Name',
 
                 ),
               ),
@@ -980,6 +980,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(15, 10, 5, 0),
                     child: TextField(
+                      readOnly: isEditProfile,
+
                       controller: cityController,
                       decoration: const InputDecoration(
                         enabledBorder: UnderlineInputBorder(
@@ -1000,6 +1002,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
                     child: TextField(
+                      readOnly: isEditProfile,
+
                       controller: zipcodeController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
@@ -1021,7 +1025,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
             isEditProfile
-                ? Padding(
+                ?SizedBox(width: 0,height: 0,):Padding(
               padding: const EdgeInsets.only(top: 20),
               child: MaterialButton(
                 onPressed: () {
@@ -1057,7 +1061,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-            ):SizedBox(width: 0,height: 0,),
+            ),
             const SizedBox(height: 50)
           ],
         ),
@@ -1474,13 +1478,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       body = {
         'MobileNo': mobileNumber,
-        'FullName': userNameController.text,
+        'FirstName': userNameController.text,
         'LastName': lastNameController.text,
         'Country': countryController.text,
         'State': stateController.text,
         'City': cityController.text,
         'ZipCode': zipcodeController.text,
         'Address1': addressController.text,
+        'Email':email,
       };
 
       print('' + body.toString());
@@ -1501,7 +1506,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         print("Profile details updated successfully.");
 
         setState(() {
-          isEditProfile = false;
+          isEditProfile = true;
           isLoading = true;
           getData();
         });

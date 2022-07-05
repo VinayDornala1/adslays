@@ -236,9 +236,7 @@ class _MainScreenState extends State<MainScreen> {
           padding: const EdgeInsets.only(top: 15, bottom: 15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
             children: [
-
               GestureDetector(
                 onTap: () {
                   Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
@@ -353,6 +351,7 @@ class _MainScreenState extends State<MainScreen> {
               ),
               GestureDetector(
                 onTap: () {
+                  _scaffoldKey.currentState?.openEndDrawer();
 
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) =>AboutUsScreen()));
@@ -407,6 +406,8 @@ class _MainScreenState extends State<MainScreen> {
               GestureDetector(
                 onTap: () async {
                   _boolProvider.setBottomChange(0);
+                  _scaffoldKey.currentState?.openEndDrawer();
+
                   SharedPreferences preferences =
                   await SharedPreferences
                       .getInstance();
