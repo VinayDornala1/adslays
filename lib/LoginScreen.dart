@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:adslay/Constant/ConstantsColors.dart';
 import 'package:adslay/SignUp.dart';
 import 'package:adslay/otp_Screen.dart';
 import 'package:flutter/material.dart';
@@ -148,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               const Padding(
                                 padding: EdgeInsets.only(top:5.0,bottom: 10),
                                 child: Text(
-                                  "Please enter the details to Login",
+                                  "Please Enter your Registered mobile number to login",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w300,
                                     color: Colors.black,
@@ -176,11 +177,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                         Expanded(
                                           child: TextField(
+                                            maxLength: 10,
                                             keyboardType: TextInputType.phone,
                                             controller: mobilenumber,
                                             decoration: const InputDecoration(
                                               hintText: "Enter mobile number",
                                               border: InputBorder.none,
+                                              counterText: "",
 
                                             ),
                                           ),
@@ -248,13 +251,53 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
+                              const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                                  child: Text(
+                                    'Or',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.grey,
+                                      fontFamily: "montserratmedium",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              //for order as guest
+                              GestureDetector(
+                                onTap: () async {
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  prefs.setInt('userid', 0);
+                                  prefs.setString('username', 'demo');
+                                  prefs.setString('email', "guest@guest.com");
+                                  prefs.setString('mobilenumber', "9999999999");
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              BottomNavigationMenu()));
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 80, right: 80, top: 0),
+                                  width: double.infinity,
+                                  height: 40,
+                                  alignment: Alignment.center,
+                                  child: Text('Skip Login', style: TextStyle(
+                                      fontSize: 16.0,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'montserratbold',
+                                      color: ConstantColors.appTheme),),
+                                ),
+                              ),
 
                             ]
                         ),
                       ),
                       SizedBox(
                         width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.35,
+                        height: MediaQuery.of(context).size.height * 0.25,
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: Column(

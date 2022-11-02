@@ -5,7 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
+import 'package:images_picker/images_picker.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -79,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     _getUserProfileDetails();
 
-    String url ="http://adslay.arjunweb.in/API/HomeAPI/CountriesList" ;
+    String url ="http://app.adslay.com/API/HomeAPI/CountriesList" ;
     print(url);
     var response1 =
     await get(Uri.parse(url), headers: {"Accept": "application/json"});
@@ -156,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print("No records found...");
     } else {
       setState(() {
-
+        stateController.text='Select State';
         fullName = data['objCustomers']['FirstName'] + " " + data['objCustomers']['LastName'];
         userNameController.text = data['objCustomers']['FirstName'];
         lastNameController.text = data['objCustomers']['LastName'];
@@ -192,22 +194,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String profilePic='';
   final String uploadUrl = APIConstant.postProfilePicToServer;
   TextEditingController vendor_image = new TextEditingController();
+  List<Media>? res111;
 
   _chooseProfilePic() async {
-    var picked = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg'],
+    // var picked = await FilePicker.platform.pickFiles(
+    //   type: FileType.custom,
+    //   allowedExtensions: ['jpg','png'],
+    // );
+
+    res111 = await ImagesPicker.pick(
+      count: 1,
+      pickType: PickType.image,
+      quality: 0.8,
     );
-    if (picked != null) {
+    if (res111 != null) {
       setState(() {
-        profilePic = picked.files.first.path!;
+        profilePic = res111![0].path.toString();
       });
-      print('file path: '+picked.files.first.path!);
+      print('file path: '+res111![0].path.toString());
       await pr.show();
-      var res = await uploadImage( picked.files.first.path, uploadUrl);
+      var res = await uploadImage( res111![0].path.toString(), uploadUrl);
       print("Profile pic uploading to server response: "+ res.toString());
       Map data1 = jsonDecode(res);
-      String fileName = picked.files.first.path!.split('/').last;
+      // String fileName = picked.files.first.path!.split('/').last;
       print('Uploaded file name: '+data1.toString());
 
       vendor_image.text = data1['fileName'].toString();
@@ -530,7 +539,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               const Spacer(),
                               Text(
-                                "+91 $mobileNumber",
+                                "+1 $mobileNumber",
                                 style: TextStyle(
                                   fontSize: 17,
                                   fontFamily: "Mont-Light",
@@ -834,6 +843,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 ),
               ),
+            ),Padding(
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+              child: TextField(
+                controller: emailController,
+                readOnly: isEditProfile,
+                decoration: const InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  filled: true,
+                  fillColor: Colors.transparent,
+                  hintText: 'Enter Your Email',
+
+                ),
+              ),
             ),
 
             Row(
@@ -925,11 +952,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Colors.white,
                             isExpanded: true,
                             underline: SizedBox(),
-                            hint: const Padding(
+                            hint:  Padding(
                               padding: EdgeInsets.only(left: 8.0),
                               child: Text(
-                                'Select State',
-                                style: TextStyle(
+                                ''+stateController.text,
+                                style: const TextStyle(
                                     fontFamily:
                                     "Lorin",
                                     fontSize: 16.0,
@@ -1003,9 +1030,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: EdgeInsets.fromLTRB(5, 10, 15, 0),
                     child: TextField(
                       readOnly: isEditProfile,
-
                       controller: zipcodeController,
                       keyboardType: TextInputType.number,
+                      maxLength: 5,
                       decoration: const InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -1016,6 +1043,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         filled: true,
                         fillColor: Colors.transparent,
                         hintText: 'Enter Zip Code ',
+                        counterText: "",
+
                       ),
                     ),
                   ),
@@ -1072,7 +1101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 
   Future<void> loadstates() async {
-    String url1 = 'http://adslay.arjunweb.in/API/HomeAPI/StatesList';
+    String url1 = 'http://app.adslay.com/API/HomeAPI/StatesList';
     print(url1);
     Map<String, dynamic> body = {
       'CountryId': ''+countryControllerId.text.toString(),
@@ -1485,7 +1514,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         'City': cityController.text,
         'ZipCode': zipcodeController.text,
         'Address1': addressController.text,
-        'Email':email,
+        'Email':emailController.text,
+
       };
 
       print('' + body.toString());
@@ -1504,7 +1534,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (msg == "Success" || msg == "Updated" || msg == "success" ) {
         print("Profile details updated successfully.");
-
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', ""+emailController.text);
         setState(() {
           isEditProfile = true;
           isLoading = true;
@@ -1520,20 +1551,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> verifyFormDetails() async {
-    if (userNameController.text == null || userNameController.text == '') {
-      print("Please enter first name");
+    if (userNameController.text == '') {
+      Fluttertoast.showToast(
+          msg: "Please enter first name",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
       return;
-    } else if (lastNameController.text == null || lastNameController.text == '') {
-      print("Please enter last name");
+    } else if ( lastNameController.text == '') {
+      Fluttertoast.showToast(
+          msg: "Please enter last name",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
       return;
-    } else if (countryController.text == null || countryController.text == '') {
-      print("Please select country");
+    } else if (countryController.text == '') {
+      Fluttertoast.showToast(
+          msg: "Please select country",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
       return;
-    } else if (stateController.text == null || stateController.text == '') {
-      print("Please select state.");
+    } else if (stateController.text == '') {
+      Fluttertoast.showToast(
+          msg: "Please select state",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
       return;
-    } else if (cityController.text == null || cityController.text == '') {
-      print("Please enter city.");
+    } else if (cityController.text == '') {
+      Fluttertoast.showToast(
+          msg: "Please enter city",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
       return;
     } else {
       print('updating profile details..');

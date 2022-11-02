@@ -1,29 +1,19 @@
 import 'dart:convert';
-
-import 'package:adslay/MainScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:http/http.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
-
-
 import 'API.dart';
-import 'StoreDetails.dart';
-import 'StoresScreen.dart';
 import 'bottom_bar.dart';
-
 
 class OTPScreen extends StatefulWidget {
 
   var mobileNumber;
-  // var countryCode;
 
   OTPScreen({Key? key, this.mobileNumber}) : super(key: key);
 
@@ -66,7 +56,7 @@ class _OTPScreenState extends State<OTPScreen> {
   verifyPhoneNumber() async{
     await Firebase.initializeApp();
     await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: '+91'+widget.mobileNumber,
+        phoneNumber: '+1'+widget.mobileNumber,
         verificationCompleted: (PhoneAuthCredential crediential) async{
           await FirebaseAuth.instance
               .signInWithCredential(crediential)
@@ -166,7 +156,7 @@ class _OTPScreenState extends State<OTPScreen> {
                               const Padding(
                                 padding: EdgeInsets.only(top:10.0,bottom: 10),
                                 child: Text(
-                                  "Enter the verification code we have \n just sent you",
+                                  "Enter verification code sent to\nyour mobile number",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w300,
@@ -434,7 +424,12 @@ class _OTPScreenState extends State<OTPScreen> {
           prefs.setString('mobilenumber', MobileNo);
           print("CustomerID is: "+CustomerId.toString());
           print("First Name is: "+FirstName.toString());
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BottomNavigationMenu()));
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder:
+                      (BuildContext context) => BottomNavigationMenu()),
+              ModalRoute.withName('/'));
         }
   }
 

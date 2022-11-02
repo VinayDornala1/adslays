@@ -157,14 +157,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           flex: 8,
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
-                                            child: TextField(
-                                              inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[0-9]")),],
-                                              keyboardType: TextInputType.phone,
-                                              controller: mobileNumberController,
-                                              decoration: const InputDecoration(
-                                                hintText: "Mobile Number",
-                                                border: InputBorder.none,
-                                              ),
+                                            child: Row(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.fromLTRB(20, 5, 5,5),
+                                                  child: Text('+1',style: TextStyle(fontFamily: "montserratbold",fontSize: 18,letterSpacing:3.0)),
+                                                ),
+                                                Expanded(
+                                                  child: TextField(
+                                                    maxLength: 10,
+                                                    inputFormatters: [ FilteringTextInputFormatter.allow(RegExp("[0-9]")),],
+                                                    keyboardType: TextInputType.phone,
+                                                    controller: mobileNumberController,
+                                                    decoration: const InputDecoration(
+                                                      hintText: "Mobile Number",
+                                                      counterText: "",
+
+                                                      border: InputBorder.none,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),

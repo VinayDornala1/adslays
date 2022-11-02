@@ -15,6 +15,8 @@ import 'OrderDetailsScreen.dart';
 import 'ProfileScreen.dart';
 import 'StoresList.dart';
 import 'StoresScreen.dart';
+import 'animated_custom_dialog.dart';
+import 'guest_dialog.dart';
 
 class BottomNavigationMenu extends StatefulWidget {
   static int indexbottom=0;
@@ -43,7 +45,7 @@ class _BottomNavigationMenuState extends State<BottomNavigationMenu> {
   ];
 
   onItemTapped(int index) {
-    setState(() {
+    setState(() async {
       // _selectedPage = index;
       BottomNavigationMenu.indexbottom=index;
       _boolProvider.setBottomChange(index);
@@ -73,33 +75,46 @@ class _BottomNavigationMenuState extends State<BottomNavigationMenu> {
         );
         // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BottomNavigationMenu(),));
       }if(index==2){
-        print('dfcgfg');
-        _boolProvider.setBottomChange(2);
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => BottomNavigationMenu(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-          ),
-        );
+        if(Email=='guest@guest.com') {
+          _boolProvider.setBottomChange(0);
+          showAnimatedDialog(context, GuestDialog(), isFlip: true);
+        }else {
+          print('dfcgfg');
+          _boolProvider.setBottomChange(2);
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) =>
+                  BottomNavigationMenu(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
+        }
         // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BottomNavigationMenu()));
       }if(index==3){
-        print('dfcgfg');
-        _boolProvider.setBottomChange(3);
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation1, animation2) => BottomNavigationMenu(),
-            transitionDuration: Duration.zero,
-            reverseTransitionDuration: Duration.zero,
-          ),
-        );
+        if(Email=='guest@guest.com') {
+          _boolProvider.setBottomChange(0);
+          showAnimatedDialog(context, GuestDialog(), isFlip: true);
+        }else {
+          print('dfcgfg');
+          _boolProvider.setBottomChange(3);
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) => BottomNavigationMenu(),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+            ),
+          );
+        }
+
         // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BottomNavigationMenu()));
       }
     });
 
   }
+  String Email='';
 
   @override
   void initState() {
@@ -115,7 +130,14 @@ class _BottomNavigationMenuState extends State<BottomNavigationMenu> {
   bool _enableConsentButton = false;
 
   Future<void> initOneSignal() async { //yashwanth
+    try{
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        Email = prefs.getString('email')!;
+      });
+    }catch(e){
 
+    }
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
     OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);

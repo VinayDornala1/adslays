@@ -110,7 +110,7 @@ class _BillingScreenState extends State<BillingScreen> {
     }
 
 
-    String url ="http://adslay.arjunweb.in/API/HomeAPI/CountriesList" ;
+    String url ="http://app.adslay.com/API/HomeAPI/CountriesList" ;
     print(url);
     var response1 =
     await get(Uri.parse(url), headers: {"Accept": "application/json"});
@@ -122,7 +122,7 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 
   Future<void> loadstates() async {
-    String url1 = 'http://adslay.arjunweb.in/API/HomeAPI/StatesList';
+    String url1 = 'http://app.adslay.com/API/HomeAPI/StatesList';
     print(url1);
     Map<String, dynamic> body = {
       'CountryId': ''+countryControllerId.text.toString(),
@@ -596,6 +596,7 @@ class _BillingScreenState extends State<BillingScreen> {
                                           child: TextField(
                                             controller: zipcodeController,
                                             keyboardType: TextInputType.number,
+                                            maxLength: 5,
                                             decoration: const InputDecoration(
                                               enabledBorder: UnderlineInputBorder(
                                                 borderSide: BorderSide(color: Colors.grey),
@@ -606,6 +607,8 @@ class _BillingScreenState extends State<BillingScreen> {
                                               filled: true,
                                               fillColor: Colors.transparent,
                                               hintText: 'Enter Zip Code ',
+                                              counterText: "",
+
                                             ),
                                           ),
                                         ),
@@ -813,8 +816,8 @@ class _BillingScreenState extends State<BillingScreen> {
               paymentIntentClientSecret:
               paymentIntentData!['client_secret'],
               //How you can add Apple And Google Pay
-              applePay: true,
-              googlePay: true,
+              applePay: false,
+              googlePay: false,
               testEnv: true,
               style: ThemeMode.dark,
               merchantCountryCode: 'US',
@@ -848,18 +851,12 @@ class _BillingScreenState extends State<BillingScreen> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("paid successfully")));
       }).onError((error, stackTrace){
         pr.hide();
-
         completeBooking("Pending", 'N/A', widget.total.toString());
         print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
-
       });
-
-
     } on StripeException catch (e) {
       pr.hide();
-
       completeBooking("Pending", 'N/A', widget.total.toString());
-
       print('Exception/DISPLAYPAYMENTSHEET==> $e');
       showDialog(
           context: context,
@@ -904,7 +901,7 @@ class _BillingScreenState extends State<BillingScreen> {
 
   Future<void> completeBooking(String status, String transactionId, String amountPaid) async {
     pr.show();
-    String url1 = APIConstant.completeBooking;//'http://adslay.arjunweb.in/API/OrderAPI/OrderInsertAPI';
+    String url1 = APIConstant.completeBooking;//'http://app.adslay.com/API/OrderAPI/OrderInsertAPI';
     print('Upload billing details url: '+url1);
     Map<String, dynamic> body = {
       'MobileNo': ''+mobileNumber,//mobileNumber.toString(),

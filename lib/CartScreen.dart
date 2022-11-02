@@ -16,6 +16,7 @@ import 'ChoosePlan.dart';
 import 'LoginScreen.dart';
 import 'MainScreen.dart';
 import 'SearchScreen.dart';
+import 'bottom_bar.dart';
 
 
 class CartScreen extends StatefulWidget {
@@ -139,7 +140,12 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.pop(context);
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder:
+                                              (BuildContext context) => BottomNavigationMenu()),
+                                      ModalRoute.withName('/'));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 10),

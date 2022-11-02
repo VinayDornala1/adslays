@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:adslay/ChoosePlan.dart';
 import 'package:adslay/Constant/ConstantsColors.dart';
@@ -6,8 +7,10 @@ import 'package:adslay/StoreDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
+import 'package:images_picker/images_picker.dart';
 import 'package:progress_dialog_null_safe/progress_dialog_null_safe.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
@@ -943,26 +946,34 @@ class _UploadFilesState extends State<UploadFiles> {
   String selectedFile='';
   final String uploadUrl = APIConstant.base_url + 'StoresAPI/CustomerBookImages';
   late ProgressDialog pr;
-
-  _chooseFiles() async {
-
-    var picked = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg',],
+  List<Media>? res111;
+    _chooseFiles() async {
+    res111 = await ImagesPicker.pick(
+      count: 1,
+      pickType: PickType.image,
+      quality: 0.8,
     );
 
-    if (picked != null) {
+    // var picked = await FilePicker.platform.pickFiles(
+    //   type: FileType.custom,
+    //   allowedExtensions: ['jpg','png'],
+    //   allowCompression: true,
+    // );
+    if (res111 != null) {
       setState(() {
-        selectedFile = picked.files.first.path!;
-
+        selectedFile = res111![0].path.toString();
       });
-      print(''+picked.files.first.path!);
+      print(''+res111![0].path.toString());
       await pr.show();
+      File compressedFile = await FlutterNativeImage.compressImage(res111![0].path.toString(),
+        quality: 5,);
 
-      var res = await uploadImage( picked.files.first.path, uploadUrl);
+
+
+      var res = await uploadImage( compressedFile.path, uploadUrl);
       print("File uploading to server response: "+ res.toString());
       Map data1 = jsonDecode(res);
-      String fileName = picked.files.first.path!.split('/').last;
+      String fileName = compressedFile.path.split('/').last;
       print(fileName);
       vendor_image.text = data1['fileName'].toString();
       print("Successfully File uploaded to server"+vendor_image.text);

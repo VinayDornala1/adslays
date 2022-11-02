@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:adslay/API.dart';
 import 'package:adslay/BoolProvider.dart';
+import 'package:adslay/ContactUs.dart';
 import 'package:adslay/HistoryScreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'dart:io' show Platform;
@@ -26,7 +28,10 @@ import 'OrderDetailsScreen.dart';
 import 'SearchScreen.dart';
 import 'StoreDetails.dart';
 import 'StoresList.dart';
+import 'VendorRegister.dart';
+import 'animated_custom_dialog.dart';
 import 'bottom_bar.dart';
+import 'guest_dialog.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -301,7 +306,8 @@ class _MainScreenState extends State<MainScreen> {
                   // _boolProvider.setBottomChange(3);
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
-
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) =>ContactUs()));
                 },
                 child: Column(
                   children: [
@@ -323,10 +329,16 @@ class _MainScreenState extends State<MainScreen> {
               ),
               GestureDetector(
                 onTap: () {
-                  Provider.of<BoolProvider>(context, listen: false).setNoBookmarks(
-                      false);
-                  _scaffoldKey.currentState?.openEndDrawer();
-                  _boolProvider.setBottomChange(2);
+                  if(email=='guest@guest.com') {
+                    _boolProvider.setBottomChange(0);
+                    showAnimatedDialog(context, GuestDialog(), isFlip: true);
+                  }else {
+                    Provider.of<BoolProvider>(context, listen: false)
+                        .setNoBookmarks(
+                        false);
+                    _scaffoldKey.currentState?.openEndDrawer();
+                    _boolProvider.setBottomChange(2);
+                  }
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
 
@@ -383,6 +395,9 @@ class _MainScreenState extends State<MainScreen> {
                   //_boolProvider.setBottomChange(3);
                   // Navigator.push(context,
                   //     MaterialPageRoute(builder: (context) =>TabbarProfile()));
+                  Share.share(
+                      'Download Adslay app from \n play store  \nhttps://play.google.com/store/apps/details?id=com.adslay.adslay',
+                      subject: 'Adslay');
 
                 },
                 child: Column(
@@ -393,6 +408,35 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     const Text(
                       'Share App',
+                      style: TextStyle(
+                        color: Color(0xFF141E28),
+                        fontFamily: "Mont-Regular",
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  _scaffoldKey.currentState?.openEndDrawer();
+
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) =>VendorRegister()));
+
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset("assets/images/login.png",width: 40,height: 40,),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    const Text(
+                      'Vendor Registration',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
@@ -426,9 +470,9 @@ class _MainScreenState extends State<MainScreen> {
                     const SizedBox(
                       height: 5,
                     ),
-                    const Text(
-                      'Logout',
-                      style: TextStyle(
+                     Text(
+                      email=='guest@guest.com'?'Login':'Logout',
+                      style: const TextStyle(
                         color: Color(0xFF141E28),
                         fontFamily: "Mont-Regular",
                         fontSize: 12,
@@ -845,7 +889,6 @@ class _MainScreenState extends State<MainScreen> {
                       [
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
-
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,

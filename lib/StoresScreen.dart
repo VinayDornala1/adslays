@@ -337,7 +337,7 @@ class _StoresScreenState extends State<StoresScreen> {
                           '' + storesList[index]["StoreName"] + ", " + storesList[index]["City"],
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
-                          maxLines: 2,
+                          maxLines: 1,
                           style: const TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.normal),
@@ -346,7 +346,7 @@ class _StoresScreenState extends State<StoresScreen> {
                           '' + storesList[index]["State"] + ", " + storesList[index]["Country"],
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
-                          maxLines: 2,
+                          maxLines: 1,
                           style: const TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.normal),

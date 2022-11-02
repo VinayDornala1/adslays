@@ -15,6 +15,8 @@ import 'MainScreen.dart';
 import 'SearchScreen.dart';
 import 'StoreDetails.dart';
 import 'UploadFiles.dart';
+import 'animated_custom_dialog.dart';
+import 'guest_dialog.dart';
 
 class ChoosePlan extends StatefulWidget {
   var storeId;
@@ -1254,19 +1256,23 @@ class _ChoosePlanState extends State<ChoosePlan> {
                   child: Center(
                     child: MaterialButton(
                       onPressed: () {
-                        if (PackageName.text == '') {
-                          Fluttertoast.showToast(
-                              msg: "Please choose package",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0
-                          );
-                        } else {
-                          getData11();
-                        }
+    if(email=='guest@guest.com') {
+    showAnimatedDialog(context, GuestDialog(), isFlip: true);
+    }else {
+      if (PackageName.text == '') {
+        Fluttertoast.showToast(
+            msg: "Please choose package",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      } else {
+        getData11();
+      }
+    }
                       },
                       textColor: Colors.white,
                       padding: const EdgeInsets.all(0.0),
